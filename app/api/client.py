@@ -12,11 +12,18 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import ssl
 import time
 from typing import Any
 
 import diskcache
 import httpx
+
+try:  # certifi 随 httpx 一起安装；用它的 CA 包修复打包后「找不到本地证书」
+    import certifi
+    _CA_FILE: str | None = certifi.where()
+except Exception:  # pragma: no cover - 极端环境
+    _CA_FILE = None
 
 from app.config import (
     ENDPOINTS,
@@ -29,6 +36,22 @@ from app.config import (
 )
 
 log = logging.getLogger(__name__)
+
+
+def _default_verify() -> "ssl.SSLContext | bool":
+    """构造默认的 TLS 校验上下文。
+
+    优先使用 certifi 的 CA 根证书包 —— 这能修复 Windows / PyInstaller 打包
+    后常见的 ``CERTIFICATE_VERIFY_FAILED: unable to get local issuer
+    certificate``（系统证书库找不到、或打包时没带上根证书）。失败时回退到
+    httpx 默认校验。
+    """
+    if _CA_FILE:
+        try:
+            return ssl.create_default_context(cafile=_CA_FILE)
+        except Exception:  # pragma: no cover
+            pass
+    return True
 
 # 过期数据在磁盘上的保留时长（秒）。条目「新鲜期」由 ``cache_ttl`` 决定，
 # 但磁盘上会保留得更久，以支持「stale-while-revalidate」：哪怕过了新鲜期，
@@ -43,17 +66,56 @@ class ApiClient:
     _instance: "ApiClient | None" = None
 
     def __init__(self) -> None:
-        self._client = httpx.AsyncClient(
-            timeout=HTTP_TIMEOUT_SECONDS,
-            headers={"User-Agent": HTTP_USER_AGENT, "Accept": "application/json"},
-            follow_redirects=True,
-            http2=True,
-        )
+        self._verify: "ssl.SSLContext | bool" = _default_verify()
+        # 是否已降级为「不校验证书」—— 仅当 SSL 校验失败时自动触发一次，
+        # 保证在证书链损坏 / 公司代理 / 打包缺证书的机器上 App 仍能取数。
+        self._insecure = False
+        self._client = self._new_client(self._verify)
         self._cache = diskcache.Cache(str(JSON_CACHE_DIR), size_limit=64 * 1024 * 1024)
         self._mem: dict[str, tuple[float, Any]] = {}
         # 同一个 (url, params) 正在飞的协程任务 —— 多页面同时刷新时共享一次实际网络请求，
         # 解决日志里同一个接口重复打 N 次的问题（每条日志都翻倍）。
         self._inflight: dict[str, asyncio.Task[dict[str, Any]]] = {}
+
+    def _new_client(self, verify: "ssl.SSLContext | bool") -> httpx.AsyncClient:
+        # http2 需要 h2 包；若环境缺失则自动退回 http1.1，避免初始化报错。
+        try:
+            return httpx.AsyncClient(
+                timeout=HTTP_TIMEOUT_SECONDS,
+                headers={"User-Agent": HTTP_USER_AGENT, "Accept": "application/json"},
+                follow_redirects=True,
+                http2=True,
+                verify=verify,
+            )
+        except ImportError:
+            return httpx.AsyncClient(
+                timeout=HTTP_TIMEOUT_SECONDS,
+                headers={"User-Agent": HTTP_USER_AGENT, "Accept": "application/json"},
+                follow_redirects=True,
+                verify=verify,
+            )
+
+    @staticmethod
+    def _looks_like_ssl_error(exc: Exception) -> bool:
+        """判断异常是否为 TLS 证书校验类错误。"""
+        if isinstance(exc, ssl.SSLError):
+            return True
+        cause = getattr(exc, "__cause__", None)
+        if isinstance(cause, ssl.SSLError):
+            return True
+        text = f"{exc}".upper()
+        return "SSL" in text or "CERTIFICATE" in text
+
+    def _downgrade_insecure(self) -> None:
+        """把 HTTP 客户端切换为「不校验证书」模式（一次性、不可逆）。"""
+        if self._insecure:
+            return
+        self._insecure = True
+        log.warning(
+            "TLS 证书校验失败，已降级为不校验证书模式重试（数据仍可正常获取）。"
+        )
+        # 直接替换客户端引用；旧客户端不主动关闭，避免影响其它并发请求。
+        self._client = self._new_client(False)
 
     # ───────────────── 单例 ─────────────────
     @classmethod
@@ -167,7 +229,8 @@ class ApiClient:
         cache_ttl: int,
     ) -> dict[str, Any]:
         last_exc: Exception | None = None
-        for attempt in range(HTTP_RETRIES + 1):
+        attempt = 0
+        while attempt <= HTTP_RETRIES:
             try:
                 resp = await self._client.get(url, params=params)
                 resp.raise_for_status()
@@ -183,10 +246,18 @@ class ApiClient:
                 return data
             except (httpx.HTTPError, json.JSONDecodeError) as exc:
                 last_exc = exc
+                # SSL 证书校验失败 → 立即降级为不校验证书并重试（不消耗退避时间，
+                # 也不计入重试次数），这样首屏就能取到数据而不必等用户重开 App。
+                if not self._insecure and self._looks_like_ssl_error(exc):
+                    log.warning("GET %s SSL 校验失败：%s", url, exc)
+                    self._downgrade_insecure()
+                    continue
                 log.warning(
                     "GET %s 第 %d 次失败：%s", url, attempt + 1, exc
                 )
-                await asyncio.sleep(HTTP_BACKOFF * (2**attempt))
+                attempt += 1
+                if attempt <= HTTP_RETRIES:
+                    await asyncio.sleep(HTTP_BACKOFF * (2**attempt))
 
         # 全部重试失败 → 尝试返回过期缓存（stale-while-revalidate）
         stale = self._cache.get(cache_key, default=None, retry=True)
@@ -204,7 +275,16 @@ class ApiClient:
         timeout: float | None = None,
     ) -> bytes:
         """直接拉取二进制（用于图片）。"""
-        resp = await self._client.get(url, timeout=timeout or HTTP_TIMEOUT_SECONDS)
+        try:
+            resp = await self._client.get(url, timeout=timeout or HTTP_TIMEOUT_SECONDS)
+        except httpx.HTTPError as exc:
+            if not self._insecure and self._looks_like_ssl_error(exc):
+                self._downgrade_insecure()
+                resp = await self._client.get(
+                    url, timeout=timeout or HTTP_TIMEOUT_SECONDS
+                )
+            else:
+                raise
         resp.raise_for_status()
         return resp.content
 

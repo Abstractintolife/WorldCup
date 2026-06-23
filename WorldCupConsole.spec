@@ -12,11 +12,12 @@
 * 请使用 Python 3.13 或 3.12（qasync 暂不支持 3.14）。
 * 默认 onedir 模式（启动快、易排错）。需要单文件改用 onefile（见底部注释）。
 """
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 # httpx[http2] 的 HTTP/2 依赖是按需导入的，静态分析可能漏掉，显式补上；
+# certifi 提供 TLS 根证书（修复打包后 SSL 证书校验失败）；
 # pypinyin 的词典以子模块形式存放，整体收集更稳妥。
-hiddenimports = ["h2", "hpack", "hyperframe"] + collect_submodules("pypinyin")
+hiddenimports = ["h2", "hpack", "hyperframe", "certifi"] + collect_submodules("pypinyin")
 
 # 随程序打包的数据文件（源路径, 包内目标目录）。
 # 运行时 app/config.py 用 __file__ 反推 ROOT_DIR，因此目标目录需与源结构一致。
@@ -24,6 +25,8 @@ datas = [
     ("assets", "assets"),                            # 国旗位图 assets/flags/*.png（及字体 assets/fonts/*.ttf 若有）
     ("app/services/land_mask.b64", "app/services"),  # 3D 地球仪陆地掩膜
 ]
+# certifi 的 cacert.pem —— 确保 httpx/ssl 在打包后能找到 CA 根证书。
+datas += collect_data_files("certifi")
 
 a = Analysis(
     ["main.py"],
