@@ -29,6 +29,7 @@ from app.ui.pages.favorites_page import FavoritesPage
 from app.ui.pages.globe_page import GlobePage
 from app.ui.pages.home_page import HomePage
 from app.ui.pages.match_detail_page import MatchDetailPage
+from app.ui.pages.news_page import NewsPage
 from app.ui.pages.player_detail_page import PlayerDetailPage
 from app.ui.pages.player_rankings_page import PlayerRankingsPage
 from app.ui.pages.prediction_page import PredictionPage
@@ -37,7 +38,7 @@ from app.ui.pages.search_page import SearchPage
 from app.ui.pages.stadiums_page import StadiumsPage
 from app.ui.pages.standings_page import StandingsPage
 from app.ui.pages.team_detail_page import TeamDetailPage
-from app.ui.pages.teams_page import TeamsPage
+from app.ui.pages.team_rankings_page import TeamRankingsPage
 from app.ui.theme import THEMES, ThemePalette, build_qss
 from app.ui.design.frame_clock import FrameClock
 from app.ui.widgets.effects import fade_slide_in
@@ -60,7 +61,8 @@ _PRIMARY_NAV: list[tuple] = [
     ("scorers", "⚽", "球员"),
     ("standings", "🏆", "积分榜"),
     ("prediction", "🔮", "预测中心"),
-    ("stadiums", "📰", "新闻资讯"),
+    ("news", "📰", "新闻资讯"),
+    ("stadiums", "🏟", "球场"),
     ("favorites", "⭐", "收藏夹"),
     ("settings", "⚙️", "设置"),
 ]
@@ -106,8 +108,9 @@ class MainWindow(QMainWindow):
         self._prediction = PredictionPage(self._service)
         self._standings = StandingsPage(self._service)
         self._rankings = PlayerRankingsPage(self._service)
-        self._teams = TeamsPage(self._service)
+        self._teams = TeamRankingsPage(self._service)
         self._stadiums = StadiumsPage()
+        self._news = NewsPage(self._service)
         self._favorites_page = FavoritesPage(self._service, self._favorites)
         # 详情页
         self._match_detail = MatchDetailPage(self._service, self._favorites)
@@ -127,6 +130,7 @@ class MainWindow(QMainWindow):
             "scorers": self._rankings,
             "teams": self._teams,
             "stadiums": self._stadiums,
+            "news": self._news,
             "favorites": self._favorites_page,
             "match_detail": self._match_detail,
             "player_detail": self._player_detail,

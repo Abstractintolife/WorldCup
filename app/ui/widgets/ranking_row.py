@@ -221,12 +221,12 @@ class RankingRow(QFrame):
         count_box.addWidget(cnum)
         unit_txt = player.ranking_type.unit
         unit = QLabel(unit_txt)
-        unit.setStyleSheet("color:#B0BEC5; font-size: 11px; font-weight:700;")
+        unit.setStyleSheet("color:#B0BEC5; font-size: 10.5px; font-weight:700;")
         unit.setAlignment(Qt.AlignmentFlag.AlignCenter)
         count_box.addWidget(unit)
         cnt_w = QWidget()
         cnt_w.setLayout(count_box)
-        cnt_w.setFixedWidth(58)
+        cnt_w.setFixedWidth(82)
         outer.addWidget(cnt_w)
 
     # ── 事件 ─────────────────────────────────

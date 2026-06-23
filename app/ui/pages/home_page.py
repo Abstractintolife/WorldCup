@@ -333,10 +333,11 @@ class LiveMatchPanel(Card):
             self._on_watch(self._match)
 
     def _team_block(self, name: str, *, home: bool = True) -> QWidget:
-        """单侧队伍块：国旗 + 队名横向排列，国旗紧贴中线 VS。
+        """单侧队伍块：国旗 + 队名横向并排（A VS B 横幅的一侧）。
 
-        主队（左）：``… 美国 🇺🇸``　客队（右）：``🇰🇷 韩国 …``
-        左右拼起来即「美国 🇺🇸  VS  🇰🇷 韩国」的对阵横幅。
+        主队（左）：``🇦 国家A``（靠右贴近中线 VS）
+        客队（右）：``国家B 🇧``（靠左贴近中线 VS）
+        左右拼起来即横向的「🇦 国家A  VS  国家B 🇧」。
         """
         w = QWidget()
         row = QHBoxLayout(w)
@@ -344,21 +345,21 @@ class LiveMatchPanel(Card):
         row.setSpacing(12)
         row.setAlignment(Qt.AlignmentFlag.AlignVCenter)
 
-        flag = FlagIcon(name, height=60, radius=12)
+        flag = FlagIcon(name, height=72, radius=10)
         n = QLabel(name)
         n.setStyleSheet(
-            f"color:{C_TEXT}; font-size:19px; font-weight:900;"
+            f"color:{C_TEXT}; font-size:20px; font-weight:900;"
             " letter-spacing:0.5px; background:transparent;")
 
         if home:
-            n.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
             row.addStretch(1)
-            row.addWidget(n)
             row.addWidget(flag)
-        else:
             n.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-            row.addWidget(flag)
             row.addWidget(n)
+        else:
+            n.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            row.addWidget(n)
+            row.addWidget(flag)
             row.addStretch(1)
         return w
 
@@ -927,10 +928,10 @@ class NewsPanel(Card):
 _QUICK = [
     ("📅", "赛程中心", "schedule", C_PRIMARY),
     ("🛡", "球队", "teams", C_PURPLE),
-    ("📈", "数据分析", "standings", C_GREEN),
+    ("🏆", "积分榜", "standings", C_GREEN),
     ("🔮", "预测中心", "prediction", C_GOLD),
     ("⭐", "收藏夹", "favorites", C_LIVE),
-    ("📰", "新闻资讯", "stadiums", "#36D1FF"),
+    ("📰", "新闻资讯", "news", "#36D1FF"),
 ]
 
 
@@ -1045,12 +1046,10 @@ class HomePage(BasePage):
 
         # 第 4 排
         self._favorites = FavoritesPanel(on_team=self.team_clicked.emit)
-        self._news = NewsPanel(on_open=self._open_news_comments)
         self._quick = QuickActionsPanel(on_navigate=self.navigate.emit)
         row4 = QHBoxLayout()
         row4.setSpacing(18)
         row4.addWidget(self._favorites, 1)
-        row4.addWidget(self._news, 1)
         row4.addWidget(self._quick, 1)
         v.addLayout(row4)
 
@@ -1213,9 +1212,6 @@ class HomePage(BasePage):
 
         # ── 夺冠热门 ──
         self._favorites.set_favorites(self._championship_odds(groups))
-
-        # ── 赛事新闻 ──
-        self._news.set_news(news_list)
 
         # ── 赛事大盘统计 ──
         played = [m for m in matches if m.status == MatchStatus.PLAYED]

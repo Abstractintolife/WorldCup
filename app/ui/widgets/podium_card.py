@@ -54,7 +54,6 @@ _MEDALS: tuple[tuple[str, str, str], ...] = (
     ("#C9D4E6", "#EEF3FB", "#5C6678"),   # 银
     ("#E0894B", "#FFC089", "#6E3A12"),   # 铜
 )
-_LABELS = ("冠军", "亚军", "季军")
 
 
 class _RingAvatar(QWidget):
@@ -218,10 +217,11 @@ class PodiumCard(QFrame):
         )
         col.addWidget(big)
         unit_txt = player.ranking_type.unit
-        unit = QLabel(f"{_LABELS[self._place]} · {unit_txt}")
-        unit.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        unit.setStyleSheet("color:#B0BEC5; font-size:11px; font-weight:700;")
-        col.addWidget(unit)
+        if unit_txt:
+            unit = QLabel(unit_txt)
+            unit.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            unit.setStyleSheet("color:#B0BEC5; font-size:11px; font-weight:700;")
+            col.addWidget(unit)
 
     # ── 事件 ─────────────────────────────────
     def enterEvent(self, _ev) -> None:
