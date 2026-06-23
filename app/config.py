@@ -71,6 +71,13 @@ class Endpoints:
     person_matches: str = (
         "https://sport-data.dongqiudi.com/soccer/biz/dqd/person/matches"
     )
+    # 赛事资讯流（按 /{seed_id} 追加）—— 返回与该篇世界杯文章相关的最新资讯，
+    # 每条含 标题 / 缩略图 / 时间 / 文章 id。用于概览页「赛事新闻」与资讯页。
+    news_relative: str = (
+        "https://api.dongqiudi.com/v2/article/relative"
+    )
+    # 资讯流的「种子」文章 id（世界杯专题文章），相关流会持续滚动最新内容。
+    news_seed_id: int = 5960042
 
     # 默认查询参数
     common_params: dict = field(
@@ -101,6 +108,7 @@ HTTP_BACKOFF = 0.4
 JSON_CACHE_TTL = 60
 SQUAD_CACHE_TTL = 60 * 60 * 6     # 阵容变化较少 —— 缓存 6 小时
 LINEUP_CACHE_TTL = 60 * 5         # 比赛阵容（赛前预测 → 首发）—— 缓存 5 分钟
+NEWS_CACHE_TTL = 60 * 3           # 赛事资讯滚动较快 —— 缓存 3 分钟
 IMAGE_CACHE_TTL = 60 * 60 * 24 * 30  # 图片缓存 30 天
 
 

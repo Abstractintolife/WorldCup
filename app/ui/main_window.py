@@ -186,6 +186,7 @@ class MainWindow(QMainWindow):
         self._home.team_clicked.connect(self._open_team)
         self._home.player_clicked.connect(self._open_player)
         self._home.prediction_clicked.connect(self._open_prediction)
+        self._home.navigate.connect(self._on_home_navigate)
 
         self._globe.team_clicked.connect(self._open_team)
 
@@ -336,6 +337,14 @@ class MainWindow(QMainWindow):
         self.statusBar().showMessage("已清空缓存并刷新 ✅", 3000)
 
     # ─── 导航 ──────────────────────────────
+    def _on_home_navigate(self, key: str) -> None:
+        """概览页「快速操作」跳转到对应主页面，并同步侧栏高亮。"""
+        if key not in self._key_to_page:
+            return
+        if key in {item[0] for item in _PRIMARY_NAV}:
+            self._sidebar.set_active(key)
+        self._navigate(key, push_history=True)
+
     def _on_nav_selected(self, key: str) -> None:
         # 「设置」是动作型条目：打开设置对话框，不切换页面。
         if key == "settings":

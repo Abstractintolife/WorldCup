@@ -1,5 +1,6 @@
 """Pydantic 数据模型。"""
 from app.models.match import Match, MatchStatus, Round
+from app.models.news import NewsArticle
 from app.models.player import PlayerRanking, RankingType
 from app.models.stadium import Stadium
 from app.models.standing import GroupStanding, KnockoutTie, TeamStanding
@@ -10,6 +11,7 @@ __all__ = [
     "KnockoutTie",
     "Match",
     "MatchStatus",
+    "NewsArticle",
     "PlayerRanking",
     "RankingType",
     "Round",
