@@ -11,7 +11,6 @@ from PyQt6.QtGui import QColor, QFont, QLinearGradient, QPainter, QPainterPath, 
 from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QVBoxLayout, QWidget
 
 from app.models.player import TeamRanking
-from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.ranking_row import _Bar, _RankBadge, _GOLD, _GREEN
 from app.ui.widgets.team_logo import TeamLogo
 
@@ -39,9 +38,8 @@ class TeamRankRow(QFrame):
         outer.setSpacing(16)
 
         outer.addWidget(_RankBadge(team.rank, self._leader))
-        # 队徽 + 国旗
-        outer.addWidget(TeamLogo(team.team_logo, size=40, shape="circle"))
-        outer.addWidget(FlagIcon(team.team_name, height=22))
+        # 队徽（懂球帝官方图，已是该国家队徽/旗，无需再叠一面国旗）
+        outer.addWidget(TeamLogo(team.team_logo, size=44, shape="circle"))
 
         name = QLabel(team.team_name)
         nf = QFont()

@@ -247,19 +247,18 @@ class LiveMatchPanel(Card):
         top.addWidget(self._clock)
         root.addLayout(top)
 
-        # 比分行
+        # 对阵行：主队 | VS/比分 | 客队 —— 横向并排，国旗在上 / 队名在下
         score = QHBoxLayout()
-        score.setSpacing(8)
-        self._home_block = QWidget()
-        self._away_block = QWidget()
-        score.addWidget(self._home_block, 1)
+        score.setSpacing(10)
+        score.addStretch(1)
+        score.addWidget(QWidget())             # idx 1: 主队占位（set_match 时替换）
 
         mid = QVBoxLayout()
         mid.setSpacing(2)
         self._big = QLabel("—")
         self._big.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._big.setStyleSheet(
-            "font-size:52px; font-weight:900; color:#FFFFFF; background:transparent;"
+            "font-size:48px; font-weight:900; color:#FFFFFF; background:transparent;"
             " letter-spacing:2px;")
         mid.addWidget(self._big)
         self._status_txt = QLabel("")
@@ -269,9 +268,15 @@ class LiveMatchPanel(Card):
         mid.addWidget(self._status_txt)
         mid_w = QWidget()
         mid_w.setLayout(mid)
-        mid_w.setFixedWidth(120)
-        score.addWidget(mid_w)
-        score.addWidget(self._away_block, 1)
+        mid_w.setFixedWidth(110)
+        score.addWidget(mid_w)                 # idx 2: 中间 VS / 比分（固定）
+
+        score.addWidget(QWidget())             # idx 3: 客队占位
+        score.addStretch(1)
+        # 记录关键索引，set_match 时按索引精确替换两侧队伍（避免错位浮动）
+        self._score_lay = score
+        self._home_idx = 1
+        self._away_idx = 3
         root.addLayout(score)
 
         # 副信息行（开赛时间 / 日期）
@@ -332,45 +337,34 @@ class LiveMatchPanel(Card):
         if self._on_watch:
             self._on_watch(self._match)
 
-    def _team_block(self, name: str, *, home: bool = True) -> QWidget:
-        """单侧队伍块：国旗 + 队名横向并排（A VS B 横幅的一侧）。
-
-        主队（左）：``🇦 国家A``（靠右贴近中线 VS）
-        客队（右）：``国家B 🇧``（靠左贴近中线 VS）
-        左右拼起来即横向的「🇦 国家A  VS  国家B 🇧」。
-        """
+    def _team_col(self, name: str) -> QWidget:
+        """单侧队伍：国旗在上、队名在下，整体水平居中（与中间 VS 齐平）。"""
         w = QWidget()
-        row = QHBoxLayout(w)
-        row.setContentsMargins(0, 0, 0, 0)
-        row.setSpacing(12)
-        row.setAlignment(Qt.AlignmentFlag.AlignVCenter)
-
+        col = QVBoxLayout(w)
+        col.setContentsMargins(0, 0, 0, 0)
+        col.setSpacing(10)
+        col.setAlignment(Qt.AlignmentFlag.AlignCenter)
         flag = FlagIcon(name, height=72, radius=10)
+        col.addWidget(flag, alignment=Qt.AlignmentFlag.AlignCenter)
         n = QLabel(name)
+        n.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        n.setWordWrap(True)
         n.setStyleSheet(
-            f"color:{C_TEXT}; font-size:20px; font-weight:900;"
-            " letter-spacing:0.5px; background:transparent;")
-
-        if home:
-            row.addStretch(1)
-            row.addWidget(flag)
-            n.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-            row.addWidget(n)
-        else:
-            n.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
-            row.addWidget(n)
-            row.addWidget(flag)
-            row.addStretch(1)
+            f"color:{C_TEXT}; font-size:18px; font-weight:900;"
+            " letter-spacing:0.3px; background:transparent;")
+        col.addWidget(n)
+        w.setMinimumWidth(150)
         return w
 
-    def _swap(self, attr: str, new: QWidget, stretch: int) -> None:
-        old = getattr(self, attr)
-        lay = old.parentWidget().layout()
-        idx = lay.indexOf(old)
-        lay.takeAt(idx)
-        old.deleteLater()
-        lay.insertWidget(idx, new, stretch)
-        setattr(self, attr, new)
+    def _set_side(self, index: int, name: str) -> None:
+        """按固定索引精确替换某一侧队伍组件（杜绝旧版 _swap 的错位浮动 bug）。"""
+        item = self._score_lay.itemAt(index)
+        old = item.widget() if item is not None else None
+        if old is not None:
+            self._score_lay.removeWidget(old)
+            old.setParent(None)
+            old.deleteLater()
+        self._score_lay.insertWidget(index, self._team_col(name))
 
     def _empty(self) -> None:
         self._badge.hide()
@@ -387,8 +381,8 @@ class LiveMatchPanel(Card):
             self._empty()
             return
 
-        self._swap("_home_block", self._team_block(match.team_a_name, home=True), 1)
-        self._swap("_away_block", self._team_block(match.team_b_name, home=False), 1)
+        self._set_side(self._home_idx, match.team_a_name)
+        self._set_side(self._away_idx, match.team_b_name)
 
         is_live = match.is_live
         self._badge.setVisible(is_live)
@@ -415,7 +409,7 @@ class LiveMatchPanel(Card):
                 f"color:{C_PRIMARY}; font-size:13px; font-weight:800; background:transparent;")
             self._status_txt.setStyleSheet(
                 f"color:{C_PRIMARY}; font-size:11px; font-weight:800; background:transparent;")
-            self._status_txt.setText("VS")
+            self._status_txt.setText("")
             self._action.setText("查看赛前预测")
 
         self._stage.setText(getattr(match, "_stage_name", "") or "世界杯")
