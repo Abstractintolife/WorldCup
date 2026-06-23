@@ -80,6 +80,7 @@ _RANKING_META: dict[str, tuple[str, str, str, str, str, str]] = {
     # 创造
     "assists":            ("助攻榜", "🅰️", "助攻", "创造", "TOP ASSISTS", _BOTH),
     "key_passes":         ("关键传球", "🔑", "关键传球", "创造", "KEY PASSES", _BOTH),
+    "big_chances":        ("创造进球机会", "🎯", "机会", "创造", "BIG CHANCES CREATED", _TEAM),
     # 传球
     "passes":             ("传球", "🔁", "传球", "传球", "PASSES", _BOTH),
     "pass_accuracy":      ("传球成功率", "🎯", "成功率", "传球", "PASS ACCURACY", _BOTH),
@@ -141,6 +142,7 @@ class RankingType(str, Enum):
     # 创造
     ASSISTS = "assists"
     KEY_PASSES = "key_passes"
+    BIG_CHANCES = "big_chances"
     # 传球
     PASSES = "passes"
     PASS_ACCURACY = "pass_accuracy"
