@@ -43,11 +43,7 @@ class RankingPage(BasePage):
         self._service = service
         self._rtype = rtype
         self.title = rtype.label
-        self.subtitle = {
-            RankingType.GOALS: "TOP SCORERS",
-            RankingType.ASSISTS: "TOP ASSISTS",
-            RankingType.YELLOW_CARDS: "MOST YELLOW CARDS",
-        }.get(rtype, "RANKING")
+        self.subtitle = rtype.en
 
         host = self.content_widget()
         outer = QVBoxLayout(host)
@@ -84,6 +80,16 @@ class RankingPage(BasePage):
         self._list_host = list_host
 
     # ─────────────────────────────────────────
+    def set_rtype(self, rtype: RankingType, *, force: bool = False) -> None:
+        """切换榜单类型并重新拉取数据。"""
+        if rtype == self._rtype and self._content_ready and not force:
+            return
+        self._rtype = rtype
+        self.title = rtype.label
+        self.subtitle = rtype.en
+        self.refresh(force=force)
+
+    # ─────────────────────────────────────────
     def refresh(self, force: bool = False) -> None:
         async def runner() -> None:
             data = await self._service.fetch_ranking(self._rtype, force=force)
@@ -102,7 +108,7 @@ class RankingPage(BasePage):
             self._list_layout.addStretch(1)
             return
 
-        max_count = max((p.count or 0) for p in data) or 1
+        max_count = max((p.value or 0) for p in data) or 1
         anim_targets: list[QWidget] = []
 
         # ── Top-3 领奖台（金/银/铜冠军卡）──────────────────

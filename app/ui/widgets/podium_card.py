@@ -210,7 +210,7 @@ class PodiumCard(QFrame):
         col.addStretch(1)
 
         # 6. 大数字 + 单位
-        big = QLabel(str(player.count))
+        big = QLabel(player.display)
         big.setAlignment(Qt.AlignmentFlag.AlignCenter)
         big.setStyleSheet(
             f"color:{accent}; font-size:{40 if self._champion else 32}px;"

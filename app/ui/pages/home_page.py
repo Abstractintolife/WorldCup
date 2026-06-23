@@ -225,7 +225,7 @@ class LiveMatchPanel(Card):
         self._on_watch = on_watch
         self._match: Match | None = None
         self.setMinimumWidth(540)
-        self.setMinimumHeight(330)
+        self.setMinimumHeight(372)
 
         root = QVBoxLayout(self)
         root.setContentsMargins(22, 18, 22, 18)
@@ -259,7 +259,7 @@ class LiveMatchPanel(Card):
         self._big = QLabel("—")
         self._big.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._big.setStyleSheet(
-            "font-size:44px; font-weight:900; color:#FFFFFF; background:transparent;"
+            "font-size:52px; font-weight:900; color:#FFFFFF; background:transparent;"
             " letter-spacing:2px;")
         mid.addWidget(self._big)
         self._status_txt = QLabel("")
@@ -336,14 +336,17 @@ class LiveMatchPanel(Card):
         w = QWidget()
         col = QVBoxLayout(w)
         col.setContentsMargins(0, 0, 0, 0)
-        col.setSpacing(8)
+        col.setSpacing(12)
         col.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        col.addWidget(FlagIcon(name, height=46, radius=8),
-                      alignment=Qt.AlignmentFlag.AlignCenter)
+        # 大尺寸国旗 —— 左右对称排放、更有视觉压迫力
+        flag = FlagIcon(name, height=84, radius=14)
+        col.addWidget(flag, alignment=Qt.AlignmentFlag.AlignCenter)
         n = QLabel(name)
         n.setAlignment(Qt.AlignmentFlag.AlignCenter)
         n.setWordWrap(True)
-        n.setStyleSheet(f"color:{C_TEXT}; font-size:15px; font-weight:800; background:transparent;")
+        n.setStyleSheet(
+            f"color:{C_TEXT}; font-size:19px; font-weight:900;"
+            " letter-spacing:0.5px; background:transparent;")
         col.addWidget(n)
         return w
 
@@ -429,8 +432,7 @@ class GroupStandingsPanel(Card):
         root.addWidget(_panel_title("小组积分榜", "GROUP STANDINGS", C_PRIMARY))
 
         self._tabs = QHBoxLayout()
-        self._tabs.setSpacing(5)
-        self._tabs.addStretch(1)
+        self._tabs.setSpacing(4)
         root.addLayout(self._tabs)
 
         header = QHBoxLayout()
@@ -467,11 +469,12 @@ class GroupStandingsPanel(Card):
             b = QPushButton(letter)
             b.setCheckable(True)
             b.setCursor(Qt.CursorShape.PointingHandCursor)
-            b.setFixedSize(28, 28)
+            b.setFixedHeight(30)
+            # 横向均分铺满整行（顶满格）—— 等宽分段按钮，告别小方块
+            b.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             b.clicked.connect(lambda _c=False, key=g.name: self._select(key))
             self._tab_btns[g.name] = b
             self._tabs.addWidget(b)
-        self._tabs.addStretch(1)
 
         if not self._groups:
             _clear_layout(self._rows_box)
@@ -487,14 +490,18 @@ class GroupStandingsPanel(Card):
         self._active = group_name
         for name, b in self._tab_btns.items():
             active = name == group_name
-            b.setChecked(active)
             b.setStyleSheet(
-                "QPushButton{border-radius:8px; font-size:12px; font-weight:800;"
+                "QPushButton{border-radius:8px; font-size:13px; font-weight:900;"
+                " padding:0 2px;"
                 + (f" background:{C_PRIMARY}; color:#fff; border:none;"
                    if active else
                    " background: rgba(255,255,255,0.05); color:#B0BEC5;"
                    " border:1px solid rgba(255,255,255,0.10);")
+                + "}"
+                "QPushButton:hover{"
+                + ("" if active else " background: rgba(255,255,255,0.10); color:#fff;")
                 + "}")
+            b.setChecked(active)
         grp = next((g for g in self._groups if g.name == group_name), None)
         _clear_layout(self._rows_box)
         if grp is None:
