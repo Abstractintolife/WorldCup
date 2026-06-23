@@ -141,10 +141,8 @@ class RankingRow(QFrame):
         super().__init__()
         self._player = player
         self._max = max(1, max_count)
-        self._leader = (player.count or 0) >= self._max
-        _rest_color = (
-            _AMBER if player.ranking_type == RankingType.YELLOW_CARDS else _GREEN
-        )
+        self._leader = (player.value or 0) >= self._max
+        _rest_color = _AMBER if player.ranking_type.is_discipline else _GREEN
         self._rest_color = _rest_color
         self._accent = QColor(_GOLD if self._leader else _rest_color)
         self._hover = False
@@ -208,13 +206,13 @@ class RankingRow(QFrame):
         outer.addWidget(pos_chip)
 
         # 5. 进度条
-        bar = _Bar(player.count, self._max, _GOLD if self._leader else _rest_color)
+        bar = _Bar(player.value, self._max, _GOLD if self._leader else _rest_color)
         outer.addWidget(bar, 1)
 
         # 6. 大数字 + 单位
         count_box = QVBoxLayout()
         count_box.setSpacing(0)
-        cnum = QLabel(str(player.count))
+        cnum = QLabel(player.display)
         cnum.setStyleSheet(
             f"color:{_GOLD if self._leader else '#FFFFFF'};"
             "font-size:26px; font-weight:900;"
