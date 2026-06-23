@@ -23,7 +23,6 @@ from app.config import (
     WINDOW_MIN_WIDTH,
 )
 from app.models.match import Match
-from app.models.player import RankingType
 from app.services.data_service import DataService
 from app.services.favorites import Favorites, Settings
 from app.ui.pages.favorites_page import FavoritesPage
@@ -31,9 +30,9 @@ from app.ui.pages.globe_page import GlobePage
 from app.ui.pages.home_page import HomePage
 from app.ui.pages.match_detail_page import MatchDetailPage
 from app.ui.pages.player_detail_page import PlayerDetailPage
+from app.ui.pages.player_rankings_page import PlayerRankingsPage
 from app.ui.pages.prediction_page import PredictionPage
 from app.ui.pages.schedule_page import SchedulePage
-from app.ui.pages.scorers_page import RankingPage
 from app.ui.pages.search_page import SearchPage
 from app.ui.pages.stadiums_page import StadiumsPage
 from app.ui.pages.standings_page import StandingsPage
@@ -56,10 +55,10 @@ _PRIMARY_NAV: list[tuple] = [
     ("home", "📊", "概览"),
     ("live", "🔴", "实时比赛", "LIVE"),
     ("schedule", "📅", "赛程中心"),
-    ("globe", "🗓", "赛事日历"),
+    ("globe", "🌍", "地球仪"),
     ("teams", "🛡", "球队"),
     ("scorers", "⚽", "球员"),
-    ("standings", "📈", "数据分析"),
+    ("standings", "🏆", "积分榜"),
     ("prediction", "🔮", "预测中心"),
     ("stadiums", "📰", "新闻资讯"),
     ("favorites", "⭐", "收藏夹"),
@@ -106,9 +105,7 @@ class MainWindow(QMainWindow):
         self._schedule = SchedulePage(self._service)
         self._prediction = PredictionPage(self._service)
         self._standings = StandingsPage(self._service)
-        self._scorers = RankingPage(self._service, RankingType.GOALS)
-        self._assists = RankingPage(self._service, RankingType.ASSISTS)
-        self._yellows = RankingPage(self._service, RankingType.YELLOW_CARDS)
+        self._rankings = PlayerRankingsPage(self._service)
         self._teams = TeamsPage(self._service)
         self._stadiums = StadiumsPage()
         self._favorites_page = FavoritesPage(self._service, self._favorites)
@@ -127,9 +124,7 @@ class MainWindow(QMainWindow):
             "schedule": self._schedule,
             "prediction": self._prediction,
             "standings": self._standings,
-            "scorers": self._scorers,
-            "assists": self._assists,
-            "yellows": self._yellows,
+            "scorers": self._rankings,
             "teams": self._teams,
             "stadiums": self._stadiums,
             "favorites": self._favorites_page,
@@ -199,18 +194,10 @@ class MainWindow(QMainWindow):
 
         self._standings.team_clicked.connect(self._open_team)
 
-        self._scorers.player_clicked.connect(
+        self._rankings.player_clicked.connect(
             lambda p: self._open_player(p.person_id, p.person_name)
         )
-        self._scorers.team_clicked.connect(self._open_team)
-        self._assists.player_clicked.connect(
-            lambda p: self._open_player(p.person_id, p.person_name)
-        )
-        self._assists.team_clicked.connect(self._open_team)
-        self._yellows.player_clicked.connect(
-            lambda p: self._open_player(p.person_id, p.person_name)
-        )
-        self._yellows.team_clicked.connect(self._open_team)
+        self._rankings.team_clicked.connect(self._open_team)
 
         self._teams.team_clicked.connect(self._open_team)
 

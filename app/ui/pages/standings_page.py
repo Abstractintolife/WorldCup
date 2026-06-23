@@ -15,6 +15,7 @@ from PyQt6.QtWidgets import (
 )
 
 from app.services.data_service import DataService
+from app.models.standing import GroupStanding, TeamStanding
 from app.ui.pages.base import BasePage
 from app.ui.theme import THEMES, ThemePalette
 from app.ui.widgets.effects import stagger_fade
@@ -50,9 +51,20 @@ class StandingsPage(BasePage):
         title = QLabel("🏆  小组赛积分榜")
         title.setStyleSheet("font-size: 18px; font-weight: 900;")
         h_lay.addWidget(title)
-        sub = QLabel("12 组小组赛 · 各组前 2 + 8 个最佳第 3 晋级 16 强 · 点击任一队进入球队详情")
+        sub = QLabel(
+            "48 队分 12 组 · 各组前 2 名直接晋级 + 8 个最佳第 3 名 = 32 强淘汰赛 · "
+            "点击任一队进入球队详情"
+        )
         sub.setStyleSheet("color:#B0BEC5; font-size: 12px; font-weight: 600;")
         h_lay.addWidget(sub)
+
+        # 晋级图例
+        legend = QLabel(
+            "🟢 直接晋级（小组前 2）　　🔵 最佳第三名晋级　　"
+            "排序：积分 › 净胜球 › 进球数 › 公平竞赛分 › FIFA 排名"
+        )
+        legend.setStyleSheet("color:#8A96A8; font-size: 11px; font-weight: 600;")
+        h_lay.addWidget(legend)
         outer.addWidget(head)
 
         self._tabs = QTabWidget()
@@ -83,9 +95,40 @@ class StandingsPage(BasePage):
         self._theme = palette
 
     # ─────────────────────────────────────────
+    @staticmethod
+    def _mark_qualifiers(groups: list[GroupStanding]) -> None:
+        """按 2026 世界杯新赛制标注晋级球队。
+
+        规则
+        ----
+        * 每组前 2 名直接晋级（共 24 队）→ ``qualify="direct"``。
+        * 12 个小组的第 3 名再按以下优先级排序，取前 8 名晋级
+          （共 8 队）→ ``qualify="best3"``：
+          总积分 › 总净胜球 › 总进球数 ›（公平竞赛分 / FIFA 排名暂无数据）。
+        合计 32 队进入淘汰赛。
+        """
+        thirds: list[TeamStanding] = []
+        for g in groups:
+            for t in g.teams:
+                t.qualify = None
+            for t in g.teams:
+                if t.rank in (1, 2):
+                    t.qualify = "direct"
+                elif t.rank == 3:
+                    thirds.append(t)
+        # 最佳第三名排序：积分 → 净胜球 → 进球数（降序）
+        thirds.sort(
+            key=lambda t: (t.points, t.goal_diff, t.goals_pro),
+            reverse=True,
+        )
+        for t in thirds[:8]:
+            t.qualify = "best3"
+
+    # ─────────────────────────────────────────
     def refresh(self, force: bool = False) -> None:
         async def runner() -> None:
             groups, knockouts, _km = await self._service.fetch_standings(force=force)
+            self._mark_qualifiers(groups)
 
             while self._groups_grid.count():
                 item = self._groups_grid.takeAt(0)
