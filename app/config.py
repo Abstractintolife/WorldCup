@@ -171,3 +171,10 @@ BACKDROP_PARTICLE_SCALE = _clampf(_env_float("WC_PARTICLE_SCALE", 0.65), 0.1, 1.
 
 # 省电 / 低性能模式：禁用所有动态背景动画（仅保留静态渐变），WC_LITE=1 开启。
 LOW_PERF = os.environ.get("WC_LITE", "0").strip().lower() in ("1", "true", "yes")
+
+# 动态背景渲染后端：默认 CPU（QPainter 软件栅格化，跨平台最稳）。
+# WC_GPU_BG=1 切换为 GPU（GLSL 片元着色器 / QOpenGLWidget）—— 渐变 / 光晕 /
+# 聚光灯 / 粒子 / 辉光全部在 GPU 逐像素并行，主线程仅上传 uniform，
+# 大幅释放主线程、可跑满高帧率，并解锁 CPU 上跑不动的高级效果。
+# 若 GL 上下文 / 着色器初始化失败，会自动降级回 CPU 版（见 main_window）。
+GPU_BACKDROP = os.environ.get("WC_GPU_BG", "0").strip().lower() in ("1", "true", "yes")
