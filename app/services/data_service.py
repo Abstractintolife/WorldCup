@@ -6,9 +6,10 @@ import logging
 from typing import Any
 
 from app.api.client import ApiClient
-from app.config import ENDPOINTS, LINEUP_CACHE_TTL, SQUAD_CACHE_TTL
+from app.config import ENDPOINTS, LINEUP_CACHE_TTL, NEWS_CACHE_TTL, SQUAD_CACHE_TTL
 from app.models.lineup import MatchLineup
 from app.models.match import Match, Round
+from app.models.news import NewsArticle
 from app.models.player import PlayerRanking, RankingType
 from app.models.player_detail import PlayerAbility, PlayerDetail
 from app.models.person_match import PersonMatch
@@ -230,6 +231,30 @@ class DataService:
             for m in (content.get("matches") or [])
             if isinstance(m, dict)
         ]
+
+    # ─── 赛事资讯 ─────────────────────────────
+    async def fetch_news(self, force: bool = False) -> list[NewsArticle]:
+        """拉取最新世界杯资讯流（标题 / 缩略图 / 时间 / 原文链接）。
+
+        失败时返回空列表，由调用方兜底（不让整页因资讯接口抖动而崩）。
+        """
+        url = f"{ENDPOINTS.news_relative}/{ENDPOINTS.news_seed_id}"
+        try:
+            data = await self._client.get_json(
+                url, cache_ttl=NEWS_CACHE_TTL, force=force
+            )
+        except Exception as exc:  # pragma: no cover - 网络
+            log.warning("拉取赛事资讯失败：%s", exc)
+            return []
+        items = (data or {}).get("relative") or []
+        articles = [
+            NewsArticle.from_raw(x)
+            for x in items
+            if isinstance(x, dict) and x.get("type") == "article" and x.get("title")
+        ]
+        # 按展示时间倒序（最新在前）
+        articles.sort(key=lambda a: a.show_time or 0, reverse=True)
+        return articles
 
     # ─── 聚合：球队列表 ────────────────────────
     @staticmethod
