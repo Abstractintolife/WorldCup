@@ -50,19 +50,20 @@ from app.ui.widgets.top_bar import TopBar
 log = logging.getLogger(__name__)
 
 
-# 主导航定义（与各 stack 索引一一对应）
-_PRIMARY_NAV: list[tuple[str, str, str]] = [
-    ("home", "🏠", "仪表盘"),
-    ("globe", "🌍", "地球仪"),
-    ("schedule", "📅", "赛程大厅"),
-    ("prediction", "🔮", "预测"),
-    ("standings", "🏆", "积分榜"),
-    ("scorers", "⚽", "射手榜"),
-    ("assists", "🅰️", "助攻榜"),
-    ("yellows", "🟨", "黄牌榜"),
-    ("teams", "🛡", "国家队"),
-    ("stadiums", "🏟", "球场"),
+# 主导航定义 —— 对照「想象中的样子」设计稿的菜单（含 LIVE 徽章）。
+# 每项 = (key, emoji, 中文标签[, 徽章])；key 映射到 _key_to_page 的页面。
+_PRIMARY_NAV: list[tuple] = [
+    ("home", "📊", "概览"),
+    ("live", "🔴", "实时比赛", "LIVE"),
+    ("schedule", "📅", "赛程中心"),
+    ("globe", "🗓", "赛事日历"),
+    ("teams", "🛡", "球队"),
+    ("scorers", "⚽", "球员"),
+    ("standings", "📈", "数据分析"),
+    ("prediction", "🔮", "预测中心"),
+    ("stadiums", "📰", "新闻资讯"),
     ("favorites", "⭐", "收藏夹"),
+    ("settings", "⚙️", "设置"),
 ]
 
 
@@ -121,6 +122,7 @@ class MainWindow(QMainWindow):
         # ── 索引映射 ──
         self._key_to_page: dict[str, QWidget] = {
             "home": self._home,
+            "live": self._schedule,
             "globe": self._globe,
             "schedule": self._schedule,
             "prediction": self._prediction,
@@ -335,6 +337,14 @@ class MainWindow(QMainWindow):
 
     # ─── 导航 ──────────────────────────────
     def _on_nav_selected(self, key: str) -> None:
+        # 「设置」是动作型条目：打开设置对话框，不切换页面。
+        if key == "settings":
+            self._open_settings()
+            # 高亮回退到当前页对应的导航项
+            cur = self._current_key()
+            if cur:
+                self._sidebar.set_active(cur)
+            return
         self._navigate(key, push_history=False)
 
     def _navigate(self, key: str, *, push_history: bool = True) -> None:
@@ -368,7 +378,7 @@ class MainWindow(QMainWindow):
         title = getattr(page, "title", APP_TITLE_ZH)
         subtitle = getattr(page, "subtitle", "")
         # 强制使用导航条目里的中文标题（详情页 / 搜索页保持页面自带 title）
-        nav_titles = {k: lbl for k, _, lbl in _PRIMARY_NAV}
+        nav_titles = {item[0]: item[2] for item in _PRIMARY_NAV}
         if key in nav_titles:
             title = nav_titles[key]
         return title, subtitle
@@ -376,7 +386,7 @@ class MainWindow(QMainWindow):
     def _go_back(self) -> None:
         if self._history:
             key = self._history.pop()
-            self._sidebar.set_active(key) if key in {k for k, _, _ in _PRIMARY_NAV} else None
+            self._sidebar.set_active(key) if key in {item[0] for item in _PRIMARY_NAV} else None
             self._stack.setCurrentWidget(self._key_to_page[key])
             page = self._key_to_page[key]
             self._topbar.set_title(*self._title_for(key, page))
