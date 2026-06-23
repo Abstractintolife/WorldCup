@@ -28,7 +28,7 @@ from __future__ import annotations
 import logging
 from array import array
 
-from PyQt6.QtGui import QColor, QSurfaceFormat
+from PyQt6.QtGui import QColor, QOpenGLFunctions, QSurfaceFormat
 from PyQt6.QtOpenGL import (
     QOpenGLBuffer,
     QOpenGLShader,
@@ -176,8 +176,14 @@ def _rgb(hexstr: str) -> tuple[float, float, float]:
     return (c.redF(), c.greenF(), c.blueF())
 
 
-class GLBackdrop(QOpenGLWidget):
-    """GPU 版整窗动态背景。API 与 :class:`SkinBackdrop` 对齐，可热插拔。"""
+class GLBackdrop(QOpenGLWidget, QOpenGLFunctions):
+    """GPU 版整窗动态背景。API 与 :class:`SkinBackdrop` 对齐，可热插拔。
+
+    同时继承 ``QOpenGLFunctions`` —— 这是 PyQt6 调用原生 GL 函数的标准方式
+    （PyQt6 的 ``QOpenGLContext`` 不再暴露 ``functions()``）。在 ``initializeGL``
+    里调用 ``initializeOpenGLFunctions()`` 绑定到当前上下文后，即可直接用
+    ``self.glClear`` / ``self.glViewport`` / ``self.glDrawArrays`` 等。
+    """
 
     def __init__(self, parent=None, palette: ThemePalette | None = None) -> None:
         # 请求 3.3 Core Profile 上下文，配合 #version 330 着色器
@@ -257,6 +263,9 @@ class GLBackdrop(QOpenGLWidget):
 
     # ─── OpenGL 生命周期 ──────────────────────────────
     def initializeGL(self) -> None:
+        # 绑定原生 GL 函数到当前上下文（PyQt6 标准方式）
+        self.initializeOpenGLFunctions()
+
         prog = QOpenGLShaderProgram(self)
         ok = prog.addShaderFromSourceCode(QOpenGLShader.ShaderTypeBit.Vertex, _VERT_SRC)
         ok = prog.addShaderFromSourceCode(QOpenGLShader.ShaderTypeBit.Fragment, _FRAG_SRC) and ok
@@ -289,15 +298,13 @@ class GLBackdrop(QOpenGLWidget):
         self._gl_ok = True
 
     def resizeGL(self, w: int, h: int) -> None:
-        f = self.context().functions()
-        f.glViewport(0, 0, max(1, w), max(1, h))
+        self.glViewport(0, 0, max(1, w), max(1, h))
         self._res = (float(max(1, w)), float(max(1, h)))
 
     def paintGL(self) -> None:
-        f = self.context().functions()
         top = _rgb(self._palette.hero_grad_a)
-        f.glClearColor(top[0], top[1], top[2], 1.0)
-        f.glClear(_GL_COLOR_BUFFER_BIT)
+        self.glClearColor(top[0], top[1], top[2], 1.0)
+        self.glClear(_GL_COLOR_BUFFER_BIT)
 
         if not self._gl_ok or self._program is None:
             return
@@ -316,7 +323,7 @@ class GLBackdrop(QOpenGLWidget):
         prog.setUniformValue("u_secondary", *_rgb(p.secondary))
         prog.setUniformValue("u_accent", *_rgb(p.accent))
 
-        f.glDrawArrays(_GL_TRIANGLES, 0, 3)
+        self.glDrawArrays(_GL_TRIANGLES, 0, 3)
 
         self._vao.release()
         prog.release()
