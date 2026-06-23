@@ -78,6 +78,9 @@ class Endpoints:
     )
     # 资讯流的「种子」文章 id（世界杯专题文章），相关流会持续滚动最新内容。
     news_seed_id: int = 5960042
+    # 文章「热评」基址（按 /{article_id}/hot 追加）—— 返回某篇文章下的
+    # 球迷热议（评论正文/点赞/时间 + 作者昵称头像）。用于新闻热评弹窗。
+    article_hot_base: str = "https://api.dongqiudi.com/v2/article"
 
     # 默认查询参数
     common_params: dict = field(

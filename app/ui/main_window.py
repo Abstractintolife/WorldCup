@@ -187,6 +187,8 @@ class MainWindow(QMainWindow):
         self._home.player_clicked.connect(self._open_player)
         self._home.prediction_clicked.connect(self._open_prediction)
         self._home.navigate.connect(self._on_home_navigate)
+        # LIVE 徽章仅在有比赛进行中时点亮
+        self._home.live_state_changed.connect(self._sidebar.set_live)
 
         self._globe.team_clicked.connect(self._open_team)
 

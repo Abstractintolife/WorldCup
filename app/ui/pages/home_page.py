@@ -217,11 +217,12 @@ class _LiveBadge(QLabel):
 class LiveMatchPanel(Card):
     """焦点比赛核心看板（进行中 / 即将开赛 / 最近结束）。"""
 
-    def __init__(self, *, on_open=None, on_predict=None,
+    def __init__(self, *, on_open=None, on_predict=None, on_watch=None,
                  parent: QWidget | None = None) -> None:
         super().__init__(parent, padding=0, glow_color=C_LIVE)
         self._on_open = on_open
         self._on_predict = on_predict
+        self._on_watch = on_watch
         self._match: Match | None = None
         self.setMinimumWidth(540)
         self.setMinimumHeight(330)
@@ -282,18 +283,32 @@ class LiveMatchPanel(Card):
 
         root.addStretch(1)
 
-        # 操作按钮
-        self._action = QPushButton("查看详情")
-        self._action.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._action.setMinimumHeight(42)
-        self._action.setStyleSheet(
+        # 操作按钮：观看直播（主）+ 详情/预测（次）
+        btn_row = QHBoxLayout()
+        btn_row.setSpacing(10)
+        self._watch_btn = QPushButton("📺  观看直播")
+        self._watch_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._watch_btn.setMinimumHeight(42)
+        self._watch_btn.setStyleSheet(
             "QPushButton{background: qlineargradient(x1:0,y1:0,x2:1,y2:0,"
             f" stop:0 {C_PRIMARY}, stop:1 #2D8CFF); color:#fff; border:none;"
             " border-radius:13px; font-size:14px; font-weight:800; letter-spacing:1px;}"
             "QPushButton:hover{background: qlineargradient(x1:0,y1:0,x2:1,y2:0,"
             f" stop:0 #46D2FF, stop:1 {C_PRIMARY});}}")
+        self._watch_btn.clicked.connect(self._fire_watch)
+        btn_row.addWidget(self._watch_btn, 1)
+
+        self._action = QPushButton("查看详情")
+        self._action.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._action.setMinimumHeight(42)
+        self._action.setStyleSheet(
+            "QPushButton{background: rgba(255,255,255,0.08); color:#fff;"
+            " border:1px solid rgba(255,255,255,0.18); border-radius:13px;"
+            " font-size:13px; font-weight:800; padding:0 16px;}"
+            "QPushButton:hover{background: rgba(255,255,255,0.16);}")
         self._action.clicked.connect(self._fire_action)
-        root.addWidget(self._action)
+        btn_row.addWidget(self._action)
+        root.addLayout(btn_row)
 
         # 底部来源
         self._venue = QLabel("数据来源 · 懂球帝实时数据")
@@ -311,6 +326,11 @@ class LiveMatchPanel(Card):
             self._on_predict(self._match)
         elif self._on_open:
             self._on_open(self._match)
+
+    def _fire_watch(self) -> None:
+        # 观看直播 / 导入 M3U8 源 —— 即使当前无进行中比赛也允许打开（手动导入源）。
+        if self._on_watch:
+            self._on_watch(self._match)
 
     def _team_block(self, name: str) -> QWidget:
         w = QWidget()
@@ -830,8 +850,9 @@ class _ProgressBar(QWidget):
 #  赛事新闻
 # ════════════════════════════════════════════════════════════
 class NewsPanel(Card):
-    def __init__(self, parent: QWidget | None = None) -> None:
+    def __init__(self, *, on_open=None, parent: QWidget | None = None) -> None:
         super().__init__(parent, padding=0, glow_color=C_PRIMARY)
+        self._on_open = on_open
         self.setMinimumHeight(270)
         self._root = QVBoxLayout(self)
         self._root.setContentsMargins(20, 16, 20, 16)
@@ -855,7 +876,9 @@ class NewsPanel(Card):
 
     def _row(self, a: NewsArticle) -> QWidget:
         w = _ClickRow(height=52, radius=10)
-        if a.url:
+        if self._on_open is not None:
+            w.clicked.connect(lambda art=a: self._on_open(art))
+        elif a.url:
             w.clicked.connect(lambda url=a.url: QDesktopServices.openUrl(QUrl(url)))
         row = QHBoxLayout(w)
         row.setContentsMargins(10, 6, 12, 6)
@@ -945,6 +968,7 @@ class HomePage(BasePage):
     player_clicked = pyqtSignal(str, str)
     prediction_clicked = pyqtSignal(Match)
     navigate = pyqtSignal(str)
+    live_state_changed = pyqtSignal(bool)   # 是否有比赛正在进行（驱动侧栏 LIVE 徽章）
 
     def __init__(self, service: DataService) -> None:
         super().__init__()
@@ -973,6 +997,7 @@ class HomePage(BasePage):
         self._live = LiveMatchPanel(
             on_open=self.match_clicked.emit,
             on_predict=self.prediction_clicked.emit,
+            on_watch=self._open_live_stream,
         )
         self._standings_panel = GroupStandingsPanel(on_team=self.team_clicked.emit)
         row1 = QHBoxLayout()
@@ -1001,7 +1026,7 @@ class HomePage(BasePage):
 
         # 第 4 排
         self._favorites = FavoritesPanel(on_team=self.team_clicked.emit)
-        self._news = NewsPanel()
+        self._news = NewsPanel(on_open=self._open_news_comments)
         self._quick = QuickActionsPanel(on_navigate=self.navigate.emit)
         row4 = QHBoxLayout()
         row4.setSpacing(18)
@@ -1120,6 +1145,9 @@ class HomePage(BasePage):
 
         ok = bool(matches or groups or scorer_list)
         self._set_connected(ok)
+
+        # 是否有正在进行的比赛 —— 驱动侧栏 LIVE 徽章「仅进行中时显示」
+        self.live_state_changed.emit(any(m.is_live for m in matches))
 
         # 标注每场比赛所属阶段名（供焦点比赛展示）
         round_name = {
@@ -1249,6 +1277,22 @@ class HomePage(BasePage):
         ]
         probs.sort(key=lambda x: x[2], reverse=True)
         return probs[:5]
+
+    # ── 观看直播 / 导入 M3U8 源 ──────────────
+    def _open_live_stream(self, match: Match | None) -> None:
+        """打开应用内播放器观看直播，并支持粘贴/导入 M3U8 等源地址。"""
+        from app.ui.widgets.video_player import VideoPlayerDialog
+        title = "直播间"
+        if match is not None:
+            title = f"直播 · {match.team_a_name} vs {match.team_b_name}"
+        dlg = VideoPlayerDialog(url="", title=title, parent=self.window())
+        dlg.exec()
+
+    def _open_news_comments(self, article: NewsArticle) -> None:
+        """打开新闻热评弹窗（球迷热议）。"""
+        from app.ui.widgets.comments_dialog import HotCommentsDialog
+        dlg = HotCommentsDialog(self._service, article, parent=self.window())
+        dlg.exec()
 
     # ── 兼容 MainWindow 接口 ────────────────
     def apply_palette(self, palette) -> None:  # noqa: D401
