@@ -9,12 +9,28 @@
 """
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict
 
 # 文章网页地址模板（由 article id 拼出，可在系统浏览器打开原文）
 _ARTICLE_URL = "https://www.dongqiudi.com/articles/{id}.html"
+
+# 评论正文中可能夹带 HTML（表情 <img>、链接等），展示前清洗为纯文本
+_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def _strip_html(text: str) -> str:
+    text = _TAG_RE.sub("", text or "")
+    return (
+        text.replace("&nbsp;", " ")
+        .replace("&amp;", "&")
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", '"')
+        .strip()
+    )
 
 
 class NewsArticle(BaseModel):
@@ -47,4 +63,49 @@ class NewsArticle(BaseModel):
             show_time=show_time,
             url=_ARTICLE_URL.format(id=aid) if aid else "",
             article_type=str(raw.get("type") or "article"),
+        )
+
+
+class HotComment(BaseModel):
+    """单条「热评」（球迷热议）。
+
+    数据来源：``https://api.dongqiudi.com/v2/article/{article_id}/hot``
+    返回 ``data.comment_list[]``（评论正文/点赞/时间/user_id/回复数）与
+    ``data.user_list[]``（按 ``id`` 提供昵称与头像）。本模型把两者按
+    ``user_id`` 关联，规范化为带作者信息的强类型评论。
+    """
+
+    model_config = ConfigDict(extra="ignore")
+
+    comment_id: str
+    content: str
+    up: int = 0                  # 点赞数
+    reply_total: int = 0         # 回复数
+    created_at: str = ""         # 形如 "2026-06-23 17:28:49"
+    user_name: str = "球迷"
+    avatar: str | None = None
+
+    @classmethod
+    def from_raw(
+        cls, raw: dict[str, Any], users: dict[str, dict[str, Any]] | None = None
+    ) -> "HotComment":
+        users = users or {}
+        uid = str(raw.get("user_id") or "")
+        u = users.get(uid, {})
+
+        def _int(v: Any) -> int:
+            try:
+                return int(v)
+            except (TypeError, ValueError):
+                return 0
+
+        avatar = (u.get("avatar") or "").strip() or None
+        return cls(
+            comment_id=str(raw.get("id") or ""),
+            content=_strip_html(raw.get("content") or ""),
+            up=_int(raw.get("up")),
+            reply_total=_int(raw.get("reply_total")),
+            created_at=(raw.get("created_at") or "").strip(),
+            user_name=(u.get("username") or "球迷").strip() or "球迷",
+            avatar=avatar,
         )

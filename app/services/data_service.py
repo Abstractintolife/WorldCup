@@ -9,7 +9,7 @@ from app.api.client import ApiClient
 from app.config import ENDPOINTS, LINEUP_CACHE_TTL, NEWS_CACHE_TTL, SQUAD_CACHE_TTL
 from app.models.lineup import MatchLineup
 from app.models.match import Match, Round
-from app.models.news import NewsArticle
+from app.models.news import HotComment, NewsArticle
 from app.models.player import PlayerRanking, RankingType
 from app.models.player_detail import PlayerAbility, PlayerDetail
 from app.models.person_match import PersonMatch
@@ -255,6 +255,40 @@ class DataService:
         # 按展示时间倒序（最新在前）
         articles.sort(key=lambda a: a.show_time or 0, reverse=True)
         return articles
+
+    async def fetch_hot_comments(
+        self, article_id: str, force: bool = False
+    ) -> list[HotComment]:
+        """拉取某篇文章的「热评」（球迷热议），按点赞数降序。
+
+        失败时返回空列表，由调用方兜底。
+        """
+        if not article_id:
+            return []
+        url = (
+            f"{ENDPOINTS.article_hot_base}/{article_id}/hot"
+            "?size=30&version=576"
+        )
+        try:
+            data = await self._client.get_json(
+                url, cache_ttl=NEWS_CACHE_TTL, force=force
+            )
+        except Exception as exc:  # pragma: no cover - 网络
+            log.warning("拉取热评失败（article=%s）：%s", article_id, exc)
+            return []
+        content = (data or {}).get("data") or {}
+        users = {
+            str(u.get("id")): u
+            for u in (content.get("user_list") or [])
+            if isinstance(u, dict)
+        }
+        comments = [
+            HotComment.from_raw(c, users)
+            for c in (content.get("comment_list") or [])
+            if isinstance(c, dict) and (c.get("content") or "").strip()
+        ]
+        comments.sort(key=lambda c: c.up, reverse=True)
+        return comments
 
     # ─── 聚合：球队列表 ────────────────────────
     @staticmethod

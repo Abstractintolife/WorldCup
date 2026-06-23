@@ -3,12 +3,12 @@
 布局（自上而下）
 -----------------
 1. 品牌区：金色大力神杯 logo + 「世界杯 2026」主标题 + 「FIFA WORLD CUP」副标题。
-2. 菜单：概览 / 实时比赛（红色 LIVE 徽章）/ 赛程中心 / 赛事日历 / 球队 /
-   球员 / 数据分析 / 预测中心 / 新闻资讯 / 收藏夹 / 设置。
+2. 菜单：概览 / 实时比赛（LIVE 徽章，**仅在确有比赛进行中时点亮**）/ 赛程中心 /
+   赛事日历 / 球队 / 球员 / 数据分析 / 预测中心 / 新闻资讯 / 收藏夹 / 设置。
    —— 用自绘 ``NavRow`` 控件：图标 + 文案 + 选中态左侧发光竖条。
-3. 倒计时卡：炫彩渐变卡，「距 FIFA 世界杯开幕 / 365 天」+ 开幕日期
-   2026.06.11 + 举办地（美国 · 加拿大 · 墨西哥）。
-4. 用户栏：圆形头像 + 昵称「WorldCup Fan」+ 等级「Lv.12」。
+
+LIVE 徽章由 ``NavSidebar.set_live(bool)`` 动态控制（数据层检测到有正在进行的
+比赛时点亮，否则熄灭），不再写死常显。
 """
 from __future__ import annotations
 
@@ -35,7 +35,6 @@ from PyQt6.QtGui import (
 )
 from PyQt6.QtWidgets import (
     QFrame,
-    QGraphicsDropShadowEffect,
     QHBoxLayout,
     QLabel,
     QVBoxLayout,
@@ -99,11 +98,42 @@ class NavRow(QWidget):
         self._anim.setDuration(220)
         self._anim.setEasingCurve(QEasingCurve.Type.OutCubic)
 
-        # LIVE 徽章呼吸动画（订阅全局帧时钟，避免每行各起一个 QTimer）
+        # LIVE 徽章呼吸动画（订阅全局帧时钟，避免每行各起一个 QTimer）。
+        # 徽章是**动态**的：仅当确有比赛进行中时由 NavSidebar.set_live 点亮，
+        # 平时为 None（不显示）。
         self._clock = None
-        if self._badge:
+        self._subscribed = False
+
+    def _ensure_clock(self) -> None:
+        if self._clock is None:
             from app.ui.design.frame_clock import FrameClock
             self._clock = FrameClock.instance()
+
+    def _subscribe(self) -> None:
+        if self._badge and not self._subscribed and self.isVisible():
+            self._ensure_clock()
+            self._clock.subscribe(self._on_frame)
+            self._subscribed = True
+
+    def _unsubscribe(self) -> None:
+        if self._subscribed and self._clock is not None:
+            try:
+                self._clock.unsubscribe(self._on_frame)
+            except Exception:
+                pass
+        self._subscribed = False
+
+    def set_badge(self, text: str | None) -> None:
+        """动态设置/清除右侧徽章（如 LIVE）。"""
+        if text == self._badge:
+            return
+        self._badge = text
+        if text:
+            self._subscribe()
+        else:
+            self._unsubscribe()
+            self._blink = 0.0
+        self.update()
 
     # 选中过渡属性
     def get_progress(self) -> float:
@@ -117,16 +147,11 @@ class NavRow(QWidget):
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
-        if self._clock is not None:
-            self._clock.subscribe(self._on_frame)
+        self._subscribe()
 
     def hideEvent(self, ev) -> None:
         super().hideEvent(ev)
-        if self._clock is not None:
-            try:
-                self._clock.unsubscribe(self._on_frame)
-            except Exception:
-                pass
+        self._unsubscribe()
 
     def _on_frame(self, t: float, _dt: float) -> None:
         import math
@@ -277,147 +302,6 @@ class _TrophyOrb(QWidget):
         p.drawText(r, int(Qt.AlignmentFlag.AlignCenter), "🏆")
 
 
-class _CountdownCard(QFrame):
-    """炫彩渐变倒计时卡：距开幕 365 天 + 日期 + 举办地。"""
-
-    def __init__(self, days: int = 365, parent: QWidget | None = None) -> None:
-        super().__init__(parent)
-        self.setObjectName("CountdownCard")
-        self.setFixedHeight(118)
-        self._days = days
-
-        col = QVBoxLayout(self)
-        col.setContentsMargins(16, 13, 16, 13)
-        col.setSpacing(2)
-
-        cap = QLabel("距 FIFA 世界杯开幕")
-        cap.setStyleSheet(
-            "color: rgba(255,255,255,0.92); font-size:10.5px; font-weight:800;"
-            " letter-spacing:0.5px; background:transparent;"
-        )
-        col.addWidget(cap)
-
-        days_row = QHBoxLayout()
-        days_row.setSpacing(6)
-        days_row.setContentsMargins(0, 0, 0, 0)
-        num = QLabel(str(days))
-        num.setStyleSheet(
-            "color:#FFFFFF; font-size:36px; font-weight:900; background:transparent;"
-        )
-        days_row.addWidget(num)
-        unit = QLabel("天")
-        unit.setStyleSheet(
-            "color:rgba(255,255,255,0.92); font-size:14px; font-weight:800;"
-            " background:transparent; padding-bottom:6px;"
-        )
-        days_row.addWidget(unit, alignment=Qt.AlignmentFlag.AlignBottom)
-        days_row.addStretch(1)
-        col.addLayout(days_row)
-
-        date_lbl = QLabel("2026.06.11 开幕")
-        date_lbl.setStyleSheet(
-            "color:#FFFFFF; font-size:11px; font-weight:800; background:transparent;"
-        )
-        col.addWidget(date_lbl)
-        host = QLabel("美国 · 加拿大 · 墨西哥")
-        host.setStyleSheet(
-            "color:rgba(255,255,255,0.85); font-size:10px; font-weight:600;"
-            " background:transparent;"
-        )
-        col.addWidget(host)
-
-        eff = QGraphicsDropShadowEffect(self)
-        eff.setBlurRadius(30)
-        eff.setOffset(0, 8)
-        eff.setColor(QColor(106, 90, 205, 120))
-        self.setGraphicsEffect(eff)
-
-    def paintEvent(self, _ev) -> None:
-        p = QPainter(self)
-        p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        r = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
-        path = QPainterPath()
-        path.addRoundedRect(r, 16.0, 16.0)
-        # 炫彩斜向渐变：电光蓝 → 皇家紫 → 樱粉
-        grad = QLinearGradient(r.topLeft(), r.bottomRight())
-        grad.setColorAt(0.0, QColor("#1FA2FF"))
-        grad.setColorAt(0.55, QColor("#6A5ACD"))
-        grad.setColorAt(1.0, QColor("#B14FCB"))
-        p.fillPath(path, grad)
-        # 顶部高光叠层
-        sheen = QLinearGradient(r.topLeft(), r.bottomLeft())
-        sheen.setColorAt(0.0, QColor(255, 255, 255, 46))
-        sheen.setColorAt(0.5, QColor(255, 255, 255, 0))
-        p.fillPath(path, sheen)
-        p.setPen(QPen(QColor(255, 255, 255, 60), 1.0))
-        p.drawPath(path)
-
-
-class _UserBar(QFrame):
-    """底部用户栏：圆形头像 + 昵称 + 等级。"""
-
-    def __init__(self, name: str = "WorldCup Fan", level: str = "Lv.12",
-                 parent: QWidget | None = None) -> None:
-        super().__init__(parent)
-        self.setObjectName("UserBar")
-        self.setFixedHeight(58)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self._name = name
-        self._level = level
-
-        row = QHBoxLayout(self)
-        row.setContentsMargins(12, 8, 12, 8)
-        row.setSpacing(10)
-        row.addWidget(_Avatar(38, "WF"))
-        col = QVBoxLayout()
-        col.setSpacing(1)
-        n = QLabel(name)
-        n.setStyleSheet("color:#FFFFFF; font-size:12.5px; font-weight:800; background:transparent;")
-        col.addWidget(n)
-        lv = QLabel(f"⭐ {level}  精英球迷")
-        lv.setStyleSheet("color:#FFD700; font-size:10px; font-weight:700; background:transparent;")
-        col.addWidget(lv)
-        row.addLayout(col)
-        row.addStretch(1)
-
-    def paintEvent(self, _ev) -> None:
-        p = QPainter(self)
-        p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        r = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
-        path = QPainterPath()
-        path.addRoundedRect(r, 14.0, 14.0)
-        p.fillPath(path, QColor(255, 255, 255, 12))
-        p.setPen(QPen(QColor(255, 255, 255, 26), 1.0))
-        p.drawPath(path)
-
-
-class _Avatar(QWidget):
-    """圆形头像（渐变底 + 首字母）。"""
-
-    def __init__(self, size: int = 38, initials: str = "WF",
-                 parent: QWidget | None = None) -> None:
-        super().__init__(parent)
-        self.setFixedSize(size, size)
-        self._initials = initials
-
-    def paintEvent(self, _ev) -> None:
-        p = QPainter(self)
-        p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        r = QRectF(self.rect()).adjusted(1, 1, -1, -1)
-        grad = QLinearGradient(r.topLeft(), r.bottomRight())
-        grad.setColorAt(0.0, QColor("#46D2FF"))
-        grad.setColorAt(1.0, QColor("#6A5ACD"))
-        p.setBrush(grad)
-        p.setPen(QPen(QColor(255, 255, 255, 90), 1.5))
-        p.drawEllipse(r)
-        f = QFont(self.font())
-        f.setPointSize(int(self.width() * 0.32))
-        f.setBold(True)
-        p.setFont(f)
-        p.setPen(QColor("#FFFFFF"))
-        p.drawText(r, int(Qt.AlignmentFlag.AlignCenter), self._initials)
-
-
 class NavSidebar(QFrame):
     """侧边导航。每个 item = (key, icon, label[, badge])。"""
 
@@ -469,30 +353,20 @@ class NavSidebar(QFrame):
         layout.addWidget(sep_wrap)
 
         # ── 导航行 ──────────────────────────
+        # 注意：构建时不直接挂 LIVE 徽章 —— 徽章是动态的，仅当确有比赛
+        # 进行中时由 set_live() 点亮。这里记录哪些 key 是「直播」入口。
         self._rows: dict[str, NavRow] = {}
+        self._live_keys: list[str] = []
         for item in items:
             key, emoji, label = item[0], item[1], item[2]
-            badge = item[3] if len(item) > 3 else None
-            row = NavRow(key, emoji, label, badge)
+            if len(item) > 3 and item[3]:
+                self._live_keys.append(key)
+            row = NavRow(key, emoji, label, badge=None)
             row.clicked.connect(self.set_active)
             layout.addWidget(row)
             self._rows[key] = row
 
         layout.addStretch(1)
-
-        # ── 倒计时卡 ─────────────────────────
-        cd_lay = QVBoxLayout()
-        cd_lay.setContentsMargins(12, 4, 12, 8)
-        cd_lay.addWidget(_CountdownCard(days=365))
-        cd_wrap = QWidget(); cd_wrap.setLayout(cd_lay)
-        layout.addWidget(cd_wrap)
-
-        # ── 底部用户栏 ───────────────────────
-        user_lay = QVBoxLayout()
-        user_lay.setContentsMargins(12, 0, 12, 0)
-        user_lay.addWidget(_UserBar("WorldCup Fan", "Lv.12"))
-        user_wrap = QWidget(); user_wrap.setLayout(user_lay)
-        layout.addWidget(user_wrap)
 
     def set_active(self, key: str) -> None:
         # settings 等「动作型」条目可能没有持久高亮需求，但这里统一处理高亮，
@@ -501,6 +375,13 @@ class NavSidebar(QFrame):
             for k, row in self._rows.items():
                 row.set_active(k == key)
         self.selected.emit(key)
+
+    def set_live(self, on: bool) -> None:
+        """根据是否有比赛进行中，点亮/熄灭「实时比赛」入口的 LIVE 徽章。"""
+        for key in self._live_keys:
+            row = self._rows.get(key)
+            if row is not None:
+                row.set_badge("LIVE" if on else None)
 
     def apply_palette(self, palette) -> None:
         apply_palette(palette)
