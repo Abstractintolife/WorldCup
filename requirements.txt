@@ -1,0 +1,28 @@
+# ===== 世界杯赛事终端 — 运行依赖 =====
+# 支持 Python 3.12 / 3.13。
+# 注意：qasync 目前不支持 Python 3.14（官方支持范围 >=3.8, <3.14），
+#       请使用 Python 3.13 或 3.12 运行本项目。
+
+# UI 框架
+PyQt6>=6.7.0
+PyQt6-Qt6>=6.7.0
+
+# 异步集成（让 asyncio 与 Qt 事件循环协同）
+# 使用最新版以获得最好的新版 Python 兼容性
+qasync>=0.28.0
+
+# HTTP 客户端
+httpx[http2]>=0.27.0
+
+# 数据建模 / 校验
+pydantic>=2.7.0
+
+# 本地磁盘缓存（图片、API JSON）
+diskcache>=5.6.3
+
+# 拼音首字母排序、模糊搜索
+pypinyin>=0.51.0
+rapidfuzz>=3.9.0
+
+# 平台无关数据目录
+platformdirs>=4.2.0

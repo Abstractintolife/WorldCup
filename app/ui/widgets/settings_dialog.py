@@ -1,0 +1,336 @@
+"""设置对话框 —— 顶部栏「⚙ 设置」按钮打开。
+
+旧版「设置」按钮没有任何点击回调（点了没反应），这里补上一个真正可用的
+设置面板：
+
+* **主题皮肤**：可视化色板预览卡，点击即实时切换全部动态皮肤
+  （与顶栏 🎨 菜单同源）。每张卡用真实调色板绘制「背景 + 主色 + 辅色 +
+  点缀色」缩略，所见即所得。
+* **数据缓存**：一键清空本地 JSON 缓存并强制刷新当前页。
+* **关于**：应用名 / 版本 / 数据来源。
+"""
+from __future__ import annotations
+
+from PyQt6.QtCore import QRectF, Qt, pyqtSignal
+from PyQt6.QtGui import QColor, QLinearGradient, QPainter, QPainterPath, QPen
+from PyQt6.QtWidgets import (
+    QDialog,
+    QFrame,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+    QWidget,
+)
+
+from app import __app_name__, __version__
+from app.ui.theme import THEME_META, THEME_ORDER, THEMES
+
+_DIALOG_QSS = """
+QDialog { background: #0B1020; }
+QLabel { color: #FFFFFF; }
+QPushButton {
+    background: rgba(255,255,255,0.06); color: #FFFFFF;
+    border: 1px solid rgba(255,255,255,0.16); border-radius: 12px;
+    padding: 9px 18px; font-size: 12.5px; font-weight: 700;
+}
+QPushButton:hover { background: rgba(0,191,255,0.20); border: 1px solid #00BFFF; }
+QPushButton#primary {
+    background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #00BFFF, stop:1 #6A5ACD);
+    color: #ffffff; border: none;
+}
+QPushButton#primary:hover { background: #46D2FF; }
+QPushButton[fpsBtn="true"] {
+    font-size: 13px; font-weight: 800; padding: 4px;
+}
+QPushButton[fpsBtn="true"]:checked {
+    background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
+        stop:0 rgba(0,191,255,0.34), stop:1 rgba(106,90,205,0.18));
+    border: 1px solid #00BFFF; color: #ffffff;
+}
+"""
+
+
+def _section_title(text: str) -> QLabel:
+    lab = QLabel(text)
+    lab.setStyleSheet("font-size:13px; font-weight:900; color:#00BFFF;")
+    return lab
+
+
+def _hline() -> QFrame:
+    line = QFrame()
+    line.setFixedHeight(1)
+    line.setStyleSheet("background: rgba(255,255,255,0.10);")
+    return line
+
+
+class _SkinSwatch(QFrame):
+    """单个皮肤预览卡：真实调色板绘制的缩略图 + 名称 + 选中态高亮。"""
+
+    clicked = pyqtSignal(str)
+
+    def __init__(self, theme_key: str, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._key = theme_key
+        self._selected = False
+        self._hover = False
+        self._palette = THEMES.get(theme_key, THEMES["dark"])
+        zh, emoji, desc = THEME_META.get(theme_key, (theme_key, "🎨", ""))
+        self._zh = zh
+        self._emoji = emoji
+        self._desc = desc
+        self.setFixedSize(196, 96)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setMouseTracking(True)
+
+    def set_selected(self, on: bool) -> None:
+        if on != self._selected:
+            self._selected = on
+            self.update()
+
+    def enterEvent(self, ev) -> None:
+        self._hover = True
+        self.update()
+        super().enterEvent(ev)
+
+    def leaveEvent(self, ev) -> None:
+        self._hover = False
+        self.update()
+        super().leaveEvent(ev)
+
+    def mousePressEvent(self, ev) -> None:
+        if ev.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit(self._key)
+        super().mousePressEvent(ev)
+
+    def paintEvent(self, _ev) -> None:
+        t = self._palette
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        rect = QRectF(self.rect()).adjusted(1.5, 1.5, -1.5, -1.5)
+        path = QPainterPath()
+        path.addRoundedRect(rect, 14, 14)
+        p.setClipPath(path)
+
+        # 背景：调色板的主背景 → 卡片背景渐变
+        bg = QLinearGradient(rect.topLeft(), rect.bottomRight())
+        bg.setColorAt(0.0, QColor(t.bg))
+        bg.setColorAt(1.0, QColor(t.bg_elevated))
+        p.fillRect(rect, bg)
+
+        # 主色斜带（模拟选中态高亮条）
+        band = QLinearGradient(rect.topLeft(), rect.topRight())
+        band.setColorAt(0.0, QColor(t.primary))
+        band.setColorAt(1.0, QColor(t.primary_hover))
+        p.setPen(Qt.PenStyle.NoPen)
+        p.setBrush(band)
+        p.drawRect(QRectF(rect.left(), rect.top(), rect.width(), 6))
+
+        # 三个点缀色圆点（primary / secondary / accent）
+        dot_y = rect.top() + 26
+        for i, col in enumerate((t.primary, t.secondary, t.accent)):
+            cx = rect.left() + 18 + i * 20
+            p.setBrush(QColor(col))
+            p.drawEllipse(QRectF(cx - 6, dot_y - 6, 12, 12))
+
+        p.setClipping(False)
+
+        # 文案
+        p.setPen(QColor(t.text))
+        f = p.font(); f.setBold(True); f.setPointSize(11)
+        p.setFont(f)
+        p.drawText(
+            QRectF(rect.left() + 14, rect.top() + 44, rect.width() - 28, 22),
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+            f"{self._emoji}  {self._zh}",
+        )
+        p.setPen(QColor(t.text_dim))
+        f2 = p.font(); f2.setBold(False); f2.setPointSize(8)
+        p.setFont(f2)
+        p.drawText(
+            QRectF(rect.left() + 14, rect.top() + 66, rect.width() - 28, 18),
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
+            self._desc,
+        )
+
+        # 边框：选中 = 主色粗描边；悬停 = 浅白；默认 = 暗描边
+        if self._selected:
+            pen = QPen(QColor(t.primary), 2.5)
+        elif self._hover:
+            pen = QPen(QColor(255, 255, 255, 90), 1.5)
+        else:
+            pen = QPen(QColor(255, 255, 255, 28), 1.0)
+        p.setPen(pen)
+        p.setBrush(Qt.BrushStyle.NoBrush)
+        p.drawRoundedRect(rect, 14, 14)
+
+        # 选中态：右上角对勾徽章
+        if self._selected:
+            badge_r = 11.0
+            bx = rect.right() - badge_r - 8
+            by = rect.top() + badge_r + 12
+            p.setBrush(QColor(t.primary))
+            p.setPen(Qt.PenStyle.NoPen)
+            p.drawEllipse(QRectF(bx - badge_r, by - badge_r, badge_r * 2, badge_r * 2))
+            p.setPen(QPen(QColor("#ffffff"), 2.0))
+            p.drawLine(int(bx - 4), int(by), int(bx - 1), int(by + 4))
+            p.drawLine(int(bx - 1), int(by + 4), int(bx + 5), int(by - 4))
+
+
+class SettingsDialog(QDialog):
+    """应用设置面板。"""
+
+    theme_selected = pyqtSignal(str)   # 选中的皮肤 theme key
+    fps_selected = pyqtSignal(int)     # 选中的动画帧率
+    bg_anim_toggled = pyqtSignal(bool)  # 动态背景动画 开 / 关
+    cache_cleared = pyqtSignal()       # 用户点击「清空缓存」
+
+    _FPS_CHOICES: tuple[tuple[int, str], ...] = (
+        (60, "60\n标准"),
+        (120, "120\n顺滑"),
+        (144, "144\n电竞"),
+        (240, "240\n极致"),
+    )
+
+    def __init__(
+        self,
+        current_theme: str,
+        current_fps: int = 60,
+        parent: QWidget | None = None,
+        current_bg_anim: bool = True,
+    ) -> None:
+        super().__init__(parent)
+        self.setWindowTitle("设置")
+        self.setModal(True)
+        self.setMinimumWidth(460)
+        self.setStyleSheet(_DIALOG_QSS)
+
+        root = QVBoxLayout(self)
+        root.setContentsMargins(24, 22, 24, 20)
+        root.setSpacing(14)
+
+        title = QLabel("⚙  设置")
+        title.setStyleSheet("font-size:20px; font-weight:900; color:#ffffff;")
+        root.addWidget(title)
+
+        # ── 主题皮肤 ──────────────────────────
+        root.addWidget(_section_title("主题皮肤  ·  点击实时预览"))
+        grid = QGridLayout()
+        grid.setSpacing(12)
+        self._swatches: dict[str, _SkinSwatch] = {}
+        for i, name in enumerate(THEME_ORDER):
+            sw = _SkinSwatch(name)
+            sw.set_selected(name == current_theme)
+            sw.clicked.connect(self._on_swatch_clicked)
+            self._swatches[name] = sw
+            grid.addWidget(sw, i // 2, i % 2)
+        root.addLayout(grid)
+
+        root.addWidget(_hline())
+
+        # ── 动画帧率 ──────────────────────────
+        root.addWidget(_section_title("动画帧率  ·  越高越顺滑（更耗 CPU）"))
+        fps_row = QHBoxLayout()
+        fps_row.setSpacing(10)
+        self._fps_btns: dict[int, QPushButton] = {}
+        for fps, label in self._FPS_CHOICES:
+            btn = QPushButton(label)
+            btn.setCheckable(True)
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setMinimumHeight(48)
+            btn.setProperty("fpsBtn", True)
+            btn.clicked.connect(lambda _c=False, f=fps: self._on_fps_clicked(f))
+            self._fps_btns[fps] = btn
+            fps_row.addWidget(btn, 1)
+        root.addLayout(fps_row)
+        self._select_fps_button(current_fps)
+
+        root.addWidget(_hline())
+
+        # ── 动态背景 ──────────────────────────
+        root.addWidget(_section_title("动态背景  ·  关闭可显著降低 CPU、提升流畅度"))
+        bg_hint = QLabel("若界面卡顿，建议关闭动态背景（仅保留静态渐变，不影响功能）。")
+        bg_hint.setStyleSheet("color:#B0BEC5; font-size:11.5px;")
+        bg_hint.setWordWrap(True)
+        root.addWidget(bg_hint)
+        bg_row = QHBoxLayout()
+        bg_row.setSpacing(10)
+        self._bg_btns: dict[bool, QPushButton] = {}
+        for on, label in ((True, "开启\n炫彩"), (False, "关闭\n性能优先")):
+            btn = QPushButton(label)
+            btn.setCheckable(True)
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setMinimumHeight(48)
+            btn.setProperty("fpsBtn", True)
+            btn.clicked.connect(lambda _c=False, v=on: self._on_bg_clicked(v))
+            self._bg_btns[on] = btn
+            bg_row.addWidget(btn, 1)
+        root.addLayout(bg_row)
+        self._select_bg_button(bool(current_bg_anim))
+
+        root.addWidget(_hline())
+
+        # ── 数据缓存 ──────────────────────────
+        root.addWidget(_section_title("数据缓存"))
+        cache_hint = QLabel("清空本地接口缓存后将重新拉取最新数据。")
+        cache_hint.setStyleSheet("color:#B0BEC5; font-size:11.5px;")
+        cache_hint.setWordWrap(True)
+        root.addWidget(cache_hint)
+        clear_btn = QPushButton("🗑  清空缓存并刷新")
+        clear_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        clear_btn.clicked.connect(self._on_clear_cache)
+        self._clear_btn = clear_btn
+        root.addWidget(clear_btn)
+
+        root.addWidget(_hline())
+
+        # ── 关于 ──────────────────────────────
+        root.addWidget(_section_title("关于"))
+        about = QLabel(
+            f"{__app_name__}  ·  v{__version__}\n"
+            "数据来源：懂球帝公开接口\n"
+            "国旗图源：本地内置位图（assets/flags）"
+        )
+        about.setStyleSheet("color:#9AA3BE; font-size:11.5px;")
+        root.addWidget(about)
+
+        # ── 底部按钮 ──────────────────────────
+        btn_row = QHBoxLayout()
+        btn_row.addStretch(1)
+        close_btn = QPushButton("完成")
+        close_btn.setObjectName("primary")
+        close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        close_btn.clicked.connect(self.accept)
+        btn_row.addWidget(close_btn)
+        root.addLayout(btn_row)
+
+    # ── 事件 ─────────────────────────────────
+    def _on_swatch_clicked(self, key: str) -> None:
+        for name, sw in self._swatches.items():
+            sw.set_selected(name == key)
+        self.theme_selected.emit(key)
+
+    def _select_fps_button(self, fps: int) -> None:
+        # 选最接近的档位高亮
+        choices = [f for f, _ in self._FPS_CHOICES]
+        nearest = min(choices, key=lambda f: abs(f - int(fps)))
+        for f, btn in self._fps_btns.items():
+            btn.setChecked(f == nearest)
+
+    def _on_fps_clicked(self, fps: int) -> None:
+        self._select_fps_button(fps)
+        self.fps_selected.emit(fps)
+
+    def _select_bg_button(self, on: bool) -> None:
+        for v, btn in self._bg_btns.items():
+            btn.setChecked(v == on)
+
+    def _on_bg_clicked(self, on: bool) -> None:
+        self._select_bg_button(on)
+        self.bg_anim_toggled.emit(on)
+
+    def _on_clear_cache(self) -> None:
+        self.cache_cleared.emit()
+        self._clear_btn.setText("✅  已清空缓存")
+        self._clear_btn.setEnabled(False)

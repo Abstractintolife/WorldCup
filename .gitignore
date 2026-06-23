@@ -1,0 +1,24 @@
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+.env
+.idea/
+.vscode/
+.cache/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+build/
+dist/
+*.spec
+!WorldCupConsole.spec
+# diskcache & app data
+.app_cache/
+.app_data/
+_screenshots/
+
+# pyenv local version pin (environment-specific)
+.python-version
