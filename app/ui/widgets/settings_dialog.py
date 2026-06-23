@@ -184,6 +184,7 @@ class SettingsDialog(QDialog):
     theme_selected = pyqtSignal(str)   # 选中的皮肤 theme key
     fps_selected = pyqtSignal(int)     # 选中的动画帧率
     bg_anim_toggled = pyqtSignal(bool)  # 动态背景动画 开 / 关
+    backend_selected = pyqtSignal(bool)  # 渲染后端：True=GPU(GLSL) / False=CPU
     cache_cleared = pyqtSignal()       # 用户点击「清空缓存」
 
     _FPS_CHOICES: tuple[tuple[int, str], ...] = (
@@ -199,6 +200,7 @@ class SettingsDialog(QDialog):
         current_fps: int = 60,
         parent: QWidget | None = None,
         current_bg_anim: bool = True,
+        current_gpu_bg: bool = False,
     ) -> None:
         super().__init__(parent)
         self.setWindowTitle("设置")
@@ -271,6 +273,33 @@ class SettingsDialog(QDialog):
 
         root.addWidget(_hline())
 
+        # ── 渲染后端 ──────────────────────────
+        root.addWidget(_section_title("渲染后端  ·  GPU 把背景交给显卡，解放主线程"))
+        backend_hint = QLabel(
+            "CPU：QPainter 软件栅格化，跨平台最稳。\n"
+            "GPU：GLSL 片元着色器渲染，主线程仅上传参数，可跑满高帧率并解锁真模糊/辉光"
+            "（需 OpenGL 3.3；不可用时自动回退 CPU）。"
+        )
+        backend_hint.setStyleSheet("color:#B0BEC5; font-size:11.5px;")
+        backend_hint.setWordWrap(True)
+        root.addWidget(backend_hint)
+        backend_row = QHBoxLayout()
+        backend_row.setSpacing(10)
+        self._backend_btns: dict[bool, QPushButton] = {}
+        for gpu, label in ((False, "CPU\n稳定"), (True, "GPU\n极致")):
+            btn = QPushButton(label)
+            btn.setCheckable(True)
+            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setMinimumHeight(48)
+            btn.setProperty("fpsBtn", True)
+            btn.clicked.connect(lambda _c=False, v=gpu: self._on_backend_clicked(v))
+            self._backend_btns[gpu] = btn
+            backend_row.addWidget(btn, 1)
+        root.addLayout(backend_row)
+        self._select_backend_button(bool(current_gpu_bg))
+
+        root.addWidget(_hline())
+
         # ── 数据缓存 ──────────────────────────
         root.addWidget(_section_title("数据缓存"))
         cache_hint = QLabel("清空本地接口缓存后将重新拉取最新数据。")
@@ -329,6 +358,14 @@ class SettingsDialog(QDialog):
     def _on_bg_clicked(self, on: bool) -> None:
         self._select_bg_button(on)
         self.bg_anim_toggled.emit(on)
+
+    def _select_backend_button(self, gpu: bool) -> None:
+        for v, btn in self._backend_btns.items():
+            btn.setChecked(v == gpu)
+
+    def _on_backend_clicked(self, gpu: bool) -> None:
+        self._select_backend_button(gpu)
+        self.backend_selected.emit(gpu)
 
     def _on_clear_cache(self) -> None:
         self.cache_cleared.emit()

@@ -18,6 +18,7 @@ from PyQt6.QtWidgets import (
 from app.config import (
     ANIM_FPS,
     APP_TITLE_ZH,
+    GPU_BACKDROP,
     LIVE_REFRESH_INTERVAL_MS,
     WINDOW_MIN_HEIGHT,
     WINDOW_MIN_WIDTH,
@@ -146,7 +147,9 @@ class MainWindow(QMainWindow):
         self._central = central
 
         # 全局动态背景层（皮肤引擎核心）—— 铺满整窗、位于最底层
-        self._backdrop = SkinBackdrop(central, palette=THEMES.get(self._theme_name))
+        # 渲染后端可选 CPU(QPainter) / GPU(GLSL)，见 _make_backdrop。
+        self._gpu_bg = bool(self._settings.get("gpu_bg", GPU_BACKDROP))
+        self._backdrop = self._make_backdrop(central)
         self._backdrop.setGeometry(central.rect())
         self._backdrop.set_enabled(self._bg_anim)
         self._backdrop.lower()
@@ -298,10 +301,12 @@ class MainWindow(QMainWindow):
         """打开设置对话框（主题 / 帧率 / 缓存 / 关于）。"""
         from app.ui.widgets.settings_dialog import SettingsDialog
         dlg = SettingsDialog(self._theme_name, self._fps, self,
-                             current_bg_anim=self._bg_anim)
+                             current_bg_anim=self._bg_anim,
+                             current_gpu_bg=self._gpu_bg)
         dlg.theme_selected.connect(self._set_skin)
         dlg.fps_selected.connect(self._set_fps)
         dlg.bg_anim_toggled.connect(self._set_bg_anim)
+        dlg.backend_selected.connect(self._set_gpu_bg)
         dlg.cache_cleared.connect(self._on_cache_cleared)
         dlg.exec()
 
@@ -312,6 +317,50 @@ class MainWindow(QMainWindow):
         self._settings.set("bg_anim", self._bg_anim)
         msg = "动态背景已开启 ✨" if self._bg_anim else "动态背景已关闭 · 性能优先 ⚡"
         self.statusBar().showMessage(msg, 3000)
+
+    # ─── 动态背景渲染后端（CPU / GPU 可热切换）───────────
+    def _make_backdrop(self, parent: QWidget):
+        """按当前后端选择创建背景控件；GPU 不可用时自动降级回 CPU 版。"""
+        palette = THEMES.get(self._theme_name, THEMES["dark"])
+        if self._gpu_bg:
+            try:
+                from app.ui.widgets.gl_backdrop import GLBackdrop
+                bd = GLBackdrop(parent, palette=palette)
+                log.info("动态背景渲染后端：GPU (GLSL / QOpenGLWidget)")
+                return bd
+            except Exception as exc:  # 缺少 QtOpenGLWidgets / 构造失败 → 降级
+                log.warning("GPU 背景初始化失败，降级为 CPU：%s", exc)
+                self._gpu_bg = False
+        return SkinBackdrop(parent, palette=palette)
+
+    def _set_gpu_bg(self, on: bool) -> None:
+        """运行时切换 CPU/GPU 背景后端（销毁旧实例、重建新实例）并持久化。"""
+        on = bool(on)
+        if on == self._gpu_bg and self._backdrop is not None:
+            return
+        self._gpu_bg = on
+        # 销毁旧背景
+        old = self._backdrop
+        if old is not None:
+            old.set_enabled(False)  # 取消帧时钟订阅
+            old.setParent(None)
+            old.deleteLater()
+        # 重建（_make_backdrop 可能因 GPU 不可用把 _gpu_bg 复位为 False）
+        self._backdrop = self._make_backdrop(self._central)
+        self._backdrop.setGeometry(self._central.rect())
+        self._backdrop.set_palette(THEMES.get(self._theme_name, THEMES["dark"]))
+        self._backdrop.set_enabled(self._bg_anim)
+        self._backdrop.set_paused(self._stack.currentWidget() is self._globe)
+        self._backdrop.lower()
+        self._backdrop.show()
+        self._settings.set("gpu_bg", self._gpu_bg)
+        if self._gpu_bg:
+            msg = "渲染后端：GPU (GLSL) · 主线程已解放 🚀"
+        elif on:
+            msg = "GPU 后端不可用，已回退到 CPU 渲染"
+        else:
+            msg = "渲染后端：CPU (QPainter)"
+        self.statusBar().showMessage(msg, 3500)
 
     def _set_fps(self, fps: int) -> None:
         """实时切换全局动画帧率并持久化。"""
