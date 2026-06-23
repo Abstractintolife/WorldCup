@@ -54,6 +54,10 @@ class Endpoints:
     team_ranking: str = (
         "https://sport-data.dongqiudi.com/soccer/biz/data/team_ranking"
     )
+    # 比赛实时赔率（欧赔 / 亚盘 / 大小球，按 /{match_id} 追加）
+    match_odds: str = (
+        "https://sport-data.dongqiudi.com/soccer/biz/dqd/v1/match/odds/index"
+    )
     # 国家队阵容（按 /{team_id} 追加）—— 教练 / 门将 / 后卫 / 中场 / 前锋
     team_member: str = (
         "https://sport-data.dongqiudi.com/soccer/biz/dqd/v1/team/member_v2"

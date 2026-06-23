@@ -10,6 +10,7 @@ from app.config import ENDPOINTS, LINEUP_CACHE_TTL, NEWS_CACHE_TTL, SQUAD_CACHE_
 from app.models.lineup import MatchLineup
 from app.models.match import Match, Round
 from app.models.news import HotComment, NewsArticle
+from app.models.odds import MatchOdds
 from app.models.player import PlayerRanking, RankingType, TeamRanking
 from app.models.player_detail import PlayerAbility, PlayerDetail
 from app.models.person_match import PersonMatch
@@ -158,6 +159,22 @@ class DataService:
         return [
             TeamRanking.from_raw(item, rtype) for item in content.get("data") or []
         ]
+
+    # ─── 比赛实时赔率 ─────────────────────────
+    async def fetch_match_odds(
+        self, match_id: str, force: bool = False
+    ) -> MatchOdds | None:
+        """拉取某场比赛的实时赔率（欧赔 / 亚盘 / 大小球）。"""
+        if not match_id:
+            return None
+        url = f"{ENDPOINTS.match_odds}/{match_id}"
+        params = {"cmp_type": "soccer", "app": "dqd", "lang": "zh-cn", "platform": "android"}
+        try:
+            data = await self._client.get_json(url, params=params, force=force)
+        except Exception as exc:  # pragma: no cover - 网络
+            log.warning("拉取比赛赔率失败 %s：%s", match_id, exc)
+            return None
+        return MatchOdds.from_raw(data or {})
 
     # ─── 阵容 ─────────────────────────────────
     async def fetch_team_squad(

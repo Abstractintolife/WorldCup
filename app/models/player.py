@@ -85,7 +85,9 @@ _RANKING_META: dict[str, tuple[str, str, str, str, str, str]] = {
     "passes":             ("传球", "🔁", "传球", "传球", "PASSES", _BOTH),
     "pass_accuracy":      ("传球成功率", "🎯", "成功率", "传球", "PASS ACCURACY", _BOTH),
     "long_balls":         ("长传", "🚀", "长传", "传球", "LONG BALLS", _BOTH),
+    "success_long_balls": ("成功长传", "🎯", "成功长传", "传球", "ACCURATE LONG BALLS", _BOTH),
     "crosses":            ("传中", "✈️", "传中", "传球", "CROSSES", _BOTH),
+    "success_crosses":    ("成功传中", "🎯", "成功传中", "传球", "ACCURATE CROSSES", _BOTH),
     "touches":            ("触球", "👟", "触球", "传球", "TOUCHES", _BOTH),
     # 过人
     "dribbles_attempted": ("尝试过人", "🌀", "尝试过人", "过人", "DRIBBLES ATTEMPTED", _BOTH),
@@ -94,6 +96,7 @@ _RANKING_META: dict[str, tuple[str, str, str, str, str, str]] = {
     "dispossessed":       ("丢失球权", "💨", "丢球权", "过人", "DISPOSSESSED", _BOTH),
     # 防守
     "goal_against":       ("失球", "🥅", "失球", "防守", "GOALS CONCEDED", _TEAM),
+    "goal_own":           ("乌龙球", "🙈", "乌龙", "防守", "OWN GOALS", _TEAM),
     "tackles":            ("抢断", "🛡", "抢断", "防守", "TACKLES", _BOTH),
     "interceptions":      ("拦截", "🚧", "拦截", "防守", "INTERCEPTIONS", _BOTH),
     "clearances":         ("解围", "🧹", "解围", "防守", "CLEARANCES", _BOTH),
@@ -112,6 +115,7 @@ _RANKING_META: dict[str, tuple[str, str, str, str, str, str]] = {
     "error_lead_to_shot": ("失误导致射门", "⚠️", "失误送射", "纪律", "ERRORS LEADING TO SHOT", _BOTH),
     # 门将
     "saves":              ("扑救", "🧤", "扑救", "门将", "SAVES", _BOTH),
+    "box_shot_saves":     ("禁区射门扑救", "🧤", "禁区扑救", "门将", "SAVES IN BOX", _BOTH),
     "runs_out":           ("出击成功", "🏃", "出击", "门将", "SUCCESSFUL RUNS OUT", _BOTH),
     "claims_high":        ("出击摘高球", "🙌", "摘高球", "门将", "HIGH CLAIMS", _BOTH),
     "punches":            ("拳击球", "🥊", "拳击", "门将", "PUNCHES", _BOTH),
@@ -147,7 +151,9 @@ class RankingType(str, Enum):
     PASSES = "passes"
     PASS_ACCURACY = "pass_accuracy"
     LONG_BALLS = "long_balls"
+    SUCCESS_LONG_BALLS = "success_long_balls"
     CROSSES = "crosses"
+    SUCCESS_CROSSES = "success_crosses"
     TOUCHES = "touches"
     # 过人
     DRIBBLES_ATTEMPTED = "dribbles_attempted"
@@ -156,6 +162,7 @@ class RankingType(str, Enum):
     DISPOSSESSED = "dispossessed"
     # 防守
     GOAL_AGAINST = "goal_against"
+    GOAL_OWN = "goal_own"
     TACKLES = "tackles"
     INTERCEPTIONS = "interceptions"
     CLEARANCES = "clearances"
@@ -174,6 +181,7 @@ class RankingType(str, Enum):
     ERROR_LEAD_TO_SHOT = "error_lead_to_shot"
     # 门将
     SAVES = "saves"
+    BOX_SHOT_SAVES = "box_shot_saves"
     RUNS_OUT = "runs_out"
     CLAIMS_HIGH = "claims_high"
     PUNCHES = "punches"

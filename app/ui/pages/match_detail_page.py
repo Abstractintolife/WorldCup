@@ -30,6 +30,7 @@ from PyQt6.QtWidgets import (
 
 from app.models.match import Match, MatchStatus
 from app.models.lineup import MatchLineup, TeamLineup
+from app.models.odds import MatchOdds
 from app.models.standing import GroupStanding, TeamStanding
 from app.services.data_service import DataService
 from app.services.favorites import Favorites
@@ -222,6 +223,7 @@ class MatchDetailPage(BasePage):
         self._all_matches: list[Match] = []
         self._groups: list[GroupStanding] = []
         self._lineup: MatchLineup | None = None
+        self._odds: "MatchOdds | None" = None
 
         host = self.content_widget()
         outer = QVBoxLayout(host)
@@ -266,6 +268,7 @@ class MatchDetailPage(BasePage):
     def open_match(self, match: Match) -> None:
         self._match = match
         self._lineup = None
+        self._odds = None
         self._fav_btn.set_entity("match", match.match_id)
         self._render()
         self.show_content()
@@ -294,6 +297,12 @@ class MatchDetailPage(BasePage):
                 )
             except Exception:  # pragma: no cover - 网络
                 self._lineup = None
+            try:
+                self._odds = await self._service.fetch_match_odds(
+                    self._match.match_id, force=force  # type: ignore[union-attr]
+                )
+            except Exception:  # pragma: no cover - 网络
+                self._odds = None
             self._render()
 
         self.run_async(runner)
@@ -366,6 +375,11 @@ class MatchDetailPage(BasePage):
         if analysis_card is not None:
             self._body.addWidget(analysis_card)
 
+        # 实时赔率（欧赔 / 亚盘 / 大小球）—— 懂球帝实时数据
+        odds_card = self._odds_card()
+        if odds_card is not None:
+            self._body.addWidget(odds_card)
+
         # 阵容布阵图（首发 / 赛前预测）—— 本页核心
         lineup_card = self._lineup_card()
         if lineup_card is not None:
@@ -395,6 +409,129 @@ class MatchDetailPage(BasePage):
         t = QLabel(text)
         t.setStyleSheet("font-size:15px; font-weight:800;")
         layout.addWidget(t)
+
+    # ── 实时赔率 ──────────────────────────────
+    def _odds_card(self) -> QWidget | None:
+        odds = self._odds
+        m = self._match
+        if odds is None or m is None or not odds.has_odds:
+            return None
+        if not (odds.euro or odds.asia or odds.size or odds.avg):
+            return None
+
+        card = Card(padding=18)
+        lay = QVBoxLayout(card)
+        lay.setContentsMargins(20, 16, 20, 18)
+        lay.setSpacing(12)
+        self._section_title(lay, "💹  实时赔率")
+        sub = QLabel("欧赔 · 亚盘 · 大小球 · 懂球帝实时（初盘 → 即时）")
+        sub.setStyleSheet("color:#B0BEC5; font-size:11.5px; font-weight:600;")
+        lay.addWidget(sub)
+
+        a_name, b_name = m.team_a_name, m.team_b_name
+
+        # 平均欧赔大屏：主胜 / 平 / 客胜
+        if odds.avg is not None:
+            avg = odds.avg
+            big = QHBoxLayout()
+            big.setSpacing(10)
+            for label, val in ((f"{a_name} 胜", avg.home), ("平局", avg.draw),
+                               (f"{b_name} 胜", avg.away)):
+                cell = QVBoxLayout()
+                cell.setSpacing(2)
+                v = QLabel(val)
+                v.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                v.setStyleSheet("color:#FFD700; font-size:26px; font-weight:900;")
+                cell.addWidget(v)
+                lab = QLabel(label)
+                lab.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                lab.setStyleSheet("color:#B0BEC5; font-size:11px; font-weight:700;")
+                cell.addWidget(lab)
+                cw = QWidget()
+                cw.setLayout(cell)
+                cw.setStyleSheet(
+                    "background: rgba(255,255,255,0.04); border-radius:12px;"
+                    "border:1px solid rgba(255,215,0,0.25);")
+                big.addWidget(cw, 1)
+            lay.addLayout(big)
+            tip = QLabel("以上为各机构平均欧赔（1X2）")
+            tip.setStyleSheet("color:#6B7689; font-size:10.5px;")
+            lay.addWidget(tip)
+
+        # 欧赔明细
+        if odds.euro:
+            lay.addWidget(self._odds_table(
+                "欧赔 · 1X2（主 / 平 / 客）",
+                ["机构", "主胜", "平", "客胜"],
+                [[e.name, (e.home, e.home_trend), e.draw, (e.away, e.away_trend)]
+                 for e in odds.euro[:8]],
+            ))
+        # 亚盘
+        if odds.asia:
+            lay.addWidget(self._odds_table(
+                "亚盘 · 让球（盘口 / 主水 / 客水）",
+                ["机构", "盘口", "主", "客"],
+                [[h.name, h.line, h.a, h.b] for h in odds.asia[:6]],
+            ))
+        # 大小球
+        if odds.size:
+            lay.addWidget(self._odds_table(
+                "大小球（盘口 / 大球 / 小球）",
+                ["机构", "盘口", "大", "小"],
+                [[h.name, h.line, h.a, h.b] for h in odds.size[:6]],
+            ))
+        return card
+
+    def _odds_table(self, title: str, headers: list[str], rows: list[list]) -> QWidget:
+        """构建一个紧凑赔率表。单元格可为 str 或 (值, 升降) 元组。"""
+        box = QVBoxLayout()
+        box.setContentsMargins(0, 0, 0, 0)
+        box.setSpacing(6)
+        t = QLabel(title)
+        t.setStyleSheet("color:#E3E9F3; font-size:12.5px; font-weight:800;")
+        box.addWidget(t)
+
+        grid = QGridLayout()
+        grid.setHorizontalSpacing(8)
+        grid.setVerticalSpacing(5)
+        # 表头
+        for c, h in enumerate(headers):
+            hl = QLabel(h)
+            hl.setStyleSheet("color:#6B7689; font-size:10.5px; font-weight:800;")
+            if c == 0:
+                hl.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            else:
+                hl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            grid.addWidget(hl, 0, c)
+        grid.setColumnStretch(0, 1)
+        # 数据行
+        _TREND = {1: ("▲", "#FF5470"), -1: ("▼", "#2ED877")}
+        for r, row in enumerate(rows, start=1):
+            for c, cell in enumerate(row):
+                if isinstance(cell, tuple):
+                    val, trend = cell
+                    arrow, color = _TREND.get(trend, ("", "#FFFFFF"))
+                    txt = f"{val} {arrow}".strip()
+                else:
+                    val = cell
+                    color = "#FFFFFF" if c > 0 else "#B0BEC5"
+                    txt = str(val)
+                lbl = QLabel(txt)
+                if c == 0:
+                    lbl.setStyleSheet("color:#B0BEC5; font-size:11.5px; font-weight:700;")
+                    lbl.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+                else:
+                    lbl.setStyleSheet(f"color:{color}; font-size:12px; font-weight:800;")
+                    lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                grid.addWidget(lbl, r, c)
+        host = QWidget()
+        host.setLayout(grid)
+        host.setStyleSheet(
+            "background: rgba(255,255,255,0.03); border-radius:12px;")
+        box.addWidget(host)
+        container = QWidget()
+        container.setLayout(box)
+        return container
 
     def _countdown_card(self, m: Match) -> QWidget:
         card = Card(padding=18)
