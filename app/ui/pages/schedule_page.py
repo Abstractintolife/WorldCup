@@ -71,6 +71,11 @@ class SchedulePage(BasePage):
         self._status_combo = QComboBox()
         for k, v in _STATUS_OPTIONS:
             self._status_combo.addItem(v, k)
+        # 默认聚焦「未开赛」—— 进入赛程中心即展示即将到来的比赛
+        for i in range(self._status_combo.count()):
+            if self._status_combo.itemData(i) == "upcoming":
+                self._status_combo.setCurrentIndex(i)
+                break
         flayout.addWidget(self._status_combo)
 
         self._date_combo = QComboBox()

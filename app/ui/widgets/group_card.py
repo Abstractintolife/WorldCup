@@ -42,8 +42,15 @@ class _RankRow(QFrame):
         layout.setContentsMargins(10, 4, 12, 4)
         layout.setSpacing(10)
 
+        # 晋级状态配色（覆盖 API 图例色，让晋级一目了然）
+        qualify = getattr(team, "qualify", None)
+        _QUALIFY_COLORS = {"direct": "#2ED877", "best3": "#36A8FF"}
+        if qualify in _QUALIFY_COLORS:
+            rank_color = _QUALIFY_COLORS[qualify]
+        else:
+            rank_color = team.color or leader_color.name()
+
         # 名次徽章（带「晋级条」颜色）
-        rank_color = team.color or leader_color.name()
         rank = QLabel(str(team.rank))
         rank.setFixedSize(24, 24)
         rank.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -58,6 +65,27 @@ class _RankRow(QFrame):
         name = QLabel(team.team_name)
         name.setStyleSheet("font-size: 13px; font-weight: 700;")
         layout.addWidget(name)
+
+        # 晋级胶囊：直接晋级（绿）/ 最佳第三（蓝）
+        if qualify == "direct":
+            chip = QLabel("晋级")
+            chip.setStyleSheet(
+                "color:#9DF5C4; font-size:10px; font-weight:800;"
+                "background: rgba(46,216,131,0.16);"
+                "border:1px solid rgba(46,216,131,0.45);"
+                "border-radius:8px; padding:1px 8px;"
+            )
+            layout.addWidget(chip)
+        elif qualify == "best3":
+            chip = QLabel("最佳第三")
+            chip.setStyleSheet(
+                "color:#A9D8FF; font-size:10px; font-weight:800;"
+                "background: rgba(54,168,255,0.16);"
+                "border:1px solid rgba(54,168,255,0.45);"
+                "border-radius:8px; padding:1px 8px;"
+            )
+            layout.addWidget(chip)
+
         layout.addStretch(1)
 
         record = QLabel(

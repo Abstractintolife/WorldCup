@@ -475,14 +475,17 @@ def build_qss(t: ThemePalette) -> str:
     QTabBar::tab {{
         background: transparent;
         color: {t.text_dim};
-        padding: 10px 18px;
-        margin-right: 4px;
+        padding: 11px 22px;
+        margin-right: 6px;
         border-bottom: 2px solid transparent;
+        font-size: 14px;
         font-weight: 700;
+        letter-spacing: 0.3px;
     }}
     QTabBar::tab:selected {{
         color: {t.text};
         border-bottom: 2px solid {t.primary};
+        font-weight: 800;
     }}
     QTabBar::tab:hover {{ color: {t.text}; }}
 

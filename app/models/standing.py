@@ -33,6 +33,7 @@ class TeamStanding(BaseModel):
     desc: str | None = None        # 例如 "晋级 16 强"
     instruction: str | None = None
     color: str | None = None       # 由分组的 desc 解析得到
+    qualify: str | None = None     # 晋级状态："direct"（前2直接晋级）/ "best3"（最佳第三）/ None
 
     @property
     def goal_diff(self) -> int:
