@@ -50,6 +50,10 @@ class Endpoints:
     person_ranking: str = (
         "https://api.dongqiudi.com/data/v1/person_ranking/0"
     )
+    # 球队数据榜（type 取各项统计键，如 goals/shots/market_value …）
+    team_ranking: str = (
+        "https://sport-data.dongqiudi.com/soccer/biz/data/team_ranking"
+    )
     # 国家队阵容（按 /{team_id} 追加）—— 教练 / 门将 / 后卫 / 中场 / 前锋
     team_member: str = (
         "https://sport-data.dongqiudi.com/soccer/biz/dqd/v1/team/member_v2"

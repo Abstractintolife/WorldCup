@@ -269,7 +269,7 @@ class LiveMatchPanel(Card):
         mid.addWidget(self._status_txt)
         mid_w = QWidget()
         mid_w.setLayout(mid)
-        mid_w.setFixedWidth(160)
+        mid_w.setFixedWidth(120)
         score.addWidget(mid_w)
         score.addWidget(self._away_block, 1)
         root.addLayout(score)
@@ -332,22 +332,35 @@ class LiveMatchPanel(Card):
         if self._on_watch:
             self._on_watch(self._match)
 
-    def _team_block(self, name: str) -> QWidget:
+    def _team_block(self, name: str, *, home: bool = True) -> QWidget:
+        """单侧队伍块：国旗 + 队名横向并排（A VS B 横幅的一侧）。
+
+        主队（左）：``🇦 国家A``（靠右贴近中线 VS）
+        客队（右）：``国家B 🇧``（靠左贴近中线 VS）
+        左右拼起来即横向的「🇦 国家A  VS  国家B 🇧」。
+        """
         w = QWidget()
-        col = QVBoxLayout(w)
-        col.setContentsMargins(0, 0, 0, 0)
-        col.setSpacing(12)
-        col.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # 大尺寸国旗 —— 左右对称排放、更有视觉压迫力
-        flag = FlagIcon(name, height=84, radius=14)
-        col.addWidget(flag, alignment=Qt.AlignmentFlag.AlignCenter)
+        row = QHBoxLayout(w)
+        row.setContentsMargins(0, 0, 0, 0)
+        row.setSpacing(12)
+        row.setAlignment(Qt.AlignmentFlag.AlignVCenter)
+
+        flag = FlagIcon(name, height=72, radius=10)
         n = QLabel(name)
-        n.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        n.setWordWrap(True)
         n.setStyleSheet(
-            f"color:{C_TEXT}; font-size:19px; font-weight:900;"
+            f"color:{C_TEXT}; font-size:20px; font-weight:900;"
             " letter-spacing:0.5px; background:transparent;")
-        col.addWidget(n)
+
+        if home:
+            row.addStretch(1)
+            row.addWidget(flag)
+            n.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+            row.addWidget(n)
+        else:
+            n.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+            row.addWidget(n)
+            row.addWidget(flag)
+            row.addStretch(1)
         return w
 
     def _swap(self, attr: str, new: QWidget, stretch: int) -> None:
@@ -374,8 +387,8 @@ class LiveMatchPanel(Card):
             self._empty()
             return
 
-        self._swap("_home_block", self._team_block(match.team_a_name), 1)
-        self._swap("_away_block", self._team_block(match.team_b_name), 1)
+        self._swap("_home_block", self._team_block(match.team_a_name, home=True), 1)
+        self._swap("_away_block", self._team_block(match.team_b_name, home=False), 1)
 
         is_live = match.is_live
         self._badge.setVisible(is_live)
@@ -915,10 +928,10 @@ class NewsPanel(Card):
 _QUICK = [
     ("📅", "赛程中心", "schedule", C_PRIMARY),
     ("🛡", "球队", "teams", C_PURPLE),
-    ("📈", "数据分析", "standings", C_GREEN),
+    ("🏆", "积分榜", "standings", C_GREEN),
     ("🔮", "预测中心", "prediction", C_GOLD),
     ("⭐", "收藏夹", "favorites", C_LIVE),
-    ("📰", "新闻资讯", "stadiums", "#36D1FF"),
+    ("📰", "新闻资讯", "news", "#36D1FF"),
 ]
 
 
@@ -1033,12 +1046,10 @@ class HomePage(BasePage):
 
         # 第 4 排
         self._favorites = FavoritesPanel(on_team=self.team_clicked.emit)
-        self._news = NewsPanel(on_open=self._open_news_comments)
         self._quick = QuickActionsPanel(on_navigate=self.navigate.emit)
         row4 = QHBoxLayout()
         row4.setSpacing(18)
         row4.addWidget(self._favorites, 1)
-        row4.addWidget(self._news, 1)
         row4.addWidget(self._quick, 1)
         v.addLayout(row4)
 
@@ -1201,9 +1212,6 @@ class HomePage(BasePage):
 
         # ── 夺冠热门 ──
         self._favorites.set_favorites(self._championship_odds(groups))
-
-        # ── 赛事新闻 ──
-        self._news.set_news(news_list)
 
         # ── 赛事大盘统计 ──
         played = [m for m in matches if m.status == MatchStatus.PLAYED]

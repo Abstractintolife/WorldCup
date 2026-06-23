@@ -10,7 +10,7 @@ from app.config import ENDPOINTS, LINEUP_CACHE_TTL, NEWS_CACHE_TTL, SQUAD_CACHE_
 from app.models.lineup import MatchLineup
 from app.models.match import Match, Round
 from app.models.news import HotComment, NewsArticle
-from app.models.player import PlayerRanking, RankingType
+from app.models.player import PlayerRanking, RankingType, TeamRanking
 from app.models.player_detail import PlayerAbility, PlayerDetail
 from app.models.person_match import PersonMatch
 from app.models.squad import SquadGroup
@@ -139,6 +139,24 @@ class DataService:
         content = data.get("content") or {}
         return [
             PlayerRanking.from_raw(item, rtype) for item in content.get("data") or []
+        ]
+
+    # ─── 球队数据榜 ───────────────────────────
+    async def fetch_team_ranking(
+        self, rtype: RankingType, force: bool = False
+    ) -> list[TeamRanking]:
+        """拉取某项球队数据榜（进球 / 失球 / 角球 / 身价 …）。"""
+        params = {
+            "season_id": self.season_id,
+            "type": rtype.value,
+            "refer": "team_ranking",
+        }
+        data = await self._client.get_json(
+            ENDPOINTS.team_ranking, params=params, force=force
+        )
+        content = data.get("content") or {}
+        return [
+            TeamRanking.from_raw(item, rtype) for item in content.get("data") or []
         ]
 
     # ─── 阵容 ─────────────────────────────────
