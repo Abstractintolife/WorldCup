@@ -35,6 +35,8 @@ from app.models.match import Match
 from app.services.forebet_data import FOREBET_RAW
 from app.services.kickform_data import KICKFORM_RAW
 from app.services.sportsmole_data import SPORTSMOLE_RAW
+from app.services.freesupertips_data import FREESUPERTIPS_RAW
+from app.services.prediction_analysis_cn import SPORTSMOLE_CN, FREESUPERTIPS_CN
 
 
 # ─────────────────────────────────────────────
@@ -54,6 +56,9 @@ class ExternalPrediction:
     odds_text: str = ""               # 盘口赔率说明（已转中文）
     tips: list[str] = field(default_factory=list)  # 推荐玩法 / 投注角度
     note: str = ""                    # 备注（数据获取限制等说明）
+    analysis: list[tuple[str, str]] = field(default_factory=list)
+    # ↑ 长篇赛前分析，[(小标题, 正文), ...]；正文可含多段（以换行分隔）。
+    analysis_lang: str = "zh"         # "zh"=已译中文 / "en"=英文原文回退
 
 
 @dataclass
@@ -369,14 +374,32 @@ _SPORTSMOLE_DB: dict[frozenset[str], dict] = {
 }
 
 _SM_SOURCE = "Sports Mole"
+_FST_SOURCE = "FreeSuperTips"
 
 _FORM_CN = {"W": "胜", "D": "平", "L": "负"}
+
+_EN_FALLBACK_NOTE = "（暂为英文原文，完整中文翻译可后续补充；点此查看出处原文。）"
 
 
 def _form_str(seq) -> str:
     if not seq:
         return ""
     return " ".join(_FORM_CN.get(x, x) for x in seq)
+
+
+def _sm_english_blocks(raw: dict, flip: bool) -> list[tuple[str, str]]:
+    """无中文译文时，用英文原文段落拼出可读的分析块。"""
+    blocks: list[tuple[str, str]] = []
+    intro = raw.get("intro_en") or []
+    preview = raw.get("preview_en") or []
+    news = raw.get("team_news_en") or []
+    if intro:
+        blocks.append(("Match context", "\n".join(intro)))
+    if preview:
+        blocks.append(("Match preview", "\n".join(preview)))
+    if news:
+        blocks.append(("Team news", "\n".join(news)))
+    return blocks
 
 
 def _sportsmole_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction:
@@ -408,15 +431,25 @@ def _sportsmole_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction
     else:
         verdict = "给出了赛前预测"
 
-    summary = (
-        f"Sports Mole 编辑赛前研判：{verdict}"
-        + (f"，预测比分 {hcn} {sh}-{sa} {acn}。" if score_pred else "。")
-        + "预览同时给出了双方的预测首发阵容与近期战绩，可作为临场参考。"
-    )
+    # 分析正文：优先中文译文，否则英文原文回退
+    key = frozenset({raw["home_cn"], raw["away_cn"]})
+    cn = SPORTSMOLE_CN.get(key)
+    if cn:
+        analysis = list(cn.get("blocks", []))
+        analysis_lang = "zh"
+        summary = cn.get("summary", "")
+    else:
+        analysis = _sm_english_blocks(raw, flip)
+        analysis_lang = "en"
+        summary = (
+            f"Sports Mole 编辑赛前研判：{verdict}"
+            + (f"，预测比分 {hcn} {sh}-{sa} {acn}。" if score_pred else "。")
+            + "下方为英文原文分析（含赛前形势、前瞻与球队动态）。"
+        )
 
     tips: list[str] = []
     if score_pred:
-        tips.append(f"比分预测：{score_pred}")
+        tips.append(f"编辑比分预测：{score_pred}")
     if lineup_h:
         tips.append(f"预测首发（{hcn}）：{lineup_h}")
     if lineup_a:
@@ -427,16 +460,82 @@ def _sportsmole_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction
     if fa:
         tips.append(f"近期战绩（{acn}，全部赛事，由近及远）：{fa}")
 
+    note = (
+        "比分预测、预测首发与近期战绩取自 Sports Mole 英文赛前预览，整理为结构化中文数据；"
+        "分析正文为人工翻译（已就中文表达润色）。"
+        if analysis_lang == "zh" else
+        "数据取自 Sports Mole 英文赛前预览。" + _EN_FALLBACK_NOTE
+    )
+
     return ExternalPrediction(
         source=_SM_SOURCE,
         source_url=raw.get("url", ""),
         summary=summary,
         score_prediction=score_pred,
         tips=tips,
-        note=(
-            "比分预测、预测首发与近期战绩取自 Sports Mole 英文赛前预览，"
-            "已整理为结构化中文数据（不含原文逐字转载），完整分析请见出处链接。"
-        ),
+        analysis=analysis,
+        analysis_lang=analysis_lang,
+        note=note,
+    )
+
+
+# ─────────────────────────────────────────────
+# FreeSuperTips 自动生成数据（按中文队名索引）
+# ─────────────────────────────────────────────
+# 来源：freesupertips.com 预测页。其价值是**完整的赛前文字分析**（JSON-LD
+# articleBody），由 scripts_gen_freesupertips.py 抓取生成；中文翻译见
+# prediction_analysis_cn.FREESUPERTIPS_CN。
+_FREESUPERTIPS_DB: dict[frozenset[str], dict] = {
+    frozenset({r["home_cn"], r["away_cn"]}): r for r in FREESUPERTIPS_RAW
+}
+
+
+def _freesupertips_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction:
+    """把一条 FreeSuperTips 数据转成预测（含完整分析正文）。"""
+    hcn, acn = raw["home_cn"], raw["away_cn"]
+    bullets = raw.get("bullets_en") or []
+
+    key = frozenset({hcn, acn})
+    cn = FREESUPERTIPS_CN.get(key)
+    if cn:
+        analysis = list(cn.get("blocks", []))
+        analysis_lang = "zh"
+        summary = cn.get("summary", "")
+        note = (
+            "完整赛前分析取自 FreeSuperTips，正文为人工翻译（已就中文表达润色）；"
+            "文中比分 / 玩法倾向仅供参考。"
+        )
+    else:
+        # 英文原文回退：用文章自带小标题切分正文
+        body = raw.get("body_en") or []
+        blocks: list[tuple[str, str]] = []
+        cur_head, cur_buf = raw.get("section_title_en", "") or "", []
+        for p in body:
+            # 小标题：较短且不以句末标点结尾
+            if len(p) < 90 and not p.rstrip().endswith((".", "!", "?", "…")):
+                if cur_buf:
+                    blocks.append((cur_head, "\n".join(cur_buf)))
+                    cur_buf = []
+                cur_head = p
+            else:
+                cur_buf.append(p)
+        if cur_buf:
+            blocks.append((cur_head, "\n".join(cur_buf)))
+        analysis = blocks
+        analysis_lang = "en"
+        summary = "FreeSuperTips 完整赛前分析（下方为英文原文）。"
+        note = "数据取自 freesupertips.com。" + _EN_FALLBACK_NOTE
+
+    tips = [f"分析要点：{b}" for b in bullets]
+
+    return ExternalPrediction(
+        source=_FST_SOURCE,
+        source_url=raw.get("url", ""),
+        summary=summary,
+        tips=tips,
+        analysis=analysis,
+        analysis_lang=analysis_lang,
+        note=note,
     )
 
 
@@ -446,13 +545,14 @@ def _sportsmole_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction
 def get_external_predictions(match: Match) -> list[ExternalPrediction]:
     """按参赛双方名字匹配外部来源预测（无视主客顺序）。
 
-    合并四类来源：
+    合并五类来源：
       1. ``_EXTERNAL_DB`` —— 人工整理（Squawka / 精修版 KickForm）；
       2. ``_KICKFORM_DB`` —— 后端接口自动生成的 KickForm 预测（32 场）；
       3. ``_FOREBET_DB`` —— Forebet 列表页解析生成的预测（约 31 场）；
       4. ``_SPORTSMOLE_DB`` —— Sports Mole 预览页解析生成（比分预测 / 预测首发 /
-         近期战绩，随赛程刷新）。
-    按来源名去重：若某来源已由人工整理给出，则不再追加其自动版本。
+         近期战绩 + 长篇分析，随赛程刷新）；
+      5. ``_FREESUPERTIPS_DB`` —— FreeSuperTips 预测页解析生成（完整赛前分析）。
+    按来源名去重；带长篇分析的来源（Sports Mole / FreeSuperTips）排在前面。
     所有自动来源都会按当前比赛主客顺序自动校正左右两栏。
     """
     key = frozenset({match.team_a_name, match.team_b_name})
@@ -472,6 +572,13 @@ def get_external_predictions(match: Match) -> list[ExternalPrediction]:
     if raw_sm is not None and _SM_SOURCE not in present:
         result.append(_sportsmole_to_prediction(raw_sm, match.team_a_name))
 
+    raw_fst = _FREESUPERTIPS_DB.get(key)
+    if raw_fst is not None and _FST_SOURCE not in present:
+        result.append(_freesupertips_to_prediction(raw_fst, match.team_a_name))
+
+    # 排序：有长篇分析（Sports Mole / FreeSuperTips）的来源优先靠前展示
+    _order = {_SM_SOURCE: 0, _FST_SOURCE: 1}
+    result.sort(key=lambda ep: _order.get(ep.source, 9))
     return result
 
 

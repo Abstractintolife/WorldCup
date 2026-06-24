@@ -21,8 +21,10 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QLabel,
+    QPushButton,
     QScrollArea,
     QSizePolicy,
+    QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -40,6 +42,7 @@ from app.services.match_markets import MarketGroup, MatchMarkets, build_markets
 from app.services.prediction import MatchPrediction, Trend, build_prediction
 from app.ui.pages.base import BasePage
 from app.ui.widgets.flag_icon import FlagIcon
+from app.ui.widgets.flow_layout import FlowLayout
 from app.ui.widgets.misc import Card, HLine
 from app.ui.widgets.team_logo import TeamLogo
 from app.utils.time_utils import fmt_datetime, fmt_relative
@@ -59,6 +62,67 @@ _SWOT_STYLE = {
 }
 
 _RESULT_PILL = {"W": ("#2ED883", "胜"), "D": ("#FFD700", "平"), "L": ("#FF4E5E", "负")}
+
+# 各来源短名（按钮上显示），与配色
+_SRC_SHORT = {
+    "Sports Mole": "Sports Mole",
+    "FreeSuperTips": "FreeSuperTips",
+    "Squawka": "Squawka",
+    "KickForm（ThePuntersPage）": "KickForm",
+    "Forebet": "Forebet",
+}
+
+
+class _SourceTabs(QWidget):
+    """媒体 / 模型预测的来源切换器：顶部一排来源按钮，点击切换下方完整内容。"""
+
+    def __init__(self, preds: list[ExternalPrediction], build_page) -> None:
+        super().__init__()
+        self._btns: list[QPushButton] = []
+        root = QVBoxLayout(self)
+        root.setContentsMargins(0, 0, 0, 0)
+        root.setSpacing(14)
+
+        # ── 来源按钮行（可自动换行）──
+        btn_host = QWidget()
+        flow = FlowLayout(btn_host, margin=0, h_spacing=10, v_spacing=10)
+        for i, ep in enumerate(preds):
+            label = _SRC_SHORT.get(ep.source, ep.source)
+            if ep.analysis_lang == "en" and ep.analysis:
+                label += "  ·  EN"
+            b = QPushButton(label)
+            b.setCheckable(True)
+            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.clicked.connect(lambda _checked=False, idx=i: self._select(idx))
+            self._btns.append(b)
+            flow.addWidget(b)
+        root.addWidget(btn_host)
+
+        # ── 内容堆叠区 ──
+        self._stack = QStackedWidget()
+        for ep in preds:
+            self._stack.addWidget(build_page(ep))
+        root.addWidget(self._stack)
+
+        self._select(0)
+
+    def _select(self, idx: int) -> None:
+        self._stack.setCurrentIndex(idx)
+        for i, b in enumerate(self._btns):
+            b.setChecked(i == idx)
+            if i == idx:
+                b.setStyleSheet(
+                    f"QPushButton{{color:#0E1116; background:{_GOLD};"
+                    "border:none; border-radius:10px; padding:9px 18px;"
+                    "font-size:14.5px; font-weight:900;}"
+                )
+            else:
+                b.setStyleSheet(
+                    "QPushButton{color:#C8D0E0; background:rgba(255,255,255,0.06);"
+                    "border:1px solid rgba(255,255,255,0.12); border-radius:10px;"
+                    "padding:9px 18px; font-size:14.5px; font-weight:700;}"
+                    "QPushButton:hover{background:rgba(255,255,255,0.12);}"
+                )
 
 
 class _ProbBar(QWidget):
@@ -496,39 +560,29 @@ class PredictionPage(BasePage):
         lay.setContentsMargins(20, 14, 20, 18)
         lay.setSpacing(12)
         self._section(lay, "📰  媒体 / 模型预测")
-        hint = QLabel("来自 Squawka、KickForm、Sports Mole 等外部来源的赛前预测（已翻译整理为中文）")
-        hint.setStyleSheet("color:#B0BEC5; font-size:12px;")
+        names = "、".join(_SRC_SHORT.get(ep.source, ep.source) for ep in preds)
+        hint = QLabel(
+            f"点击下方来源按钮切换查看（共 {len(preds)} 家：{names}）。"
+            "各家完整赛前分析已翻译为中文（暂未翻译的以英文原文呈现）。"
+        )
+        hint.setStyleSheet("color:#B0BEC5; font-size:13px;")
         hint.setWordWrap(True)
         lay.addWidget(hint)
-
-        for i, ep in enumerate(preds):
-            if i > 0:
-                lay.addWidget(HLine())
-            lay.addWidget(self._external_block(ep))
+        lay.addWidget(_SourceTabs(preds, self._external_block))
         return card
 
     def _external_block(self, ep: ExternalPrediction) -> QWidget:
         wrap = QWidget()
         col = QVBoxLayout(wrap)
-        col.setContentsMargins(0, 4, 0, 4)
-        col.setSpacing(8)
-
-        # 来源徽标
-        src = QLabel(f"🔗  {ep.source}")
-        src.setStyleSheet(
-            f"color:{_B}; font-size:12px; font-weight:800;"
-            "background:rgba(61,139,255,0.14); border-radius:8px; padding:3px 10px;"
-        )
-        src.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        src_row = QHBoxLayout(); src_row.addWidget(src); src_row.addStretch(1)
-        col.addLayout(src_row)
+        col.setContentsMargins(2, 4, 2, 4)
+        col.setSpacing(12)
 
         # 比分预测（醒目）
         if ep.score_prediction:
             sp = QLabel(f"🎯  比分预测：{ep.score_prediction}")
             sp.setStyleSheet(
-                f"color:{_GOLD}; font-size:14px; font-weight:900;"
-                "background:rgba(255,197,61,0.10); border-radius:10px; padding:7px 12px;"
+                f"color:{_GOLD}; font-size:16px; font-weight:900;"
+                "background:rgba(255,197,61,0.10); border-radius:10px; padding:9px 14px;"
             )
             sp.setWordWrap(True)
             col.addWidget(sp)
@@ -540,30 +594,58 @@ class PredictionPage(BasePage):
                 f"主胜 {round(ep.win_a * 100)}%　·　平 {round(ep.draw * 100)}%"
                 f"　·　客胜 {round(ep.win_b * 100)}%"
             )
-            prob_txt.setStyleSheet("color:#9AA3BE; font-size:12px; font-weight:700;")
+            prob_txt.setStyleSheet("color:#9AA3BE; font-size:13px; font-weight:700;")
             col.addWidget(prob_txt)
 
-        # 综述
-        summ = QLabel(ep.summary)
-        summ.setStyleSheet("color:#B7BFD8; font-size:12.5px; line-height:150%;")
-        summ.setWordWrap(True)
-        col.addWidget(summ)
+        # 综述（导语）
+        if ep.summary:
+            summ = QLabel(ep.summary)
+            summ.setStyleSheet(
+                "color:#E6EAF4; font-size:15px; font-weight:600; line-height:175%;"
+            )
+            summ.setWordWrap(True)
+            col.addWidget(summ)
+
+        # ── 完整分析正文（大段、不省略）──
+        if ep.analysis:
+            col.addWidget(HLine())
+            for heading, body in ep.analysis:
+                if heading:
+                    h = QLabel(heading)
+                    h.setStyleSheet(
+                        f"color:{_GOLD}; font-size:15.5px; font-weight:900;"
+                    )
+                    h.setWordWrap(True)
+                    col.addWidget(h)
+                for para in str(body).split("\n"):
+                    para = para.strip()
+                    if not para:
+                        continue
+                    pl = QLabel(para)
+                    pl.setStyleSheet(
+                        "color:#CDD4E4; font-size:14.5px; line-height:185%;"
+                    )
+                    pl.setWordWrap(True)
+                    pl.setTextInteractionFlags(
+                        Qt.TextInteractionFlag.TextSelectableByMouse)
+                    col.addWidget(pl)
 
         # 盘口赔率
         if ep.odds_text:
             odds = QLabel(f"💱  {ep.odds_text}")
-            odds.setStyleSheet("color:#9AA3BE; font-size:12px;")
+            odds.setStyleSheet("color:#9AA3BE; font-size:13px;")
             odds.setWordWrap(True)
             col.addWidget(odds)
 
-        # 推荐玩法
+        # 推荐玩法 / 分析要点
         if ep.tips:
-            tips_head = QLabel("推荐玩法 / 分析栏目")
-            tips_head.setStyleSheet("color:#FFFFFF; font-size:12.5px; font-weight:800;")
+            col.addWidget(HLine())
+            tips_head = QLabel("推荐玩法 / 分析要点")
+            tips_head.setStyleSheet("color:#FFFFFF; font-size:14px; font-weight:800;")
             col.addWidget(tips_head)
             for t in ep.tips:
-                tl = QLabel(f"· {t}")
-                tl.setStyleSheet("color:#9AA3BE; font-size:12px;")
+                tl = QLabel(f"·  {t}")
+                tl.setStyleSheet("color:#AEB6CC; font-size:13.5px; line-height:165%;")
                 tl.setWordWrap(True)
                 tl.setContentsMargins(8, 0, 0, 0)
                 col.addWidget(tl)
@@ -576,8 +658,9 @@ class PredictionPage(BasePage):
             foot_bits.append(f"出处：{ep.source_url}")
         if foot_bits:
             foot = QLabel("　".join(foot_bits))
-            foot.setStyleSheet("color:#56607D; font-size:10.5px;")
+            foot.setStyleSheet("color:#6A7388; font-size:11.5px; line-height:160%;")
             foot.setWordWrap(True)
+            foot.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
             col.addWidget(foot)
         return wrap
 
