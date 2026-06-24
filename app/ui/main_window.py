@@ -47,6 +47,7 @@ from app.ui.widgets.fps_monitor import FpsMonitor
 from app.ui.widgets.nav_sidebar import NavSidebar
 from app.ui.widgets.skin_backdrop import SkinBackdrop
 from app.ui.widgets.top_bar import TopBar
+from app.ui.widgets.window_chrome import ResizeGripManager, TitleBar
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +56,6 @@ log = logging.getLogger(__name__)
 # 每项 = (key, emoji, 中文标签[, 徽章])；key 映射到 _key_to_page 的页面。
 _PRIMARY_NAV: list[tuple] = [
     ("home", "📊", "概览"),
-    ("live", "🔴", "实时比赛", "LIVE"),
     ("schedule", "📅", "赛程中心"),
     ("globe", "🌍", "地球仪"),
     ("teams", "🛡", "球队"),
@@ -74,6 +74,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle(APP_TITLE_ZH)
         self.setMinimumSize(WINDOW_MIN_WIDTH, WINDOW_MIN_HEIGHT)
+        # 无边框：去掉操作系统原生「黑框」标题栏，改用与主体融合的自绘标题栏
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint, True)
 
         self._service = DataService()
         self._favorites = Favorites()
@@ -123,7 +125,6 @@ class MainWindow(QMainWindow):
         # ── 索引映射 ──
         self._key_to_page: dict[str, QWidget] = {
             "home": self._home,
-            "live": self._schedule,
             "globe": self._globe,
             "schedule": self._schedule,
             "prediction": self._prediction,
@@ -154,7 +155,7 @@ class MainWindow(QMainWindow):
         self._backdrop.set_enabled(self._bg_anim)
         self._backdrop.lower()
 
-        outer = QHBoxLayout(central)
+        outer = QHBoxLayout()
         outer.setContentsMargins(0, 0, 0, 0)
         outer.setSpacing(0)
         outer.addWidget(self._sidebar)
@@ -167,6 +168,23 @@ class MainWindow(QMainWindow):
         right_w = QWidget()
         right_w.setLayout(right)
         outer.addWidget(right_w, 1)
+
+        # 自绘标题栏（窗口控制 + 拖动）置于最顶部，整窗一栏横贯
+        self._titlebar = TitleBar(APP_TITLE_ZH)
+        body_w = QWidget()
+        body_w.setLayout(outer)
+        shell = QVBoxLayout()
+        shell.setContentsMargins(0, 0, 0, 0)
+        shell.setSpacing(0)
+        shell.addWidget(self._titlebar)
+        shell.addWidget(body_w, 1)
+        central.setLayout(shell)
+        self._titlebar.setStyleSheet(self._titlebar.styleSheet())  # noqa: ensure styled
+        body_w.setStyleSheet("background: transparent;")
+
+        # 无边框窗口的边缘缩放手柄（铺在四边/四角，置于最上层）
+        self._grips = ResizeGripManager(central)
+        self._grips.reposition()
 
         # 让动态背景透出来：内容区容器全部透明（侧栏/顶栏走 chrome_glass 半透明）
         central.setStyleSheet("background: transparent;")
@@ -509,6 +527,10 @@ class MainWindow(QMainWindow):
         if hasattr(self, "_backdrop") and hasattr(self, "_central"):
             self._backdrop.setGeometry(self._central.rect())
             self._backdrop.lower()
+        if hasattr(self, "_grips"):
+            self._grips.reposition()
+        if hasattr(self, "_titlebar"):
+            self._titlebar.sync_max_glyph()
         if hasattr(self, "_fps_monitor") and self._fps_monitor.isVisible():
             self._position_fps_monitor()
             self._fps_monitor.raise_()

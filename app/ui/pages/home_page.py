@@ -48,6 +48,7 @@ from app.ui.widgets.dashboard_charts import DualRadarChart, RingProgress, Sparkl
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.image_loader import RemoteImage
 from app.ui.widgets.misc import Card
+from app.ui.widgets.player_avatar import PlayerAvatar
 from app.utils.time_utils import fmt_time, is_today, local_now
 
 log = logging.getLogger(__name__)
@@ -247,20 +248,26 @@ class LiveMatchPanel(Card):
         top.addWidget(self._clock)
         root.addLayout(top)
 
-        # 对阵行：主队 | VS/比分 | 客队 —— 横向并排，国旗在上 / 队名在下
+        # 对阵行：主队 | 主队比分 | 中间分隔 | 客队比分 | 客队 —— 比分分列两侧、醒目
         score = QHBoxLayout()
-        score.setSpacing(10)
+        score.setSpacing(14)
         score.addStretch(1)
         score.addWidget(QWidget())             # idx 1: 主队占位（set_match 时替换）
 
+        self._home_score = QLabel("")
+        self._home_score.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._home_score.setFixedWidth(76)
+        self._home_score.setStyleSheet(
+            "font-size:64px; font-weight:900; color:#FFFFFF; background:transparent;")
+        score.addWidget(self._home_score)       # idx 2: 主队比分（左侧、醒目）
+
         mid = QVBoxLayout()
         mid.setSpacing(2)
-        self._big = QLabel("—")
-        self._big.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._big.setStyleSheet(
-            "font-size:48px; font-weight:900; color:#FFFFFF; background:transparent;"
-            " letter-spacing:2px;")
-        mid.addWidget(self._big)
+        self._mid_sep = QLabel("VS")
+        self._mid_sep.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._mid_sep.setStyleSheet(
+            f"font-size:22px; font-weight:900; color:{C_FAINT}; background:transparent;")
+        mid.addWidget(self._mid_sep)
         self._status_txt = QLabel("")
         self._status_txt.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._status_txt.setStyleSheet(
@@ -268,15 +275,22 @@ class LiveMatchPanel(Card):
         mid.addWidget(self._status_txt)
         mid_w = QWidget()
         mid_w.setLayout(mid)
-        mid_w.setFixedWidth(110)
-        score.addWidget(mid_w)                 # idx 2: 中间 VS / 比分（固定）
+        mid_w.setFixedWidth(64)
+        score.addWidget(mid_w)                 # idx 3: 中间 VS / 状态（固定、窄）
 
-        score.addWidget(QWidget())             # idx 3: 客队占位
+        self._away_score = QLabel("")
+        self._away_score.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._away_score.setFixedWidth(76)
+        self._away_score.setStyleSheet(
+            "font-size:64px; font-weight:900; color:#FFFFFF; background:transparent;")
+        score.addWidget(self._away_score)       # idx 4: 客队比分（右侧、醒目）
+
+        score.addWidget(QWidget())             # idx 5: 客队占位
         score.addStretch(1)
         # 记录关键索引，set_match 时按索引精确替换两侧队伍（避免错位浮动）
         self._score_lay = score
         self._home_idx = 1
-        self._away_idx = 3
+        self._away_idx = 5
         root.addLayout(score)
 
         # 副信息行（开赛时间 / 日期）
@@ -370,7 +384,9 @@ class LiveMatchPanel(Card):
         self._badge.hide()
         self._stage.setText("暂无焦点比赛")
         self._clock.setText("")
-        self._big.setText("—")
+        self._home_score.setText("")
+        self._away_score.setText("")
+        self._mid_sep.setText("VS")
         self._status_txt.setText("")
         self._meta.setText("赛事数据加载中…")
         self._action.setText("查看赛程")
@@ -386,7 +402,29 @@ class LiveMatchPanel(Card):
 
         is_live = match.is_live
         self._badge.setVisible(is_live)
-        self._big.setText(match.display_score)
+
+        # 双方比分分列两侧；未开赛则中间显示 VS、两侧不显示数字
+        not_started = (not is_live) and match.status in (
+            MatchStatus.FIXTURE, MatchStatus.UNKNOWN)
+        goals = _goals(match)
+        if not_started or goals is None:
+            self._home_score.setText("")
+            self._away_score.setText("")
+            self._mid_sep.setText("VS")
+            self._mid_sep.setStyleSheet(
+                f"font-size:22px; font-weight:900; color:{C_FAINT}; background:transparent;")
+        else:
+            ga, gb = goals
+            hi = C_LIVE if is_live else C_TEXT
+            self._home_score.setText(str(ga))
+            self._away_score.setText(str(gb))
+            self._home_score.setStyleSheet(
+                f"font-size:64px; font-weight:900; color:{hi}; background:transparent;")
+            self._away_score.setStyleSheet(
+                f"font-size:64px; font-weight:900; color:{hi}; background:transparent;")
+            self._mid_sep.setText("-")
+            self._mid_sep.setStyleSheet(
+                f"font-size:30px; font-weight:900; color:{C_FAINT}; background:transparent;")
 
         if is_live:
             minute = (match.minute or "").strip()
@@ -776,7 +814,7 @@ class TopScorersPanel(Card):
             f"color:{self._rank_color(p.rank)}; font-size:14px; font-weight:900;"
             " background:transparent;")
         row.addWidget(rk)
-        row.addWidget(FlagIcon(p.team_name, height=18, radius=3))
+        row.addWidget(PlayerAvatar(p.person_logo, size=30))
         nm = QLabel(p.person_name)
         nm.setStyleSheet(f"color:{C_TEXT}; font-size:12.5px; font-weight:700; background:transparent;")
         row.addWidget(nm, 1)

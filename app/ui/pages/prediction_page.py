@@ -250,7 +250,14 @@ class PredictionPage(BasePage):
         pick_lbl.setStyleSheet("color:#B0BEC5; font-size:12px; font-weight:700;")
         head.addWidget(pick_lbl)
         self._combo = QComboBox()
-        self._combo.setMinimumWidth(320)
+        self._combo.setMinimumWidth(480)
+        self._combo.setMinimumHeight(34)
+        self._combo.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self._combo.setMinimumContentsLength(36)
+        self._combo.setStyleSheet(
+            "QComboBox{font-size:13.5px; font-weight:700; padding:4px 14px;}"
+            "QComboBox QAbstractItemView{font-size:13px; min-width:520px;}"
+        )
         self._combo.setCursor(Qt.CursorShape.PointingHandCursor)
         self._combo.currentIndexChanged.connect(self._on_pick)
         head.addWidget(self._combo)
