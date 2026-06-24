@@ -895,6 +895,8 @@ def _make_cpu_class():
             self._init_state(palette)
             self._buf = None  # QPixmap 离屏缓冲
             self._sprites: dict = {}  # kind → 缓存的粒子精灵 QPixmap
+            self._bg_base = None       # 背景图「底图」缓存（等比铺满 + 可读性遮罩）
+            self._bg_base_key = None   # 缓存键：(w, h, 调色板名)，变化时重建
 
         # ── 逐帧推进（粒子引擎；运动仍只由唯一 FrameClock 驱动）──
         def _advance(self, step_dt: float) -> None:
@@ -946,6 +948,37 @@ def _make_cpu_class():
             p.drawPixmap(self.rect(), self._buf)
             p.end()
 
+        def _bg_base_pixmap(self, w: int, h: int, bg) -> "QPixmap":
+            """返回缓存的背景「底图」（等比铺满的照片 + 烘焙好的可读性遮罩）。
+
+            仅当窗口尺寸或调色板变化时重建；逐帧绘制只需对它做一次 blit，
+            把「每帧平滑缩放 1.5MP 大图」的开销降为「每次 resize 一次」。
+            """
+            from PyQt6.QtGui import QPixmap
+            key = (w, h, self._palette.name)
+            if self._bg_base is not None and self._bg_base_key == key:
+                return self._bg_base
+            pal = self._palette
+            base = QPixmap(w, h)
+            base.fill(Qt.GlobalColor.black)
+            bp = QPainter(base)
+            bp.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
+            iw, ih = bg.width(), bg.height()
+            if iw > 0 and ih > 0:
+                cover = max(w / iw, h / ih)
+                dw, dh = iw * cover, ih * cover
+                dx, dy = (w - dw) / 2.0, (h - dh) / 2.0
+                bp.drawPixmap(QRectF(dx, dy, dw, dh), bg, QRectF(0, 0, iw, ih))
+            ov = QLinearGradient(0.0, 0.0, 0.0, float(h))
+            ov.setColorAt(0.0, _qc(_hex_rgb(pal.bg_top), 0.34))
+            ov.setColorAt(0.5, _qc(_hex_rgb(pal.bg_mid), 0.42))
+            ov.setColorAt(1.0, _qc(_hex_rgb(pal.bg_bottom), 0.58))
+            bp.fillRect(QRectF(0, 0, w, h), ov)
+            bp.end()
+            self._bg_base = base
+            self._bg_base_key = key
+            return base
+
         def _paint_scene(self, p: "QPainter", w: int, h: int) -> None:
             pal = self._palette
             t = self._t
@@ -954,32 +987,19 @@ def _make_cpu_class():
             # ── 自定义背景图（背景图.png）优先 ──
             # 存在时作为底图铺满（等比覆盖、居中裁剪），叠加可读性遮罩，再点缀
             # 轻量氛围（粒子 + 聚光灯横扫），不渲染「夜间球场」程序化场景。
+            #
+            # 性能关键：把「缩放后的照片 + 可读性遮罩」**预合成并缓存**为底图，
+            # 仅在尺寸/调色板变化时重建；逐帧只做一次廉价 blit + 轻量氛围层，
+            # 避免每帧都对 1.5MP 大图做平滑缩放（那是卡顿的主因）。
             bg = load_background_image()
             if bg is not None and not bg.isNull():
-                p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
-                iw, ih = bg.width(), bg.height()
-                if iw > 0 and ih > 0:
-                    cover = max(w / iw, h / ih)
-                    dw, dh = iw * cover, ih * cover
-                    dx, dy = (w - dw) / 2.0, (h - dh) / 2.0
-                    p.drawPixmap(QRectF(dx, dy, dw, dh), bg, QRectF(0, 0, iw, ih))
-                # 可读性遮罩：自上而下加深，保证前景文字/卡片清晰可读。
-                ov = QLinearGradient(rect.topLeft(), rect.bottomLeft())
-                ov.setColorAt(0.0, _qc(_hex_rgb(pal.bg_top), 0.34))
-                ov.setColorAt(0.5, _qc(_hex_rgb(pal.bg_mid), 0.42))
-                ov.setColorAt(1.0, _qc(_hex_rgb(pal.bg_bottom), 0.58))
-                p.fillRect(rect, ov)
-                # 轻量氛围：粒子 + 两束聚光灯横扫（与无图时同款，营造「活起来」）。
+                base = self._bg_base_pixmap(w, h, bg)
+                if base is not None:
+                    p.drawPixmap(0, 0, base)
+                # 轻量氛围：仅保留上飘微粒（~0.2ms/帧）。原先的两束全窗径向「聚光灯
+                # 横扫」在照片背景上几乎不可见，却占去 ~80% 的逐帧开销，故在背景图
+                # 模式下省略，换取明显更顺滑的帧率。
                 self._paint_particles(p, w, h)
-                flood_c = _hex_rgb(pal.floodlight)
-                x1, x2 = sweep_positions(t)
-                beam_r = 0.5 * max(w, h)
-                from PyQt6.QtCore import QPointF
-                for cxn in (x1, x2):
-                    rg = QRadialGradient(QPointF(cxn * w, h * 0.42), beam_r)
-                    rg.setColorAt(0.0, _qc(flood_c, SWEEP_BEAM_PEAK))
-                    rg.setColorAt(1.0, _qc(flood_c, 0.0))
-                    p.fillRect(rect, rg)
                 return
 
             # L1 三段竖向渐变
