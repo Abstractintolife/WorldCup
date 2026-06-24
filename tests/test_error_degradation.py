@@ -141,6 +141,10 @@ def test_homepage_retains_last_good_data_on_fetch_failure(qapp):
 
     home = HomePage(DataService())
 
+    # 连接态现经 connection_changed 信号广播（正文连接徽标已移除）。
+    conn_states: list[bool] = []
+    home.connection_changed.connect(conn_states.append)
+
     good_matches = [_match()]
     good_groups = [_group()]
     good_scorers = [_scorer()]
@@ -159,8 +163,8 @@ def test_homepage_retains_last_good_data_on_fetch_failure(qapp):
     assert home._last_matches == good_matches
     assert home._last_groups == good_groups
     assert home._last_scorers == good_scorers
-    # 连接胶囊切换到错误态，但控件仍持有上一份完好数据。
-    assert "失败" in home._conn_badge.text()
+    # 连接态切换到错误（False），但控件仍持有上一份完好数据。
+    assert conn_states[-1] is False
 
 
 @pytestmark_qt

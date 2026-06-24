@@ -17,21 +17,25 @@
 """
 from __future__ import annotations
 
-from PyQt6.QtCore import QPoint, Qt
-from PyQt6.QtGui import QColor, QCursor, QPainter
+import math
+
+from PyQt6.QtCore import QPoint, QPointF, Qt
+from PyQt6.QtGui import QColor, QCursor, QPainter, QPen
 from PyQt6.QtWidgets import QWidget
 
 from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette
 
-#: 拖尾点数上限。
-MAX_DOTS = 5
+#: 拖尾点数上限（提高以获得连续顺滑的彗尾，而非稀疏的几个点）。
+MAX_DOTS = 16
 #: 头部（最新）点的基准透明度（克制、低调）。
-HEAD_OPACITY = 0.45
+HEAD_OPACITY = 0.5
 #: 点半径（像素）。
-DOT_RADIUS = 3
+DOT_RADIUS = 4
 #: 光标静止多少帧后开始「消尾」。
 _IDLE_FRAMES = 2
+#: 插值采样的目标间距（像素）—— 快速移动时按此密度补点，消除「跳跃 / 卡顿」。
+_STEP_PX = 5.0
 
 
 def push_sample(samples: list, pos, max_dots: int = MAX_DOTS) -> list:
@@ -86,23 +90,40 @@ class MouseTrailOverlay(QWidget):
         super().showEvent(ev)
 
     def hideEvent(self, ev) -> None:
-        self._clock.unsubscribe(self._on_frame)
+        try:
+            self._clock.unsubscribe(self._on_frame)
+        except RuntimeError:  # pragma: no cover - 进程退出竞态（FrameClock 已析构）
+            pass
         self._reset()
         super().hideEvent(ev)
 
     # ── 每帧推进 ─────────────────────────────
     def _on_frame(self, _t: float, _dt: float) -> None:
-        cur = self.mapFromGlobal(QCursor.pos())
-        moved = self._last_pos is None or cur != self._last_pos
-        if moved:
-            self._samples = push_sample(self._samples, QPoint(cur), MAX_DOTS)
+        cur = QPoint(self.mapFromGlobal(QCursor.pos()))
+        if self._last_pos is None:
+            self._samples = push_sample(self._samples, cur, MAX_DOTS)
+            self._last_pos = cur
             self._idle = 0
         else:
-            self._idle += 1
-            if self._idle > _IDLE_FRAMES and self._samples:
-                # 静止：从尾部逐帧「消尾」。
-                self._samples = self._samples[:-1]
-        self._last_pos = QPoint(cur)
+            dx = cur.x() - self._last_pos.x()
+            dy = cur.y() - self._last_pos.y()
+            dist = math.hypot(dx, dy)
+            if dist >= 1.0:
+                # 在上一帧位置与当前位置之间插值补点：快速移动时也能形成
+                # 连续、均匀的彗尾，而非相距很远的几个点（消除「卡顿感」）。
+                steps = min(MAX_DOTS, max(1, int(dist / _STEP_PX)))
+                for i in range(1, steps + 1):
+                    f = i / steps
+                    px = round(self._last_pos.x() + dx * f)
+                    py = round(self._last_pos.y() + dy * f)
+                    self._samples = push_sample(self._samples, QPoint(px, py), MAX_DOTS)
+                self._idle = 0
+            else:
+                self._idle += 1
+                if self._idle > _IDLE_FRAMES and self._samples:
+                    # 静止：从尾部逐帧「消尾」。
+                    self._samples = self._samples[:-1]
+            self._last_pos = cur
 
         if self._samples:
             self._opacities = trail_opacities(len(self._samples))
@@ -127,11 +148,28 @@ class MouseTrailOverlay(QWidget):
             return
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        p.setPen(Qt.PenStyle.NoPen)
         base = QColor(self._palette.primary_hi)
         ops = self._opacities or trail_opacities(len(self._samples))
-        for pt, op in zip(self._samples, ops):
+        n = len(self._samples)
+        if n == 0:
+            return
+
+        # 连接线：把相邻采样点连成一条「渐细渐隐」的彗尾，比离散圆点顺滑得多。
+        for i in range(n - 1):
+            op = ops[i] if i < len(ops) else 0.0
+            c = QColor(base)
+            c.setAlphaF(max(0.0, min(1.0, op * 0.9)))
+            width = max(1.0, DOT_RADIUS * 2.0 * (n - i) / n)
+            pen = QPen(c, width)
+            pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+            p.setPen(pen)
+            p.drawLine(self._samples[i], self._samples[i + 1])
+
+        # 圆点：头部最大最亮，向尾部递减，形成柔和的光点核。
+        p.setPen(Qt.PenStyle.NoPen)
+        for i, (pt, op) in enumerate(zip(self._samples, ops)):
             c = QColor(base)
             c.setAlphaF(max(0.0, min(1.0, op)))
             p.setBrush(c)
-            p.drawEllipse(pt, DOT_RADIUS, DOT_RADIUS)
+            r = max(1.0, DOT_RADIUS * (n - i) / n)
+            p.drawEllipse(QPointF(pt), r, r)

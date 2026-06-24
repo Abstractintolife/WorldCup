@@ -16,7 +16,8 @@
 """
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QRectF, Qt, pyqtSignal
+from PyQt6.QtGui import QColor, QPainter, QPen
 from PyQt6.QtWidgets import (
     QFrame,
     QHBoxLayout,
@@ -26,18 +27,73 @@ from PyQt6.QtWidgets import (
 )
 
 
-# 窗口控制按钮（最小化 / 最大化）——圆形玻璃风，与右上角 HUD 按钮一体化
+# 窗口控制按钮（最小化 / 最大化 / 关闭）—— 圆形玻璃风，与右上角 HUD 按钮一体化。
+# 玻璃底由 QSS 负责（含悬停态），按钮图标改为 QPainter 矢量描线绘制
+# （见 _WinCtrlButton），彻底解决「用 Unicode 字形显示不出来 / 看不见」的问题。
 _BTN_QSS = (
-    "QPushButton{{background:rgba(255,255,255,0.06); color:#C8D0E0; border:none;"
-    " border-radius:14px; font-size:{fs}px; font-weight:700;}}"
-    "QPushButton:hover{{background:rgba(255,255,255,0.16); color:#FFFFFF;}}"
+    "QPushButton{background:rgba(255,255,255,0.06); border:none;"
+    " border-radius:14px;}"
+    "QPushButton:hover{background:rgba(255,255,255,0.16);}"
 )
 # 关闭按钮：常态同样的玻璃圆，悬停转品牌红
 _CLOSE_QSS = (
-    "QPushButton{background:rgba(255,255,255,0.06); color:#C8D0E0; border:none;"
-    " border-radius:14px; font-size:14px; font-weight:700;}"
-    "QPushButton:hover{background:#E5484D; color:#FFFFFF;}"
+    "QPushButton{background:rgba(255,255,255,0.06); border:none;"
+    " border-radius:14px;}"
+    "QPushButton:hover{background:#E5484D;}"
 )
+
+
+class _WinCtrlButton(QPushButton):
+    """窗口控制按钮：玻璃底（QSS）+ QPainter 矢量描线图标。
+
+    ``kind`` ∈ {"min", "max", "restore", "close"}。图标用 1.6px 圆头线条
+    绘制，常态浅灰、悬停纯白（关闭键悬停时底色转红、图标转白），保证在
+    任意背景 / 缩放下都清晰可见（取代渲染不稳定的 Unicode 字形）。
+    """
+
+    def __init__(self, kind: str, parent: QWidget | None = None) -> None:
+        super().__init__(parent)
+        self._kind = kind
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setFixedSize(28, 28)
+        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.setStyleSheet(_CLOSE_QSS if kind == "close" else _BTN_QSS)
+
+    def set_kind(self, kind: str) -> None:
+        self._kind = kind
+        self.update()
+
+    def paintEvent(self, ev) -> None:  # noqa: D401
+        # 先让 QPushButton 画出玻璃底 / 悬停态，再在其上描出矢量图标。
+        super().paintEvent(ev)
+        p = QPainter(self)
+        p.setRenderHint(QPainter.RenderHint.Antialiasing)
+        color = QColor("#FFFFFF") if self.underMouse() else QColor("#C8D0E0")
+        pen = QPen(color, 1.6)
+        pen.setCapStyle(Qt.PenCapStyle.RoundCap)
+        pen.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
+        p.setPen(pen)
+        # 以按钮中心为基准的 10×10 图标区。
+        cx, cy = self.width() / 2.0, self.height() / 2.0
+        d = 9.0  # 图标边长
+        l, t, r, b = cx - d / 2, cy - d / 2, cx + d / 2, cy + d / 2
+        k = self._kind
+        if k == "min":
+            p.drawLine(int(l), int(cy), int(r), int(cy))
+        elif k == "max":
+            p.drawRect(QRectF(l, t, d, d))
+        elif k == "restore":
+            # 两个错位方框（还原图标）。
+            off = 2.4
+            p.drawRect(QRectF(l, t + off, d - off, d - off))
+            p.drawLine(int(l + off), int(t + off), int(l + off), int(t))
+            p.drawLine(int(l + off), int(t), int(r), int(t))
+            p.drawLine(int(r), int(t), int(r), int(b - off))
+            p.drawLine(int(r), int(b - off), int(r - off), int(b - off))
+        elif k == "close":
+            p.drawLine(int(l), int(t), int(r), int(b))
+            p.drawLine(int(l), int(b), int(r), int(t))
+        p.end()
 
 
 class TitleBar(QFrame):
@@ -70,16 +126,14 @@ class TitleBar(QFrame):
         row.addWidget(self._title)
         row.addStretch(1)
 
-        self._min_btn = QPushButton("\u2014")        # —
-        self._max_btn = QPushButton("\u2610")         # ▢
-        self._close_btn = QPushButton("\u2715")       # ✕
+        self._min_btn = _WinCtrlButton("min")
+        self._max_btn = _WinCtrlButton("max")
+        self._close_btn = _WinCtrlButton("close")
         for b in (self._min_btn, self._max_btn, self._close_btn):
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
             b.setFixedSize(28, 28)
-            b.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self._min_btn.setStyleSheet(_BTN_QSS.format(fs=14))
-        self._max_btn.setStyleSheet(_BTN_QSS.format(fs=12))
-        self._close_btn.setStyleSheet(_CLOSE_QSS)
+        self._min_btn.setToolTip("最小化")
+        self._max_btn.setToolTip("最大化 / 还原")
+        self._close_btn.setToolTip("关闭")
         row.addWidget(self._min_btn)
         row.addWidget(self._max_btn)
         row.addWidget(self._close_btn)
@@ -90,6 +144,15 @@ class TitleBar(QFrame):
 
     def set_title(self, title: str) -> None:
         self._title.setText(title)
+
+    def set_language(self, lang: str) -> None:
+        """切换标题栏语言（应用名 + 窗口控制按钮提示）。"""
+        from app.i18n import tr
+        from app.config import APP_TITLE_ZH
+        self._title.setText(tr(APP_TITLE_ZH))
+        self._min_btn.setToolTip(tr("最小化"))
+        self._max_btn.setToolTip(tr("最大化 / 还原"))
+        self._close_btn.setToolTip(tr("关闭"))
 
     # ── 窗口控制 ──────────────────────────────
     def _on_min(self) -> None:
@@ -102,13 +165,13 @@ class TitleBar(QFrame):
         win = self.window()
         if win.isMaximized():
             win.showNormal()
-            self._max_btn.setText("\u2610")        # ▢
+            self._max_btn.set_kind("max")
         else:
             win.showMaximized()
-            self._max_btn.setText("\u2750")        # ❐ 还原符号
+            self._max_btn.set_kind("restore")
 
     def sync_max_glyph(self) -> None:
-        self._max_btn.setText("\u2750" if self.window().isMaximized() else "\u2610")
+        self._max_btn.set_kind("restore" if self.window().isMaximized() else "max")
 
     # ── 拖动 / 双击最大化 ─────────────────────
     def mousePressEvent(self, ev) -> None:

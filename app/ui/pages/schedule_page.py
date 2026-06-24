@@ -116,7 +116,14 @@ class SchedulePage(BasePage):
     # ─────────────────────────────────────────
     def refresh(self, force: bool = False) -> None:
         async def runner() -> None:
+            import asyncio
+            from app.services.fifa_rankings import FifaRankings
             rounds, matches = await self._service.fetch_full_schedule(force=force)
+            # 同步拉取国际足联世界排名（供对阵卡国旗旁标注名次）；失败不影响赛程渲染。
+            try:
+                await FifaRankings.instance().refresh(force=force)
+            except Exception:  # pragma: no cover
+                pass
             self._rounds = rounds
             self._all_matches = matches
             self._populate_round_combo()

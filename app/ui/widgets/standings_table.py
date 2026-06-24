@@ -154,13 +154,16 @@ class StandingsTable(GlassCard):
     view_all_clicked = pyqtSignal()
 
     # 列宽预算（像素）—— 与表头一致，保证对齐。
-    _W_RANK = 30
-    _W_PLAYED = 38
-    _W_WDL = 64
-    _W_GD = 44
-    _W_PTS = 36
-    _W_QUAL = 120
-    _W_FORM = 110
+    # 概览页小组积分榜面板较窄（~360–380px），列宽需足够紧凑：非「球队」列
+    # 的固定宽度之和 + 间距要给伸缩的「球队」列留出 ≥ 其内容最小宽度的余量，
+    # 否则「球队」列在表头（仅文字）与数据行（旗+名）会被压到不同的最小宽度，
+    # 导致后续所有列错位。「最近5场」列因过宽（在此窄面板放不下）已移除。
+    _W_RANK = 24
+    _W_PLAYED = 28
+    _W_WDL = 44
+    _W_GD = 34
+    _W_PTS = 26
+    _W_QUAL = 52
 
     def __init__(
         self,
@@ -266,7 +269,7 @@ class StandingsTable(GlassCard):
         # 数据行（QFrame#StandingRow）有 3px 左侧色条边框，会把行内内容整体右移 3px；
         # 表头无该边框，故左内边距补足 3px（8+3），使表头与数据列严格对齐。
         row.setContentsMargins(11, 0, 8, 0)
-        row.setSpacing(6)
+        row.setSpacing(5)
 
         def lbl(text: str, width: int | None, align) -> QLabel:
             l = QLabel(text)
@@ -286,7 +289,6 @@ class StandingsTable(GlassCard):
         row.addWidget(lbl("净胜球", self._W_GD, Qt.AlignmentFlag.AlignCenter))
         row.addWidget(lbl("积分", self._W_PTS, Qt.AlignmentFlag.AlignCenter))
         row.addWidget(lbl("出线概率", self._W_QUAL, Qt.AlignmentFlag.AlignCenter))
-        row.addWidget(lbl("最近5场", self._W_FORM, Qt.AlignmentFlag.AlignCenter))
         return w
 
     def _hr(self) -> QFrame:
@@ -413,7 +415,7 @@ class StandingsTable(GlassCard):
 
         row = QHBoxLayout(w)
         row.setContentsMargins(8, 0, 8, 0)
-        row.setSpacing(6)
+        row.setSpacing(5)
 
         # # 名次 + 排名变化字形。
         rank_box = QVBoxLayout()
@@ -438,13 +440,18 @@ class StandingsTable(GlassCard):
         rank_host.setLayout(rank_box)
         row.addWidget(rank_host)
 
-        # 球队：旗 + 名。
+        # 球队：旗 + 名。名称用可省略标签（ElidedLabel），其最小宽度很小，
+        # 保证「球队」伸缩列在窄面板下仍能取得与表头一致的分配宽度（不被内容
+        # 撑大到不同的最小值），从而所有数据列与表头严格对齐。
         team_box = QHBoxLayout()
         team_box.setContentsMargins(0, 0, 0, 0)
         team_box.setSpacing(7)
         team_box.addWidget(FlagIcon(r.team_name, height=18, radius=3))
         from app.utils.text_utils import short_country_name
-        nm = QLabel(short_country_name(r.team_name))
+        from app.ui.widgets.elided_label import ElidedLabel
+        nm = ElidedLabel(short_country_name(r.team_name),
+                         mode=Qt.TextElideMode.ElideRight)
+        nm.setMinimumWidth(0)
         nm.setStyleSheet(
             f"color: {p.text}; font-size: 12.5px; font-weight: {Type.W_MEDIUM};"
             " background: transparent;"
@@ -465,7 +472,7 @@ class StandingsTable(GlassCard):
         # 积分。
         row.addWidget(self._cell(str(r.points), self._W_PTS, p.accent, bold=True))
 
-        # 出线概率（条 + %）。
+        # 出线概率（条 + %）—— 末列。
         qual_bar = QualBar(r.qual_prob, palette=p)
         qual_host = QWidget()
         qh = QHBoxLayout(qual_host)
@@ -473,15 +480,6 @@ class StandingsTable(GlassCard):
         qh.addWidget(qual_bar)
         qual_host.setFixedWidth(self._W_QUAL)
         row.addWidget(qual_host)
-
-        # 最近 5 场（胶囊）。
-        form = FormPills(r.form, palette=p)
-        form_host = QWidget()
-        fh = QHBoxLayout(form_host)
-        fh.setContentsMargins(0, 0, 0, 0)
-        fh.addWidget(form)
-        form_host.setFixedWidth(self._W_FORM)
-        row.addWidget(form_host)
 
         return w
 

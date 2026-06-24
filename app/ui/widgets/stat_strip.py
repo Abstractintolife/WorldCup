@@ -27,7 +27,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -214,7 +214,14 @@ def compute_stats(matches=None, groups=None, scorers=None) -> list[StatSpec]:
 #  单张统计卡
 # ════════════════════════════════════════════════════════════════════
 class StatCard(GlassCard):
-    """一张玻璃统计卡：图标/折线 · 标题数字（CountUp）· 涨跌幅 · 次级文本。"""
+    """一张玻璃统计卡：图标/折线 · 标题数字（CountUp）· 涨跌幅 · 次级文本。
+
+    可点击：点击后通过 :pyattr:`clicked` 发出该卡的 ``key``，供上层跳转到
+    对应榜单（球队 / 球员 / 赛程等）。
+    """
+
+    #: 点击该卡 —— 携带 :pyattr:`StatSpec.key`（matches / goals / ...）。
+    clicked = pyqtSignal(str)
 
     def __init__(
         self,
@@ -226,17 +233,25 @@ class StatCard(GlassCard):
         super().__init__(parent, padding=0, palette=palette)
         self._palette = palette
         self._spec = spec
-        self.setMinimumHeight(120)
+        # 更紧凑：缩小卡片最小高度（原 120），整条统计区更精炼。
+        self.setMinimumHeight(84)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setToolTip("点击查看对应榜单")
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._build_ui()
         self.set_spec(spec)
+
+    def mousePressEvent(self, ev) -> None:  # noqa: D401
+        if ev.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit(self._spec.key)
+        super().mousePressEvent(ev)
 
     # ── 骨架 ─────────────────────────────────
     def _build_ui(self) -> None:
         p = self._palette
         col = QVBoxLayout(self)
-        col.setContentsMargins(18, 16, 18, 14)
-        col.setSpacing(6)
+        col.setContentsMargins(15, 11, 15, 10)
+        col.setSpacing(3)
 
         # 顶栏：标题文字（左） + 图标 / 折线（右）。
         top = QHBoxLayout()
@@ -245,14 +260,14 @@ class StatCard(GlassCard):
         title_box.setSpacing(0)
         self._title = QLabel()
         self._title.setStyleSheet(
-            f"color: {p.text_dim}; font-size: 12px; font-weight: {Type.W_BOLD};"
+            f"color: {p.text_dim}; font-size: 11px; font-weight: {Type.W_BOLD};"
             " background: transparent;"
         )
         title_box.addWidget(self._title)
         self._en = QLabel()
         self._en.setStyleSheet(
-            f"color: {p.text_faint}; font-size: 8.5px; font-weight: {Type.W_BOLD};"
-            " letter-spacing: 1.4px; background: transparent;"
+            f"color: {p.text_faint}; font-size: 8px; font-weight: {Type.W_BOLD};"
+            " letter-spacing: 1.2px; background: transparent;"
         )
         title_box.addWidget(self._en)
         top.addLayout(title_box)
@@ -260,31 +275,31 @@ class StatCard(GlassCard):
 
         # 图标字形（emoji）。
         self._icon = QLabel()
-        self._icon.setFixedSize(34, 34)
+        self._icon.setFixedSize(28, 28)
         self._icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self._icon.setStyleSheet(
-            f"font-size: 22px; border-radius: {Radius.CHIP}px;"
+            f"font-size: 17px; border-radius: {Radius.CHIP}px;"
             f" background: {rgba(p.primary, 0.12)};"
         )
         top.addWidget(self._icon, alignment=Qt.AlignmentFlag.AlignTop)
 
         # 迷你折线（取代图标，仅「总比赛场次」用）。
-        self._spark = MiniSparkline(palette=p, width=64, height=30)
+        self._spark = MiniSparkline(palette=p, width=56, height=24)
         top.addWidget(self._spark, alignment=Qt.AlignmentFlag.AlignTop)
         col.addLayout(top)
 
         # 标题数字（CountUp） + 涨跌幅。
         value_row = QHBoxLayout()
-        value_row.setSpacing(8)
+        value_row.setSpacing(6)
         self._value = CountUpNumber(decimals=self._spec.decimals)
         self._value.setStyleSheet(
-            f"color: {p.text}; font-size: 30px; font-weight: {Type.W_BLACK};"
+            f"color: {p.text}; font-size: 23px; font-weight: {Type.W_BLACK};"
             " background: transparent;"
         )
         value_row.addWidget(self._value, 0, Qt.AlignmentFlag.AlignBottom)
         self._delta = QLabel()
         self._delta.setStyleSheet(
-            f"color: {p.win}; font-size: 12px; font-weight: {Type.W_BOLD};"
+            f"color: {p.win}; font-size: 11px; font-weight: {Type.W_BOLD};"
             " background: transparent;"
         )
         value_row.addWidget(self._delta, 0, Qt.AlignmentFlag.AlignBottom)
@@ -295,7 +310,7 @@ class StatCard(GlassCard):
         self._secondary = QLabel()
         self._secondary.setWordWrap(True)
         self._secondary.setStyleSheet(
-            f"color: {p.text_faint}; font-size: 10.5px; font-weight: {Type.W_MEDIUM};"
+            f"color: {p.text_faint}; font-size: 10px; font-weight: {Type.W_MEDIUM};"
             " background: transparent;"
         )
         col.addWidget(self._secondary)
@@ -349,7 +364,7 @@ class StatCard(GlassCard):
             self._value.deleteLater()
             self._value = CountUpNumber(decimals=spec.decimals)
             self._value.setStyleSheet(
-                f"color: {self._palette.text}; font-size: 30px;"
+                f"color: {self._palette.text}; font-size: 23px;"
                 f" font-weight: {Type.W_BLACK}; background: transparent;"
             )
             # 重新插入到数字行的最前。
@@ -398,6 +413,9 @@ class StatCard(GlassCard):
 class StatStrip(QWidget):
     """一排恰好六张等宽统计卡（需求 11.1 / 11.2）。"""
 
+    #: 点击某张卡 —— 携带其 ``key``（matches / goals / scorers / avg / teams / cities）。
+    clicked = pyqtSignal(str)
+
     def __init__(
         self,
         parent: QWidget | None = None,
@@ -416,6 +434,7 @@ class StatStrip(QWidget):
         self._cards: list[StatCard] = []
         for spec in (specs or SAMPLE_STATS):
             card = StatCard(spec, palette=palette)
+            card.clicked.connect(self.clicked.emit)
             # 等宽：每张卡 stretch = 1（需求 11.1）。
             self._row.addWidget(card, 1)
             self._cards.append(card)

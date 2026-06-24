@@ -109,15 +109,37 @@ class MatchCard(Card):
         wrap = QVBoxLayout()
         wrap.setSpacing(6)
         wrap.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        # 完整国旗（不裁剪 / 不圆角），代替原先被圆形裁掉边缘的队徽
-        flag = FlagIcon(team_name, height=30)
-        wrap.addWidget(flag, alignment=Qt.AlignmentFlag.AlignCenter)
+        # 完整国旗（不裁剪 / 不圆角），代替原先被圆形裁掉边缘的队徽；
+        # 旗面右下角紧贴国际足联世界排名标注（如「#12」）。
+        flag_row = QHBoxLayout()
+        flag_row.setSpacing(4)
+        flag_row.setContentsMargins(0, 0, 0, 0)
+        flag_row.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        flag_row.addWidget(
+            FlagIcon(team_name, height=30), alignment=Qt.AlignmentFlag.AlignVCenter)
+        rank_lbl = self._rank_lbl(team_name)
+        if rank_lbl is not None:
+            flag_row.addWidget(rank_lbl, alignment=Qt.AlignmentFlag.AlignBottom)
+        wrap.addLayout(flag_row)
         name_lbl = QLabel(name)
         name_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         name_lbl.setWordWrap(True)
         name_lbl.setStyleSheet("font-weight: 700; font-size:12.5px;")
         wrap.addWidget(name_lbl)
         return wrap
+
+    @staticmethod
+    def _rank_lbl(team_name: str | None) -> QLabel | None:
+        """国际足联世界排名小标注（如「#12」）；无排名则不展示。"""
+        from app.services.fifa_rankings import FifaRankings
+        txt = FifaRankings.instance().rank_text(team_name)
+        if not txt:
+            return None
+        lbl = QLabel(txt)
+        lbl.setToolTip("国际足联世界排名")
+        lbl.setStyleSheet(
+            "color:#FFD166; font-size:10px; font-weight:900; background:transparent;")
+        return lbl
 
     def mousePressEvent(self, ev: QMouseEvent) -> None:
         if ev.button() == Qt.MouseButton.LeftButton:

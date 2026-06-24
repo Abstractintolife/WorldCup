@@ -25,6 +25,7 @@ from PyQt6.QtWidgets import (
 )
 
 from app import __app_name__, __version__
+from app.i18n import tr
 from app.ui.theme import THEME_META, THEME_ORDER, THEMES
 
 _DIALOG_QSS = """
@@ -203,7 +204,7 @@ class SettingsDialog(QDialog):
         current_gpu_bg: bool = False,
     ) -> None:
         super().__init__(parent)
-        self.setWindowTitle("设置")
+        self.setWindowTitle(tr("设置"))
         self.setModal(True)
         self.setMinimumWidth(460)
         self.setStyleSheet(_DIALOG_QSS)
@@ -212,27 +213,17 @@ class SettingsDialog(QDialog):
         root.setContentsMargins(24, 22, 24, 20)
         root.setSpacing(14)
 
-        title = QLabel("⚙  设置")
+        title = QLabel("⚙  " + tr("设置"))
         title.setStyleSheet("font-size:20px; font-weight:900; color:#ffffff;")
         root.addWidget(title)
 
-        # ── 主题皮肤 ──────────────────────────
-        root.addWidget(_section_title("主题皮肤  ·  点击实时预览"))
-        grid = QGridLayout()
-        grid.setSpacing(12)
-        self._swatches: dict[str, _SkinSwatch] = {}
-        for i, name in enumerate(THEME_ORDER):
-            sw = _SkinSwatch(name)
-            sw.set_selected(name == current_theme)
-            sw.clicked.connect(self._on_swatch_clicked)
-            self._swatches[name] = sw
-            grid.addWidget(sw, i // 2, i % 2)
-        root.addLayout(grid)
-
-        root.addWidget(_hline())
+        # 注：「主题皮肤」三选一切换已移除 —— 应用统一使用单一夜间球场背景
+        # （存在自定义背景图时以其为底图），无需多套皮肤。
 
         # ── 动画帧率 ──────────────────────────
-        root.addWidget(_section_title("动画帧率  ·  越高越顺滑（更耗 CPU）"))
+        root.addWidget(_section_title(
+            tr("动画帧率  ·  越高越顺滑（更耗 CPU）",
+               "Animation FPS  ·  higher = smoother (more CPU)")))
         fps_row = QHBoxLayout()
         fps_row.setSpacing(10)
         self._fps_btns: dict[int, QPushButton] = {}
@@ -251,8 +242,13 @@ class SettingsDialog(QDialog):
         root.addWidget(_hline())
 
         # ── 动态背景 ──────────────────────────
-        root.addWidget(_section_title("动态背景  ·  关闭可显著降低 CPU、提升流畅度"))
-        bg_hint = QLabel("若界面卡顿，建议关闭动态背景（仅保留静态渐变，不影响功能）。")
+        root.addWidget(_section_title(
+            tr("动态背景  ·  关闭可显著降低 CPU、提升流畅度",
+               "Dynamic background  ·  turn off to cut CPU & boost smoothness")))
+        bg_hint = QLabel(tr(
+            "若界面卡顿，建议关闭动态背景（仅保留静态渐变，不影响功能）。",
+            "If the UI stutters, turn off the dynamic background "
+            "(static gradient only; no feature loss)."))
         bg_hint.setStyleSheet("color:#B0BEC5; font-size:11.5px;")
         bg_hint.setWordWrap(True)
         root.addWidget(bg_hint)
@@ -274,12 +270,17 @@ class SettingsDialog(QDialog):
         root.addWidget(_hline())
 
         # ── 渲染后端 ──────────────────────────
-        root.addWidget(_section_title("渲染后端  ·  GPU 把背景交给显卡，解放主线程"))
-        backend_hint = QLabel(
+        root.addWidget(_section_title(
+            tr("渲染后端  ·  GPU 把背景交给显卡，解放主线程",
+               "Render backend  ·  GPU offloads the background, frees the main thread")))
+        backend_hint = QLabel(tr(
             "CPU：QPainter 软件栅格化，跨平台最稳。\n"
             "GPU：GLSL 片元着色器渲染，主线程仅上传参数，可跑满高帧率并解锁真模糊/辉光"
-            "（需 OpenGL 3.3；不可用时自动回退 CPU）。"
-        )
+            "（需 OpenGL 3.3；不可用时自动回退 CPU）。",
+            "CPU: QPainter software rasterization, the most portable.\n"
+            "GPU: GLSL fragment-shader rendering; the main thread only uploads "
+            "uniforms, enabling high frame rates and real blur/glow "
+            "(needs OpenGL 3.3; falls back to CPU automatically)."))
         backend_hint.setStyleSheet("color:#B0BEC5; font-size:11.5px;")
         backend_hint.setWordWrap(True)
         root.addWidget(backend_hint)
@@ -301,12 +302,13 @@ class SettingsDialog(QDialog):
         root.addWidget(_hline())
 
         # ── 数据缓存 ──────────────────────────
-        root.addWidget(_section_title("数据缓存"))
-        cache_hint = QLabel("清空本地接口缓存后将重新拉取最新数据。")
+        root.addWidget(_section_title(tr("数据缓存", "Data cache")))
+        cache_hint = QLabel(tr("清空本地接口缓存后将重新拉取最新数据。",
+                               "Clearing the local API cache re-fetches the latest data."))
         cache_hint.setStyleSheet("color:#B0BEC5; font-size:11.5px;")
         cache_hint.setWordWrap(True)
         root.addWidget(cache_hint)
-        clear_btn = QPushButton("🗑  清空缓存并刷新")
+        clear_btn = QPushButton(tr("🗑  清空缓存并刷新", "🗑  Clear cache & refresh"))
         clear_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         clear_btn.clicked.connect(self._on_clear_cache)
         self._clear_btn = clear_btn
@@ -315,11 +317,12 @@ class SettingsDialog(QDialog):
         root.addWidget(_hline())
 
         # ── 关于 ──────────────────────────────
-        root.addWidget(_section_title("关于"))
+        root.addWidget(_section_title(tr("关于", "About")))
         about = QLabel(
             f"{__app_name__}  ·  v{__version__}\n"
-            "数据来源：懂球帝公开接口\n"
-            "国旗图源：本地内置位图（assets/flags）"
+            + tr("数据来源：懂球帝公开接口", "Data source: Dongqiudi public API") + "\n"
+            + tr("国旗图源：本地内置位图（assets/flags）",
+                 "Flags: bundled local bitmaps (assets/flags)")
         )
         about.setStyleSheet("color:#9AA3BE; font-size:11.5px;")
         root.addWidget(about)
@@ -327,7 +330,7 @@ class SettingsDialog(QDialog):
         # ── 底部按钮 ──────────────────────────
         btn_row = QHBoxLayout()
         btn_row.addStretch(1)
-        close_btn = QPushButton("完成")
+        close_btn = QPushButton(tr("完成", "Done"))
         close_btn.setObjectName("primary")
         close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
         close_btn.clicked.connect(self.accept)
@@ -335,11 +338,6 @@ class SettingsDialog(QDialog):
         root.addLayout(btn_row)
 
     # ── 事件 ─────────────────────────────────
-    def _on_swatch_clicked(self, key: str) -> None:
-        for name, sw in self._swatches.items():
-            sw.set_selected(name == key)
-        self.theme_selected.emit(key)
-
     def _select_fps_button(self, fps: int) -> None:
         # 选最接近的档位高亮
         choices = [f for f, _ in self._FPS_CHOICES]
@@ -369,5 +367,5 @@ class SettingsDialog(QDialog):
 
     def _on_clear_cache(self) -> None:
         self.cache_cleared.emit()
-        self._clear_btn.setText("✅  已清空缓存")
+        self._clear_btn.setText(tr("✅  已清空缓存", "✅  Cache cleared"))
         self._clear_btn.setEnabled(False)
