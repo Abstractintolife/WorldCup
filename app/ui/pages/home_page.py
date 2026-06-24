@@ -39,7 +39,7 @@ from app.models.standing import GroupStanding, TeamStanding
 from app.services.data_service import DataService
 from app.ui.pages.base import BasePage
 from app.ui.widgets.hero_match_card import HeroMatchCard, HeroMeta, percentages_to_100
-from app.ui.widgets.host_cities_panel import HostCitiesPanel
+from app.ui.widgets.championship_panel import ChampionshipPanel
 from app.ui.widgets.live_match_center import LiveMatchCenter
 from app.ui.widgets.standings_table import StandingsTable
 from app.ui.widgets.stat_strip import StatStrip, compute_stats
@@ -91,8 +91,8 @@ IA_WEIGHT_ORDER: tuple[str, ...] = (
 )
 # Hero 行横向列分配：焦点比赛 ~65%（左、宽）| 小组积分榜 ~35%（右、窄）（需求 1.4）。
 HERO_COLUMN_WEIGHTS: tuple[int, int] = (65, 35)
-# 底部多面板行（任务 12）横向列分配：今日赛程 | 实时比赛 | 射手榜 | 主办城市。
-# 「今日赛程」与「实时比赛」为「正在发生」的主面板（更宽），射手榜 / 主办城市
+# 底部多面板行（任务 12）横向列分配：今日赛程 | 实时比赛 | 射手榜 | 夺冠概率榜。
+# 「今日赛程」与「实时比赛」为「正在发生」的主面板（更宽），射手榜 / 夺冠概率榜
 # 为次级面板（略窄）；四列共同占用 IA 底部行纵向预算（schedule+analysis+other）。
 BOTTOM_COLUMN_WEIGHTS: tuple[int, int, int, int] = (10, 10, 7, 7)
 
@@ -190,11 +190,11 @@ class HomePage(BasePage):
         # 样例值，真实数据到达后经 _apply → compute_stats 覆盖。
         self._stat_card = StatStrip()
         self._stat_card.setProperty("ia_region", "overview")
-        self._stat_card.setMinimumHeight(96)
+        self._stat_card.setMinimumHeight(78)
         # 六张统计卡点击跳转到对应榜单（球队 / 球员 / 赛程 / 场馆）。
         self._stat_card.clicked.connect(self._on_stat_clicked)
 
-        # ── 第 3 排：底部多面板行（今日赛程 / 实时比赛 / 射手榜 / 主办城市）──
+        # ── 第 3 排：底部多面板行（今日赛程 / 实时比赛 / 射手榜 / 夺冠概率榜）──
         # 任务 12：四块广播级面板，全部由注入的 DataService 喂数据（需求 1.1 / 26.2）。
         self._today_card = TodayMatchesPanel()
         self._today_card.setProperty("ia_region", "schedule")
@@ -211,9 +211,9 @@ class HomePage(BasePage):
         self._scorers_card.player_clicked.connect(self.player_clicked.emit)
         self._scorers_card.view_all_clicked.connect(lambda: self.navigate.emit("scorers"))
 
-        self._cities_card = HostCitiesPanel()
-        self._cities_card.setProperty("ia_region", "cities")
-        self._cities_card.view_all_clicked.connect(lambda: self.navigate.emit("venue"))
+        self._cities_card = ChampionshipPanel(top=6)
+        self._cities_card.setProperty("ia_region", "championship")
+        self._cities_card.view_all_clicked.connect(lambda: self.navigate.emit("probability"))
 
         self._bottom_row = QHBoxLayout()
         self._bottom_row.setSpacing(18)
@@ -256,7 +256,7 @@ class HomePage(BasePage):
         return (self._hero_row.stretch(0), self._hero_row.stretch(1))
 
     def bottom_column_stretches(self) -> tuple[int, int, int, int]:
-        """底部行内 [今日赛程, 实时比赛, 射手榜, 主办城市] 的横向 stretch（10/10/7/7）。"""
+        """底部行内 [今日赛程, 实时比赛, 射手榜, 夺冠概率榜] 的横向 stretch（10/10/7/7）。"""
         return (self._bottom_row.stretch(0), self._bottom_row.stretch(1),
                 self._bottom_row.stretch(2), self._bottom_row.stretch(3))
 
@@ -270,15 +270,20 @@ class HomePage(BasePage):
         async def runner() -> None:
             import asyncio
             from app.services.fifa_rankings import FifaRankings
+            from app.services.theanalyst import TheAnalyst
             results = await asyncio.gather(
                 self._service.fetch_full_schedule(force=force),
                 self._service.fetch_standings(force=force),
                 self._service.fetch_ranking(RankingType.GOALS, force=force),
                 FifaRankings.instance().refresh(force=force),
+                TheAnalyst.instance().refresh(force=force),
                 return_exceptions=True,
             )
             # FIFA 世界排名仅用于在对阵国旗旁标注名次，不计入主数据成功判定。
             self._apply(results[:3])
+            # 夺冠概率榜（Opta 超算）—— 实时接口失败时服务内部自动回退离线快照。
+            self._cities_card.set_ranking(
+                TheAnalyst.instance().championship_ranking())
         self.run_async(runner)
 
     def _apply(self, results) -> None:
@@ -341,7 +346,7 @@ class HomePage(BasePage):
         # 射手榜：射手榜数据（无则回退设计稿样例，需求 14.3）。
         self._scorers_card.set_scorers(scorer_list)
 
-        # 主办城市为静态数据集，无需注入。
+        # 夺冠概率榜由 refresh() 经 TheAnalyst 注入（实时接口失败时回退离线快照）。
 
     # ── Hero 卡渲染（任务 8：HeroMatchCard + HeroMeta）──────
     def _render_hero(self, featured: Match | None,

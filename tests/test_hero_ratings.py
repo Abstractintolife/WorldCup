@@ -47,10 +47,11 @@ pytestmark_qt = pytest.mark.skipif(
 
 @pytestmark_qt
 def test_hero_card_renders_present_and_missing_ranks(qapp):
-    """Present home ranks render their values; all-missing away ranks render '—'.
+    """Present home FIFA rank renders its value; missing away FIFA renders '—'.
 
-    Home has Elo 1800 / FIFA #5 / world #3 (all present); away has every value
-    missing, so its ratings line shows the placeholder three times. (Req 8.2)
+    Per the home-page redesign the hero ratings line shows **only** the FIFA
+    world ranking (Elo / world-rank rows were removed). Home has FIFA #5
+    (present); away's FIFA rank is missing, so its line shows the placeholder.
     """
     from app.ui.widgets.hero_match_card import HeroMatchCard, HeroMeta
 
@@ -58,28 +59,25 @@ def test_hero_card_renders_present_and_missing_ranks(qapp):
     card.set_match(
         None,
         HeroMeta(
-            home_elo=1800,
             home_fifa_rank=5,
-            home_world_rank=3,
-            # away_* default to None (missing).
+            # away_fifa_rank defaults to None (missing).
         ),
     )
 
     home_text = card._home_ratings.text()
-    assert "1800" in home_text
+    assert "FIFA" in home_text
     assert "5" in home_text
-    assert "3" in home_text
-    # Home values are all present -> no placeholder.
+    # Home FIFA present -> no placeholder.
     assert PLACEHOLDER not in home_text
 
     away_text = card._away_ratings.text()
-    # Three missing values -> exactly three placeholders.
-    assert away_text.count(PLACEHOLDER) == 3
+    # Only FIFA rank is shown now -> exactly one placeholder when missing.
+    assert away_text.count(PLACEHOLDER) == 1
 
 
 @pytestmark_qt
 def test_hero_card_all_missing_ranks_render_placeholder(qapp):
-    """A fully-missing HeroMeta renders '—' for all six rating values. (Req 8.2)"""
+    """A fully-missing HeroMeta renders '—' for the single FIFA value per team."""
     from app.ui.widgets.hero_match_card import HeroMatchCard, HeroMeta
 
     card = HeroMatchCard()
@@ -87,6 +85,6 @@ def test_hero_card_all_missing_ranks_render_placeholder(qapp):
 
     home_text = card._home_ratings.text()
     away_text = card._away_ratings.text()
-    # Three placeholders per team (Elo / FIFA / world rank) -> six in total.
-    assert home_text.count(PLACEHOLDER) == 3
-    assert away_text.count(PLACEHOLDER) == 3
+    # Only the FIFA world ranking is shown -> one placeholder per team.
+    assert home_text.count(PLACEHOLDER) == 1
+    assert away_text.count(PLACEHOLDER) == 1

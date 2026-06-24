@@ -17,7 +17,7 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-# 设计稿要求的 12 项导航，严格顺序（中文标签）。
+# 导航 13 项，严格顺序（中文标签）—— 在「数据分析」后新增「概率预测」。
 EXPECTED_LABELS = [
     "概览",
     "赛程中心",
@@ -25,6 +25,7 @@ EXPECTED_LABELS = [
     "球队",
     "球员",
     "数据分析",
+    "概率预测",
     "积分榜",
     "射手榜",
     "场馆地图",
@@ -40,6 +41,7 @@ EXPECTED_KEYS = [
     "teams",
     "players",
     "analysis",
+    "probability",
     "standings",
     "scorers",
     "venue",
@@ -55,10 +57,10 @@ def _make_rail(qapp):
     return NavRail(NAV_ITEMS)
 
 
-def test_nav_rail_has_exactly_twelve_items(qapp):
+def test_nav_rail_has_exactly_thirteen_items(qapp):
     rail = _make_rail(qapp)
-    assert len(rail.nav_keys()) == 12
-    assert len(rail.nav_labels()) == 12
+    assert len(rail.nav_keys()) == 13
+    assert len(rail.nav_labels()) == 13
 
 
 def test_nav_rail_labels_match_spec_order(qapp):

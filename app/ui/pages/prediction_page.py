@@ -70,6 +70,7 @@ _SRC_SHORT = {
     "Squawka": "Squawka",
     "KickForm（ThePuntersPage）": "KickForm",
     "Forebet": "Forebet",
+    "The Analyst（Opta 超算）": "The Analyst",
 }
 
 

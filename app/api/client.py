@@ -136,6 +136,8 @@ class ApiClient:
         *,
         cache_ttl: int = JSON_CACHE_TTL,
         force: bool = False,
+        headers: dict[str, str] | None = None,
+        use_common_params: bool = True,
     ) -> dict[str, Any]:
         """请求一个 JSON 端点（带 stale-while-revalidate 缓存 + 同请求去重）。
 
@@ -147,7 +149,8 @@ class ApiClient:
           都能秒开，彻底消除「打开各种界面要等好久」。
         * **未命中** —— await 真正的网络请求（仅首次访问该接口时发生）。
         """
-        params = {**ENDPOINTS.common_params, **(params or {})}
+        params = {**ENDPOINTS.common_params, **(params or {})} if use_common_params \
+            else dict(params or {})
         cache_key = self._key(url, params)
 
         if not force:
@@ -157,7 +160,7 @@ class ApiClient:
                 if time.time() < fresh_until:
                     return data           # 新鲜 → 秒回
                 # 过期 → 先秒回旧数据，再后台刷新
-                self._revalidate_in_background(url, params, cache_key, cache_ttl)
+                self._revalidate_in_background(url, params, cache_key, cache_ttl, headers)
                 return data
 
         # in-flight 去重：同 key 已有协程在飞，直接 await 它的结果，
@@ -167,7 +170,7 @@ class ApiClient:
             return await existing
 
         task = asyncio.ensure_future(
-            self._fetch_with_retry(url, params, cache_key, cache_ttl)
+            self._fetch_with_retry(url, params, cache_key, cache_ttl, headers)
         )
         self._inflight[cache_key] = task
         try:
@@ -183,6 +186,7 @@ class ApiClient:
         params: dict[str, Any],
         cache_key: str,
         cache_ttl: int,
+        headers: dict[str, str] | None = None,
     ) -> None:
         """后台静默刷新一个过期条目（不阻塞调用方，错误仅记录日志）。"""
         existing = self._inflight.get(cache_key)
@@ -195,7 +199,7 @@ class ApiClient:
         if not loop.is_running():
             return
         task = asyncio.ensure_future(
-            self._fetch_with_retry(url, params, cache_key, cache_ttl)
+            self._fetch_with_retry(url, params, cache_key, cache_ttl, headers)
         )
         self._inflight[cache_key] = task
 
@@ -227,12 +231,13 @@ class ApiClient:
         params: dict[str, Any],
         cache_key: str,
         cache_ttl: int,
+        headers: dict[str, str] | None = None,
     ) -> dict[str, Any]:
         last_exc: Exception | None = None
         attempt = 0
         while attempt <= HTTP_RETRIES:
             try:
-                resp = await self._client.get(url, params=params)
+                resp = await self._client.get(url, params=params, headers=headers)
                 resp.raise_for_status()
                 # 服务端某些响应不带正确 content-type，需要手动解析
                 data = json.loads(resp.text) if resp.text else {}
