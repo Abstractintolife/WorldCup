@@ -22,8 +22,8 @@ from __future__ import annotations
 
 import math
 
-from PyQt6.QtCore import QPropertyAnimation, QRectF, Qt, pyqtProperty
-from PyQt6.QtGui import QColor, QPainter, QPainterPath, QPixmap, QPixmapCache
+from PyQt6.QtCore import QPointF, QPropertyAnimation, QRectF, Qt, pyqtProperty
+from PyQt6.QtGui import QColor, QPainter, QPixmap, QPixmapCache, QTransform
 from PyQt6.QtWidgets import QWidget
 
 from app.config import LOW_PERF
@@ -41,7 +41,7 @@ _WAVE_PERIOD_S = 2.2          # 一个主波周期（秒）—— 风的节律
 _WAVE_COUNT = 1.6             # 旗面上同时可见的波数（沿宽度方向）
 _WAVE_AMPLITUDE_RATIO = 0.12  # 自由端最大垂直摆幅 ≈ 旗高 * 该比值
 _WAVE_SWAY_RATIO = 0.05       # 自由端最大水平摆幅 ≈ 旗高 * 该比值
-_STRIP_PX = 2                 # 竖条宽度（像素）—— 越小越平滑、越费一点点 CPU
+_STRIP_PX = 3                 # 竖条宽度（像素）—— 错切保证无缝，故可略宽以省开销
 _BG_MIN_DT = 1.0 / 60.0       # 重绘节流到 ~60fps（即便心跳高达 240Hz）
 
 
@@ -214,7 +214,7 @@ class FloatingFlag(QWidget):
         self._unsubscribe()
         super().hideEvent(ev)
 
-    # ── 绘制：逐竖条行进波 + 褶皱明暗 ──
+    # ── 绘制：逐竖条「错切」行进波 + 褶皱明暗（无缝、不割裂）──
     def paintEvent(self, _ev) -> None:
         if self._scaled is None:
             self._build_scaled()
@@ -232,44 +232,52 @@ class FloatingFlag(QWidget):
             return
 
         fw, fh = self._w, self._h
-        step = _STRIP_PX
         t = self._t
         amp = self._amp
-        sway = self._sway
+        step = max(2, _STRIP_PX)
 
-        x = 0
-        while x < fw:
-            sw = min(step, fw - x)
-            u = (x + sw * 0.5) / fw            # 该竖条中心的归一化横向位置
-            dy = wave_offset(u, t, amplitude=amp)
-            # 自由端轻微水平回缩（布料起伏时的横向位移），旗杆端不动。
-            dx = sway * (u * u) * math.sin(2.0 * math.pi * (t / _WAVE_PERIOD_S) + u * 3.0)
+        # 竖条边界（含末端），在「边界」处取位移，使相邻竖条共享同一条边
+        # —— 关键：每条竖条用 **垂直错切**（shear）让左缘对齐 dy(x0)、右缘对齐
+        #    dy(x1)，相邻竖条因共享边界位移而严丝合缝，彻底消除「阶梯/割裂」。
+        bounds = list(range(0, fw, step))
+        if bounds[-1] != fw:
+            bounds.append(fw)
 
-            src = QRectF(x, 0, sw, fh)
-            dst = QRectF(base_x + x + dx, base_y + dy, sw, fh)
-            p.drawPixmap(dst, self._scaled, src)
+        def off(x: float) -> float:
+            return wave_offset(x / fw, t, amplitude=amp)
 
-            # 褶皱明暗：波形斜率决定折面朝向 —— 朝向光源更亮、背离更暗。
-            slope = math.cos(2.0 * math.pi * _WAVE_COUNT * u
-                             - (2.0 * math.pi / _WAVE_PERIOD_S) * t)
-            env = u * u
-            if slope < 0:
-                a = int(min(80, -slope * env * 90))
+        for i in range(len(bounds) - 1):
+            x0 = bounds[i]
+            x1 = bounds[i + 1]
+            sw = x1 - x0
+            if sw <= 0:
+                continue
+            dy0 = off(x0)
+            dy1 = off(x1)
+            slope = (dy1 - dy0) / sw          # 该竖条内的垂直错切斜率
+
+            # 源像素 (sx,sy) → 设备: x'=base_x+sx, y'=base_y+dy0+slope*(sx-x0)+sy
+            tr = QTransform(1.0, slope, 0.0, 1.0,
+                            float(base_x), float(base_y + dy0 - slope * x0))
+            p.setTransform(tr)
+            # 只绘制该竖条对应的源子区（比「画整图再裁剪」更省），错切后与相邻
+            # 竖条共享边界、严丝合缝。
+            p.drawPixmap(QPointF(float(x0), 0.0), self._scaled,
+                         QRectF(x0, 0, sw, fh))
+
+            # 褶皱明暗：用局部斜率近似折面朝向，连续变化（不产生硬边带）。
+            u = (x0 + sw * 0.5) / fw
+            env = u * u                         # 旗杆端≈0、自由端≈1
+            shade = max(-1.0, min(1.0, slope * 3.5))
+            if shade < 0:                       # 背光折面 → 压暗
+                a = int(min(70, -shade * env * 70))
                 if a > 0:
-                    p.fillRect(dst, QColor(0, 0, 0, a))
-            else:
-                a = int(min(55, slope * env * 60))
+                    p.fillRect(QRectF(x0, 0, sw, fh), QColor(0, 0, 0, a))
+            elif shade > 0:                     # 迎光折面 → 提亮
+                a = int(min(42, shade * env * 42))
                 if a > 0:
-                    p.fillRect(dst, QColor(255, 255, 255, a))
-            x += sw
-
-        # 细描边（沿名义旗面外框，轻微提升与背景的分离度）。
-        if self._radius > 0:
-            path = QPainterPath()
-            path.addRoundedRect(QRectF(base_x, base_y, fw, fh),
-                                float(self._radius), float(self._radius))
-            p.setClipPath(path)
-            p.setClipping(False)
+                    p.fillRect(QRectF(x0, 0, sw, fh), QColor(255, 255, 255, a))
+        p.resetTransform()
 
     # ── 历史兼容属性 ──
     def _get_float_y(self) -> float:
