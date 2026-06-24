@@ -307,6 +307,16 @@ class CountdownClock(QWidget):
         self._live.setText("LIVE · KICK-OFF")
         self._live.show()
 
+    def show_status(self, text: str, *, color: str | None = None) -> None:
+        """显示任意状态文案（如「进行中」「全场结束」），替代翻牌数字。"""
+        self._set_digits_visible(False)
+        self._live.setStyleSheet(
+            f"color: {color or self._palette.live}; font-size: {Type.H2}px;"
+            f" font-weight: {Type.W_BLACK}; letter-spacing: 2px; background: transparent;"
+        )
+        self._live.setText(text)
+        self._live.show()
+
     def _set_digits_visible(self, visible: bool) -> None:
         for w in (self._h, self._m, self._s):
             w.setVisible(visible)
@@ -658,6 +668,10 @@ class HeroMatchCard(GlassCard):
         # 开球时间 + 场馆
         self._meta_lbl.setText(self._format_meta(meta))
 
+        # 焦点比赛若正在进行 / 已结束：中央用大比分替代「VS」，并在倒计时位置
+        # 显示比赛状态（进行中 / 全场结束），不再倒数（需求：正在踢的比赛加比分）。
+        self._render_center_score(match)
+
         # 每队 Elo / FIFA / 世界排名（缺失 → 「—」）
         self._home_ratings.setText(self._format_ratings(
             meta.home_elo, meta.home_fifa_rank, meta.home_world_rank))
@@ -667,8 +681,49 @@ class HeroMatchCard(GlassCard):
         # 胜平负分段条 + 标签
         self._render_win_prob(match, meta)
 
-        # 倒计时
+    def _render_center_score(self, match: Match | None) -> None:
+        """中央区按比赛状态切换：进行中 / 已结束 → 大比分 + 状态；否则 VS + 倒计时。"""
+        p = self._palette
+        is_live = bool(match is not None and getattr(match, "is_live", False))
+        is_played = bool(match is not None
+                         and getattr(match, "status", None) == MatchStatus.PLAYED)
+        if match is not None and (is_live or is_played):
+            ga, gb = self._match_goals(match)
+            color = p.live if is_live else p.text
+            self._vs.setText(f"{ga} - {gb}")
+            self._vs.setStyleSheet(
+                f"color: {color}; font-size: 46px;"
+                f" font-weight: {Type.W_BLACK}; background: transparent;"
+            )
+            self._cd_timer.stop()
+            if is_live:
+                minute = (getattr(match, "minute", "") or "").strip()
+                self._clock.show_status(f"{minute}'" if minute else "进行中",
+                                        color=p.live)
+            else:
+                self._clock.show_status("全场结束", color=p.text_dim)
+            return
+        # 即将开赛（或无比赛）：恢复「VS」并起动倒计时。
+        self._vs.setText("VS")
+        self._vs.setStyleSheet(
+            f"color: {p.text_faint}; font-size: {Type.H1}px;"
+            f" font-weight: {Type.W_BLACK}; background: transparent;"
+        )
         self._restart_countdown()
+
+    @staticmethod
+    def _match_goals(match: Match) -> tuple[int, int]:
+        """从 Match 取主客进球数（优先全场比分 fs_*，回退 score_*）。"""
+        def _i(v) -> int:
+            try:
+                return int(v) if v not in (None, "") else 0
+            except (TypeError, ValueError):
+                return 0
+        a = _i(getattr(match, "fs_a", None) if getattr(match, "fs_a", None) not in (None, "")
+               else getattr(match, "score_a", None))
+        b = _i(getattr(match, "fs_b", None) if getattr(match, "fs_b", None) not in (None, "")
+               else getattr(match, "score_b", None))
+        return a, b
 
     # ── 内部：格式化 ─────────────────────────
     def _format_meta(self, meta: HeroMeta) -> str:
@@ -727,6 +782,5 @@ class HeroMatchCard(GlassCard):
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
-        # 重新进入视图时，若仍在开球前则恢复每秒更新。
-        if self._meta.kickoff_utc is not None and self._tick_countdown():
-            self._cd_timer.start()
+        # 重新进入视图时，按当前比赛状态恢复中央显示（比分 / 倒计时）。
+        self._render_center_score(self._match)

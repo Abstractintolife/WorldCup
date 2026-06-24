@@ -578,12 +578,16 @@ def _theanalyst_to_prediction(match: Match):
         bits.append(f"平 {pv.draw_pct:.1f}%")
     if pv.away_pct is not None:
         bits.append(f"{acn} {pv.away_pct:.1f}%")
-    summary = f"{_fav_phrase()}。" + ("　胜平负模拟：" + " · ".join(bits) if bits else "")
+    prob_line = "　胜平负模拟：" + " · ".join(bits) if bits else ""
+    # 综述：优先用整篇分析的中文综述，回退到「热门 + 胜率」一句话。
+    summary = (pv.summary_cn or f"{_fav_phrase()}。") + prob_line
 
-    tips = [f"关键事实：{s}" for s in pv.insights]
-    analysis = []
-    if pv.prediction:
-        analysis.append(("Opta 超算赛前研判（英文原文）", pv.prediction))
+    # 分析正文：整篇文章的中文译文（关键数据 / 深度分析 / 历史交锋 / 赛前预测）。
+    analysis = [(title, body) for title, body in pv.analysis_cn if body]
+    if not analysis and pv.prediction:
+        analysis = [("Opta 超算赛前研判（英文原文）", pv.prediction)]
+    has_zh = bool(pv.analysis_cn)
+    tips = [] if has_zh else [f"关键事实：{s}" for s in pv.insights]
 
     return ExternalPrediction(
         source=_TA_SOURCE,
@@ -594,10 +598,11 @@ def _theanalyst_to_prediction(match: Match):
         win_b=win_b,
         tips=tips,
         analysis=analysis,
-        analysis_lang="en" if (pv.prediction or pv.insights) else "zh",
+        analysis_lang="zh" if has_zh else ("en" if pv.prediction else "zh"),
         note=(
             "数据取自 The Analyst（Opta 超级计算机），基于 25,000 次赛前模拟；"
-            "胜平负概率与关键事实为模型实测，分析正文为英文原文。"
+            "胜平负概率与关键事实为模型实测，分析正文为官网英文原文的中文翻译"
+            "（机器翻译，仅供参考）。"
         ),
     )
 

@@ -191,12 +191,12 @@ QPushButton#HudRegion:hover {{
         self._region.clicked.connect(self.region_clicked.emit)
         outer.addWidget(self._region)
 
-        # 圆形头像
-        self._avatar = QPushButton("🙂")
+        # 圆形「设置」按钮（齿轮图标，点击打开设置对话框）
+        self._avatar = QPushButton("⚙")
         self._avatar.setObjectName("HudAvatar")
         self._avatar.setCursor(Qt.CursorShape.PointingHandCursor)
         self._avatar.setFixedSize(40, 40)
-        self._avatar.setToolTip("个人中心")
+        self._avatar.setToolTip("设置")
         self._avatar.setStyleSheet(
             f"""
 QPushButton#HudAvatar {{
@@ -240,7 +240,7 @@ QPushButton#HudAvatar:hover {{
             else "区域 / 语言：中文（点击切换）")
         self._search.setPlaceholderText(tr("搜索球队 / 球员 / 比赛…"))
         self._bell.setToolTip(tr("通知 · 查看最新资讯"))
-        self._avatar.setToolTip(tr("个人中心"))
+        self._avatar.setToolTip(tr("设置"))
         # 以当前标题按新语言重译。
         if getattr(self, "_title_zh", None):
             self.set_title(self._title_zh)

@@ -20,22 +20,28 @@ from __future__ import annotations
 import math
 
 from PyQt6.QtCore import QPoint, QPointF, Qt
-from PyQt6.QtGui import QColor, QCursor, QPainter, QPen
+from PyQt6.QtGui import QColor, QCursor, QPainter, QRadialGradient
 from PyQt6.QtWidgets import QWidget
 
 from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette
 
-#: 拖尾点数上限（提高以获得连续顺滑的彗尾，而非稀疏的几个点）。
-MAX_DOTS = 16
-#: 头部（最新）点的基准透明度（克制、低调）。
-HEAD_OPACITY = 0.5
-#: 点半径（像素）。
-DOT_RADIUS = 4
+#: 拖尾点数上限（更长 → 更连续顺滑的彗尾）。
+MAX_DOTS = 22
+#: 头部（最新）点的基准透明度。
+HEAD_OPACITY = 0.55
+#: 头部光点核半径（像素）；越靠尾部越小。
+DOT_RADIUS = 5
 #: 光标静止多少帧后开始「消尾」。
 _IDLE_FRAMES = 2
-#: 插值采样的目标间距（像素）—— 快速移动时按此密度补点，消除「跳跃 / 卡顿」。
-_STEP_PX = 5.0
+#: 插值采样的目标间距（像素）—— 快速移动时按此密度补点，得到连续顺滑的彗尾。
+_STEP_PX = 3.5
+
+# ── 配色：与仓库上传的「光标.png」（青色发光球）一致 ──────────────
+#: 彗尾辉光主色（青/teal，取自光标中心 ~#36CCD6，略提亮以增强发光感）。
+_TRAIL_GLOW = "#39D7E6"
+#: 光点核高光色（近白青，叠加后形成炽白核心）。
+_TRAIL_CORE = "#E6FEFF"
 
 
 def push_sample(samples: list, pos, max_dots: int = MAX_DOTS) -> list:
@@ -148,28 +154,46 @@ class MouseTrailOverlay(QWidget):
             return
         p = QPainter(self)
         p.setRenderHint(QPainter.RenderHint.Antialiasing)
-        base = QColor(self._palette.primary_hi)
+        # 叠加（additive）合成：重叠的辉光相互增亮，形成炽亮的发光彗尾，
+        # 与「光标.png」那颗青色发光球的质感一致。
+        p.setCompositionMode(QPainter.CompositionMode.CompositionMode_Plus)
+        p.setPen(Qt.PenStyle.NoPen)
+
         ops = self._opacities or trail_opacities(len(self._samples))
         n = len(self._samples)
         if n == 0:
             return
 
-        # 连接线：把相邻采样点连成一条「渐细渐隐」的彗尾，比离散圆点顺滑得多。
-        for i in range(n - 1):
-            op = ops[i] if i < len(ops) else 0.0
-            c = QColor(base)
-            c.setAlphaF(max(0.0, min(1.0, op * 0.9)))
-            width = max(1.0, DOT_RADIUS * 2.0 * (n - i) / n)
-            pen = QPen(c, width)
-            pen.setCapStyle(Qt.PenCapStyle.RoundCap)
-            p.setPen(pen)
-            p.drawLine(self._samples[i], self._samples[i + 1])
+        glow = QColor(_TRAIL_GLOW)
+        core = QColor(_TRAIL_CORE)
 
-        # 圆点：头部最大最亮，向尾部递减，形成柔和的光点核。
-        p.setPen(Qt.PenStyle.NoPen)
+        # 第一遍：柔和的青色辉光（径向渐变，半径与亮度向尾部递减）。
         for i, (pt, op) in enumerate(zip(self._samples, ops)):
-            c = QColor(base)
-            c.setAlphaF(max(0.0, min(1.0, op)))
-            p.setBrush(c)
-            r = max(1.0, DOT_RADIUS * (n - i) / n)
-            p.drawEllipse(QPointF(pt), r, r)
+            f = (n - i) / n                       # 头部=1 → 尾部→0
+            radius = DOT_RADIUS * 2.6 * f + 3.0
+            grad = QRadialGradient(QPointF(pt), radius)
+            inner = QColor(glow)
+            inner.setAlphaF(max(0.0, min(1.0, op * 0.55)))
+            mid = QColor(glow)
+            mid.setAlphaF(max(0.0, min(1.0, op * 0.22)))
+            edge = QColor(glow)
+            edge.setAlphaF(0.0)
+            grad.setColorAt(0.0, inner)
+            grad.setColorAt(0.5, mid)
+            grad.setColorAt(1.0, edge)
+            p.setBrush(grad)
+            p.drawEllipse(QPointF(pt), radius, radius)
+
+        # 第二遍：炽白的高光核（更小、更亮），让头部像那颗发光球的核心。
+        for i, (pt, op) in enumerate(zip(self._samples, ops)):
+            f = (n - i) / n
+            cr = max(0.8, DOT_RADIUS * f) * 1.7
+            grad = QRadialGradient(QPointF(pt), cr)
+            c0 = QColor(core)
+            c0.setAlphaF(max(0.0, min(1.0, op * 1.25)))
+            c1 = QColor(core)
+            c1.setAlphaF(0.0)
+            grad.setColorAt(0.0, c0)
+            grad.setColorAt(1.0, c1)
+            p.setBrush(grad)
+            p.drawEllipse(QPointF(pt), cr, cr)

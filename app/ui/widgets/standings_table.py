@@ -197,9 +197,10 @@ class StandingsTable(GlassCard):
         root.addWidget(self._hr())
 
         self._rows_box = QVBoxLayout()
-        self._rows_box.setSpacing(3)
-        root.addLayout(self._rows_box)
-        root.addStretch(1)
+        self._rows_box.setSpacing(6)
+        # 让积分行区占满卡片剩余高度：4 支球队的行随面板等比拉伸填满，
+        # 不再在底部留出大片空白（需求：加大行高、四队铺满小组件）。
+        root.addLayout(self._rows_box, 1)
 
         # 底部「查看完整积分榜」。
         self._footer_btn = QPushButton("查看完整积分榜")
@@ -392,7 +393,7 @@ class StandingsTable(GlassCard):
             self._rows_box.addWidget(empty)
             return
         for r in rows:
-            self._rows_box.addWidget(self._build_row(r))
+            self._rows_box.addWidget(self._build_row(r), 1)
 
     # ── 单行构建 ─────────────────────────────
     def _build_row(self, r: StandingRow) -> QWidget:
@@ -401,7 +402,9 @@ class StandingsTable(GlassCard):
         accent = p.win if qual else "rgba(255,255,255,0.08)"
         w = QFrame()
         w.setObjectName("StandingRow")
-        w.setFixedHeight(44)
+        # 行高随面板拉伸（最小 52），四支球队铺满整张卡，视觉更饱满。
+        w.setMinimumHeight(52)
+        w.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         w.setCursor(Qt.CursorShape.PointingHandCursor)
         w.setStyleSheet(
             f"QFrame#StandingRow {{ background: {rgba('#FFFFFF', 0.03)};"
@@ -422,7 +425,7 @@ class StandingsTable(GlassCard):
         rank_box.setSpacing(0)
         rk = QLabel(str(r.rank))
         rk.setStyleSheet(
-            f"color: {p.win if qual else p.text_dim}; font-size: 13px;"
+            f"color: {p.win if qual else p.text_dim}; font-size: 15px;"
             f" font-weight: {Type.W_BLACK}; background: transparent;"
         )
         rank_box.addWidget(rk)
@@ -446,14 +449,14 @@ class StandingsTable(GlassCard):
         team_box = QHBoxLayout()
         team_box.setContentsMargins(0, 0, 0, 0)
         team_box.setSpacing(7)
-        team_box.addWidget(FlagIcon(r.team_name, height=18, radius=3))
+        team_box.addWidget(FlagIcon(r.team_name, height=24, radius=4))
         from app.utils.text_utils import short_country_name
         from app.ui.widgets.elided_label import ElidedLabel
         nm = ElidedLabel(short_country_name(r.team_name),
                          mode=Qt.TextElideMode.ElideRight)
         nm.setMinimumWidth(0)
         nm.setStyleSheet(
-            f"color: {p.text}; font-size: 12.5px; font-weight: {Type.W_MEDIUM};"
+            f"color: {p.text}; font-size: 14px; font-weight: {Type.W_BOLD};"
             " background: transparent;"
         )
         team_box.addWidget(nm, 1)
