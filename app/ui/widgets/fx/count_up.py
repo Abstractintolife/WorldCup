@@ -17,18 +17,18 @@ from __future__ import annotations
 
 from PyQt6.QtCore import (
     QAbstractAnimation,
-    QEasingCurve,
     QVariantAnimation,
     Qt,
 )
 from PyQt6.QtWidgets import QLabel, QWidget
 
 from app.config import LOW_PERF
+from app.ui.design.motion_system import EASE_STANDARD
 
 #: 标准计数时长（毫秒）。
 DURATION_MS = 800
-#: 唯一缓动曲线（与统一动效系统一致）。
-EASE = QEasingCurve.Type.OutCubic
+#: 唯一缓动曲线 —— 复用统一动效系统的标准曲线（OutCubic），保证全应用运动语言一致。
+EASE = EASE_STANDARD
 
 
 def _clamp(v: float, lo: float = 0.0, hi: float = 1.0) -> float:

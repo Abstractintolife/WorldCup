@@ -17,6 +17,8 @@ Feature: worldcup-ultimate-redesign
 from __future__ import annotations
 
 import inspect
+import pathlib
+import re
 
 import pytest
 
@@ -182,3 +184,157 @@ def test_glass_card_hover_uses_motion_system_pos():
     # hover_lift 仅创建 b"pos" 动画；不存在 b"blurRadius" 动画目标。
     assert 'b"blurRadius"' not in hover_src
 
+
+
+
+# ════════════════════════════════════════════════════════════════════
+#  Property 13 — No main-thread network (static data-layer scan)
+#  Feature: worldcup-ultimate-redesign, Property 13: No main-thread network
+#  Validates: Requirements 26.1
+#
+#  Strengthened structural guarantee: the ENTIRE data layer (app/api +
+#  app/services) must never reach for a synchronous/blocking network primitive
+#  that would run on (and freeze) the GUI thread. All network I/O flows through
+#  httpx.AsyncClient awaited off-thread via BasePage.run_async (qasync/asyncio).
+# ════════════════════════════════════════════════════════════════════
+
+# Blocking primitives that would issue a network request synchronously on the
+# caller's (GUI) thread. httpx.AsyncClient is the ONLY sanctioned client.
+_SYNC_NETWORK_PATTERNS = (
+    re.compile(r"^\s*import\s+requests\b", re.MULTILINE),       # sync `requests`
+    re.compile(r"^\s*from\s+requests\b", re.MULTILINE),
+    re.compile(r"\brequests\.(get|post|put|delete|head|patch|request|Session)\b"),
+    re.compile(r"\bhttpx\.Client\b"),                           # blocking httpx client
+    re.compile(r"^\s*import\s+urllib\b", re.MULTILINE),         # urllib(.request) blocks
+    re.compile(r"^\s*from\s+urllib\b", re.MULTILINE),
+    re.compile(r"\burllib\.request\b"),
+    re.compile(r"^\s*import\s+socket\b", re.MULTILINE),         # raw blocking socket
+    re.compile(r"\bsocket\.socket\b"),
+)
+
+
+def _data_layer_files() -> list[pathlib.Path]:
+    """All Python source files in the preserved data layer (api + services)."""
+    import app.api as _api
+    import app.services as _services
+
+    files: list[pathlib.Path] = []
+    for pkg in (_api, _services):
+        pkg_dir = pathlib.Path(pkg.__file__).parent
+        files.extend(sorted(pkg_dir.rglob("*.py")))
+    assert files, "expected data-layer source files under app/api and app/services"
+    return files
+
+
+def test_property13_data_layer_has_no_synchronous_network():
+    """Req 26.1 / Property 13: no blocking network primitive anywhere in the
+
+    data layer — only httpx.AsyncClient (awaited off the GUI thread) is allowed.
+
+    Feature: worldcup-ultimate-redesign, Property 13: No main-thread network.
+    """
+    offenders: list[str] = []
+    for path in _data_layer_files():
+        text = path.read_text(encoding="utf-8")
+        for pat in _SYNC_NETWORK_PATTERNS:
+            if pat.search(text):
+                offenders.append(f"{path.name}: matched /{pat.pattern}/")
+    assert offenders == [], (
+        "synchronous/blocking network usage found in the data layer "
+        f"(must use httpx.AsyncClient off-thread): {offenders}"
+    )
+
+
+def test_property13_data_layer_uses_async_httpx_client():
+    """The sole HTTP client in the data layer is httpx.AsyncClient (non-blocking)."""
+    from app.api.client import ApiClient
+
+    src = inspect.getsource(ApiClient)
+    assert "httpx.AsyncClient" in src, "ApiClient must use httpx.AsyncClient"
+
+
+# ════════════════════════════════════════════════════════════════════
+#  Req 25.4 — Timer audit (static allow-list scan)
+#  Feature: worldcup-ultimate-redesign (Requirement 25.4)
+#
+#  Statically scan every app/ui/**/*.py source for *repeating* QTimer
+#  instantiations (`QTimer(...)`). `QTimer.singleShot(...)` is a one-shot,
+#  fire-and-forget deferral (no heartbeat) and is excluded as benign.
+#
+#  The ONLY modules permitted to instantiate a repeating QTimer are:
+#    * frame_clock.py    — the single global Frame Clock animation heartbeat.
+#    * hero_match_card.py— the single 1s Hero Match Card countdown (Req 6.4).
+#    * main_window.py    — the app-level `_auto_timer` data-refresh scheduler.
+#                          This is a data-refresh scheduler, NOT an animation /
+#                          per-widget timer, and is therefore allowed (Req 28.2).
+#  No OTHER module may own a repeating per-widget / heartbeat QTimer (Req 25.4).
+# ════════════════════════════════════════════════════════════════════
+
+# Allow-list of module basenames permitted to instantiate a repeating QTimer.
+_TIMER_ALLOWLIST = {
+    "frame_clock.py",      # FrameClock heartbeat
+    "hero_match_card.py",  # Hero countdown (the single allowed per-widget timer)
+    "main_window.py",      # _auto_timer data-refresh scheduler (not an animation timer)
+}
+
+# `QTimer(` = a constructed (repeating-capable) timer instance. We must NOT match
+# `QTimer.singleShot(` (one-shot deferral) — note the `.` after QTimer there.
+_QTIMER_CTOR = re.compile(r"\bQTimer\s*\(")
+
+
+def _ui_source_files() -> list[pathlib.Path]:
+    """Every Python source file under app/ui (recursively)."""
+    import app.ui as _ui
+
+    ui_dir = pathlib.Path(_ui.__file__).parent
+    files = sorted(ui_dir.rglob("*.py"))
+    assert files, "expected source files under app/ui"
+    return files
+
+
+def test_timer_audit_only_allowlisted_modules_create_repeating_timers():
+    """Req 25.4: no live per-widget timers other than the Frame Clock and the
+
+    single Hero Match Card countdown (plus the allowed data-refresh scheduler).
+
+    Feature: worldcup-ultimate-redesign (Requirement 25.4).
+    """
+    offenders: list[str] = []
+    saw_allowed: set[str] = set()
+    for path in _ui_source_files():
+        text = path.read_text(encoding="utf-8")
+        for line in text.splitlines():
+            if not _QTIMER_CTOR.search(line):
+                continue
+            # `QTimer.singleShot(...)` is benign (one-shot) — exclude it.
+            if "QTimer.singleShot" in line or "QTimer .singleShot" in line:
+                continue
+            if path.name in _TIMER_ALLOWLIST:
+                saw_allowed.add(path.name)
+            else:
+                offenders.append(f"{path.name}: {line.strip()}")
+
+    assert offenders == [], (
+        "repeating QTimer instantiated outside the allow-list "
+        f"{sorted(_TIMER_ALLOWLIST)}: {offenders}"
+    )
+    # Sanity: the two animation/countdown timers genuinely exist where expected.
+    assert "frame_clock.py" in saw_allowed, "FrameClock heartbeat QTimer missing"
+    assert "hero_match_card.py" in saw_allowed, "Hero countdown QTimer missing"
+
+
+def test_timer_audit_singleshot_is_treated_as_benign():
+    """Sanity check on the scanner: `QTimer.singleShot` must NOT be flagged.
+
+    main_window.py uses `QTimer.singleShot(0, ...)` for a deferred backend swap;
+    that one-shot deferral is not a live/heartbeat timer and must be excluded.
+    """
+    singleshot = "        QTimer.singleShot(0, self._swap_to_cpu_backdrop)"
+    ctor = "        self._timer = QTimer(self)"
+    # `QTimer.singleShot(` has a `.` after QTimer, so the constructor regex (which
+    # requires `QTimer` immediately followed by `(`) does NOT match it...
+    assert _QTIMER_CTOR.search(singleshot) is None
+    # ...and the explicit guard would exclude it even if it did.
+    assert "QTimer.singleShot" in singleshot
+    # A genuine constructor call IS matched.
+    assert _QTIMER_CTOR.search(ctor) is not None

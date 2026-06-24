@@ -9,7 +9,8 @@ Feature: worldcup-ultimate-redesign
 """
 from __future__ import annotations
 
-from hypothesis import given, settings
+import pytest
+from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
 from app.ui.widgets.fx import mouse_trail as mt
@@ -61,3 +62,38 @@ def test_trail_opacity_examples():
     ops = mt.trail_opacities(5, head=1.0)
     assert ops == [1.0, 0.8, 0.6, 0.4, 0.2]
     assert mt.trail_opacities(0) == []
+
+
+# ════════════════════════════════════════════════════════════════════
+#  Property 17 (widget-level): drive MouseTrailOverlay._on_frame over a
+#  randomized cursor path and assert the live widget never renders more
+#  than MAX_DOTS dots and the stored opacities are strictly decreasing
+#  head→tail (and positive). Exercises the real widget end-to-end.
+#  Feature: worldcup-ultimate-redesign, Property 17: Mouse trail bound & fade
+#  Validates: Requirements 23.1, 23.2
+# ════════════════════════════════════════════════════════════════════
+@settings(max_examples=100, deadline=None,
+          suppress_health_check=[HealthCheck.function_scoped_fixture])
+@given(path=st.lists(_point, min_size=1, max_size=120))
+def test_property17_widget_frame_drive(qapp, monkeypatch, path):
+    from PyQt6.QtCore import QPoint
+    from PyQt6.QtGui import QCursor
+
+    overlay = mt.MouseTrailOverlay()
+    try:
+        for x, y in path:
+            # Drive the global cursor position the widget reads each frame.
+            monkeypatch.setattr(QCursor, "pos", staticmethod(lambda x=x, y=y: QPoint(x, y)))
+            overlay._on_frame(0.0, 1.0 / 60.0)
+
+            # (23.1) at most MAX_DOTS dots are buffered/rendered.
+            assert len(overlay._samples) <= mt.MAX_DOTS
+            ops = overlay._opacities
+            assert len(ops) <= mt.MAX_DOTS
+            # (23.2) strictly decreasing head→tail and all positive.
+            for a, b in zip(ops, ops[1:]):
+                assert b < a
+            for o in ops:
+                assert o > 0.0
+    finally:
+        overlay.deleteLater()

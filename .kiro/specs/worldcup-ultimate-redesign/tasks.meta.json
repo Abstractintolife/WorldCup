@@ -2,11 +2,11 @@
   "pbtResults": {
     "1.4 Write property test for motion easing uniformity": {
       "status": "passed",
-      "lastRunTimestamp": 1782295543532
+      "lastRunTimestamp": 1782304239668
     },
     "1.5 Write property test for animation duration ceiling": {
       "status": "passed",
-      "lastRunTimestamp": 1782295544441
+      "lastRunTimestamp": 1782304276214
     },
     "1.7 Write property test for hover lift magnitude": {
       "status": "passed",
@@ -18,48 +18,1052 @@
     },
     "2.6 Write integration test for backend selection/equivalence": {
       "status": "passed",
-      "lastRunTimestamp": 1782296289204
+      "lastRunTimestamp": 1782305927379
     },
     "3.2 Write property tests for particle bounds": {
       "status": "passed",
-      "lastRunTimestamp": 1782296747476
+      "lastRunTimestamp": 1782306247756
     },
     "3.4 Write property test for floodlight sweep periodicity": {
       "status": "passed",
-      "lastRunTimestamp": 1782296748378
+      "lastRunTimestamp": 1782306743802
     },
     "3.5 Write property test for frame-rate independence": {
       "status": "passed",
-      "lastRunTimestamp": 1782296748610
+      "lastRunTimestamp": 1782306665717
     },
     "5.2 Write property test for count-up exact settle": {
       "status": "passed",
-      "lastRunTimestamp": 1782297528303
+      "lastRunTimestamp": 1782307159658
     },
     "5.5 Write property test for mouse trail bound and fade": {
       "status": "passed",
-      "lastRunTimestamp": 1782297529786
+      "lastRunTimestamp": 1782307670885
     },
     "5.7 Write property test for chart reveal settling": {
       "status": "passed",
-      "lastRunTimestamp": 1782297529858
+      "lastRunTimestamp": 1782307970206
     },
     "8.3 Write property test for countdown monotonicity": {
       "status": "passed",
-      "lastRunTimestamp": 1782299285984
+      "lastRunTimestamp": 1782308746449
     },
     "8.5 Write property test for win-probability split integrity": {
       "status": "passed",
-      "lastRunTimestamp": 1782299288916
+      "lastRunTimestamp": 1782308975518
     },
     "10.2 Write property tests for standings helpers": {
       "status": "passed",
-      "lastRunTimestamp": 1782299791759
+      "lastRunTimestamp": 1782309421943
     },
     "12.3 Write tests for Live Match Center behaviors": {
       "status": "passed",
-      "lastRunTimestamp": 1782301108804
+      "lastRunTimestamp": 1782310286704
     }
   },
-  "executionHistory": {}
+  "executionHistory": {
+    "1.1 Create `app/ui/design/hud_theme.py` token system": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631271
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303649024
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303748378
+      }
+    ],
+    "1.3 Create `app/ui/design/motion_system.py` built on `AnimationManager`/`tokens`": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631275
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303934442
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304132765
+      }
+    ],
+    "1.6 Create `app/ui/widgets/glass_card.py` (`GlassCard`) replacing `misc.Card`": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631280
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304301468
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304464922
+      }
+    ],
+    "2.1 Define the Stage Compositor public API and backend factory": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631283
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304574306
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304716820
+      }
+    ],
+    "2.2 Implement the 5-layer night-stadium backdrop (both backends)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631287
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304720925
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304879886
+      }
+    ],
+    "2.4 Implement per-frame render loop and ~60 FPS ambient throttle": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631290
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305026566
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305212838
+      }
+    ],
+    "2.5 Wire Stage Compositor into `MainWindow` and remove old backdrops": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631294
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305217333
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305750308
+      }
+    ],
+    "3.1 Implement the Particle Engine": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631298
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305959795
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306163327
+      }
+    ],
+    "3.3 Implement the Floodlight Sweep": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631302
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306267197
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306514146
+      }
+    ],
+    "4. Checkpoint — foundation and rendering core": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631306
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306780663
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306860777
+      }
+    ],
+    "5.1 Implement `CountUpNumber` (`app/ui/widgets/fx/count_up.py`)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631310
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306870484
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306978400
+      }
+    ],
+    "5.3 Implement `FloatingFlag` (`app/ui/widgets/fx/floating_flag.py`)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631313
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307178816
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307437157
+      }
+    ],
+    "5.4 Implement `MouseTrailOverlay` (`app/ui/widgets/fx/mouse_trail.py`)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631317
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307440116
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307584757
+      }
+    ],
+    "5.6 Implement the animated Chart System (`app/ui/widgets/charts/`)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631321
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307687429
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307857752
+      }
+    ],
+    "6.1 Rebuild the Navigation Rail on `GlassCard`/`hud_theme`": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631325
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307990894
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308085244
+      }
+    ],
+    "6.3 Rebuild the Top HUD Bar": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631328
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308163616
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308236383
+      }
+    ],
+    "6.4 Build the Sub-Header and Live Connection Pill": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631332
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308241048
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308288652
+      }
+    ],
+    "7.1 Build `HomePage` weighted layout skeleton": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631336
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308291624
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308407636
+      }
+    ],
+    "8.1 Implement `HeroMatchCard` layout and labels": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631340
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308474545
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308566467
+      }
+    ],
+    "8.2 Implement the live countdown (single per-second timer)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631343
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308573535
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308650187
+      }
+    ],
+    "8.4 Implement the win-probability split bar": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631347
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308773025
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308861906
+      }
+    ],
+    "8.6 Render per-team Elo / FIFA rank / world rank with placeholders": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631350
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308994619
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309070396
+      }
+    ],
+    "9. Checkpoint — chrome, Overview shell, and Hero": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631356
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309143310
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309206094
+      }
+    ],
+    "10.1 Implement standings helper functions and form/qual/sparkline widgets": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631360
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309212864
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309333062
+      }
+    ],
+    "10.3 Implement `StandingsTable` panel composition": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631365
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309445340
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309584709
+      }
+    ],
+    "11.1 Implement the Stat Strip row of six glass stat cards": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631368
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309690103
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309855943
+      }
+    ],
+    "12.1 Implement the Today Matches Panel": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631372
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309921927
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310028358
+      }
+    ],
+    "12.2 Implement `LiveMatchCenter` panel": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631376
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310031711
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310208248
+      }
+    ],
+    "12.4 Implement the Top Scorers Panel": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631380
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310313401
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310382162
+      }
+    ],
+    "12.5 Implement the Host Cities Panel": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631383
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310385418
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310481530
+      }
+    ],
+    "12.6 Wire all bottom panels into the Overview Page bottom row": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631386
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310484807
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310610891
+      }
+    ],
+    "13. Checkpoint — full Overview composition renders end-to-end": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631390
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310614459
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310747245
+      }
+    ],
+    "14.1 Compose the first-open broadcast scene and navigation transition": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631394
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310752010
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311041832
+      }
+    ],
+    "15.1 Implement data and rendering error handling": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631397
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311048637
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311317020
+      }
+    ],
+    "16.1 Apply performance optimizations": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631400
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311570251
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311916634
+      }
+    ],
+    "17.1 Remove replaced modules and migrate remaining pages": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631403
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782312078150
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782312439807
+      }
+    ],
+    "18. Final checkpoint — full test suite green": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303631407
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782312443462
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782312529189
+      }
+    ],
+    "1.2 Write unit tests for token helpers": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303791425
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782303927220
+      }
+    ],
+    "1.4 Write property test for motion easing uniformity": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304143594
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304295860
+      }
+    ],
+    "1.5 Write property test for animation duration ceiling": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304143690
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304296232
+      }
+    ],
+    "1. Foundation: theme tokens, motion system, and glass card base": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304464926
+      }
+    ],
+    "1.7 Write property test for hover lift magnitude": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304475896
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304571511
+      }
+    ],
+    "2.3 Write unit tests for ambient layer opacity bands and static trophy": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782304882721
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305022654
+      }
+    ],
+    "2. Rendering core: Stage Compositor (GPU + CPU fallback) and night-stadium backdrop": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305750311
+      }
+    ],
+    "2.6 Write integration test for backend selection/equivalence": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305753084
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782305956109
+      }
+    ],
+    "3.2 Write property tests for particle bounds": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306167193
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306263652
+      }
+    ],
+    "3. Particle Engine and Floodlight Sweep (single-FrameClock driven)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306514150
+      }
+    ],
+    "3.4 Write property test for floodlight sweep periodicity": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306531991
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306774955
+      }
+    ],
+    "3.5 Write property test for frame-rate independence": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306534126
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306775237
+      }
+    ],
+    "5.2 Write property test for count-up exact settle": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782306982212
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307175976
+      }
+    ],
+    "5.5 Write property test for mouse trail bound and fade": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307587853
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307684624
+      }
+    ],
+    "5. Reusable effect widgets and animated chart system": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307857757
+      }
+    ],
+    "5.7 Write property test for chart reveal settling": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307860582
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782307985860
+      }
+    ],
+    "6.2 Write unit test for Navigation Rail ordering and active state": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308088250
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308160733
+      }
+    ],
+    "6. Global chrome: Navigation Rail, Top HUD Bar, Sub-Header": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308288656
+      }
+    ],
+    "7. Overview Page composition with weighted IA grid": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308407640
+      }
+    ],
+    "7.2 Write unit test for IA stretch ratios": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308412322
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308471521
+      }
+    ],
+    "8.3 Write property test for countdown monotonicity": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308653403
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308766969
+      }
+    ],
+    "8.5 Write property test for win-probability split integrity": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308866605
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782308991583
+      }
+    ],
+    "8. Hero Match Card": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309070400
+      }
+    ],
+    "8.7 Write unit test for ranking placeholder fallback": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309073762
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309138388
+      }
+    ],
+    "10.2 Write property tests for standings helpers": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309336236
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309442040
+      }
+    ],
+    "10. Standings Panel (v2)": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309584713
+      }
+    ],
+    "10.4 Write unit test for group selector behavior": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309591533
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309684190
+      }
+    ],
+    "11. Stat Strip": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309855947
+      }
+    ],
+    "11.2 Write unit test for Stat Strip composition": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309862312
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782309918730
+      }
+    ],
+    "12.3 Write tests for Live Match Center behaviors": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310212587
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310308549
+      }
+    ],
+    "12. Bottom row panels": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782310610898
+      }
+    ],
+    "14. First-open scene wiring and page transition": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311041855
+      }
+    ],
+    "15. Error handling and graceful degradation": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311317024
+      }
+    ],
+    "15.2 Write integration test for LOW_PERF and fetch-failure recovery": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311321159
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311563783
+      }
+    ],
+    "16. Performance pass and off-thread data audit": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311916639
+      }
+    ],
+    "16.2 Write tests for off-thread data and timer audit": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782311920175
+      },
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782312074508
+      }
+    ],
+    "17. Cleanup and migration finalization": [
+      {
+        "executionId": "b7ebe25b-1098-4cb7-a2f4-e3877cfabd80",
+        "chatSessionId": "987b3589-d4a4-4057-bfc8-a972a095dfc9",
+        "timestamp": 1782312439834
+      }
+    ]
+  }
 }

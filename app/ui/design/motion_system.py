@@ -75,7 +75,12 @@ def std_anim(
     保证：缓动恒为 ``OutCubic``；有效时长被夹紧到 ``<= DUR_MAX``（500ms）。
     动画会登记进 :class:`AnimationManager`（统一计数 / 生命周期跟踪），但
     **不自动启动** —— 由调用方按需 ``start()``（``hover_lift`` 会替你启动）。
+
+    时长策略（设计 "Motion Design System"）：调试态 ``assert`` 捕获越界请求以
+    便在开发期暴露违规调用；发布态（``python -O``）断言被跳过，由 ``clamp_duration``
+    把时长夹紧到 ``<= DUR_MAX``，保证不变量在任何构建下都成立。
     """
+    assert duration <= DUR_MAX, "animation duration exceeds 500ms ceiling"
     eff_duration = clamp_duration(duration)
     anim = QPropertyAnimation(target, prop, target)
     anim.setDuration(eff_duration)

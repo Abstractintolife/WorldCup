@@ -62,7 +62,6 @@ from app.ui.widgets.favorite_button import FavoriteButton
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.image_loader import RemoteCover, RemoteImage
 from app.ui.widgets.misc import Card
-from app.ui.widgets.particle_bg import ParticleBackground
 from app.ui.widgets.radar import RadarChart
 from app.ui.widgets.team_logo import TeamLogo
 from app.utils.time_utils import fmt_time
@@ -106,15 +105,6 @@ class _PlayerHero(QWidget):
         cover_glow.setOffset(0, 0)
         cover_glow.setColor(QColor(255, 0, 80, 180))
         self._cover.setGraphicsEffect(cover_glow)
-
-        # 中层：粒子背景
-        self._particles = ParticleBackground(self,
-                                             n_particles=60,
-                                             accent="#00BFFF",
-                                             secondary="#FFD700",
-                                             meteor_chance=0.008,
-                                             base_color="#00000000",
-                                             beams=True)
 
         outer = QHBoxLayout(self)
         outer.setContentsMargins(36, 22, 36, 28)
@@ -209,9 +199,6 @@ class _PlayerHero(QWidget):
 
     def resizeEvent(self, ev) -> None:
         self._cover.setGeometry(0, 0, self.width(), self.height())
-        self._particles.setGeometry(0, 0, self.width(), self.height())
-        self._cover.lower()
-        self._particles.raise_()
         self._cover.lower()
         super().resizeEvent(ev)
 
