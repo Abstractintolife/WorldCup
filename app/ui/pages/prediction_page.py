@@ -496,7 +496,7 @@ class PredictionPage(BasePage):
         lay.setContentsMargins(20, 14, 20, 18)
         lay.setSpacing(12)
         self._section(lay, "📰  媒体 / 模型预测")
-        hint = QLabel("来自 Squawka、KickForm 等外部来源的赛前预测（已翻译整理为中文）")
+        hint = QLabel("来自 Squawka、KickForm、Sports Mole 等外部来源的赛前预测（已翻译整理为中文）")
         hint.setStyleSheet("color:#B0BEC5; font-size:12px;")
         hint.setWordWrap(True)
         lay.addWidget(hint)

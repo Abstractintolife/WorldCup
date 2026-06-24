@@ -13,6 +13,9 @@
   本模块阿根廷 vs 奥地利的 KickForm 数据即取自该接口（fixture 199773）。
 * ``forebet.com`` → 文字预测（1X2 + 比分）服务端可抓；但比赛页的
   「OVERALL STATISTICS」整体数据块由 JS 渲染，需按截图人工录入。
+* ``sportsmole.co.uk`` → 预览页服务端可直接抓取（HTTP 200）。由
+  ``scripts_gen_sportsmole.py`` 解析出比分预测（We say）、双方**预测首发阵容**
+  与近期战绩等事实型字段，落成 ``sportsmole_data.py``（不含原文逐字转载）。
 
 因此本模块以**人工整理 + 翻译**的方式，把从这些来源公开获取到的核心预测
 （比分预测、盘口赔率、推荐玩法、文字分析等）落成结构化数据，按「参赛双方」
@@ -31,6 +34,7 @@ from dataclasses import dataclass, field
 from app.models.match import Match
 from app.services.forebet_data import FOREBET_RAW
 from app.services.kickform_data import KICKFORM_RAW
+from app.services.sportsmole_data import SPORTSMOLE_RAW
 
 
 # ─────────────────────────────────────────────
@@ -355,15 +359,99 @@ def _forebet_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction:
 
 
 # ─────────────────────────────────────────────
+# Sports Mole 自动生成数据（按中文队名索引）
+# ─────────────────────────────────────────────
+# 来源：sportsmole.co.uk 预览页。仅含事实型结构化字段（比分预测 / 预测首发 /
+# 近期战绩），由 scripts_gen_sportsmole.py 生成。其独有价值是**预测首发阵容**，
+# 这是 KickForm / Forebet 两个来源都没有的信息。
+_SPORTSMOLE_DB: dict[frozenset[str], dict] = {
+    frozenset({r["home_cn"], r["away_cn"]}): r for r in SPORTSMOLE_RAW
+}
+
+_SM_SOURCE = "Sports Mole"
+
+_FORM_CN = {"W": "胜", "D": "平", "L": "负"}
+
+
+def _form_str(seq) -> str:
+    if not seq:
+        return ""
+    return " ".join(_FORM_CN.get(x, x) for x in seq)
+
+
+def _sportsmole_to_prediction(raw: dict, team_a_name: str) -> ExternalPrediction:
+    """把一条 Sports Mole 数据转成按当前比赛主客顺序对齐的预测。"""
+    flip = team_a_name == raw["away_cn"]
+    hcn = raw["away_cn"] if flip else raw["home_cn"]
+    acn = raw["home_cn"] if flip else raw["away_cn"]
+
+    sh, sa = raw.get("score_home"), raw.get("score_away")
+    if flip:
+        sh, sa = sa, sh
+    lineup_h = raw.get("lineup_away") if flip else raw.get("lineup_home")
+    lineup_a = raw.get("lineup_home") if flip else raw.get("lineup_away")
+    form_h = raw.get("form_away") if flip else raw.get("form_home")
+    form_a = raw.get("form_home") if flip else raw.get("form_away")
+
+    score_pred = ""
+    if isinstance(sh, int) and isinstance(sa, int):
+        score_pred = f"{hcn} {sh} - {sa} {acn}"
+
+    # 由比分推导倾向
+    if isinstance(sh, int) and isinstance(sa, int):
+        if sh > sa:
+            verdict = f"看好{hcn}取胜"
+        elif sa > sh:
+            verdict = f"看好{acn}取胜"
+        else:
+            verdict = "预计双方战平"
+    else:
+        verdict = "给出了赛前预测"
+
+    summary = (
+        f"Sports Mole 编辑赛前研判：{verdict}"
+        + (f"，预测比分 {hcn} {sh}-{sa} {acn}。" if score_pred else "。")
+        + "预览同时给出了双方的预测首发阵容与近期战绩，可作为临场参考。"
+    )
+
+    tips: list[str] = []
+    if score_pred:
+        tips.append(f"比分预测：{score_pred}")
+    if lineup_h:
+        tips.append(f"预测首发（{hcn}）：{lineup_h}")
+    if lineup_a:
+        tips.append(f"预测首发（{acn}）：{lineup_a}")
+    fh, fa = _form_str(form_h), _form_str(form_a)
+    if fh:
+        tips.append(f"近期战绩（{hcn}，全部赛事，由近及远）：{fh}")
+    if fa:
+        tips.append(f"近期战绩（{acn}，全部赛事，由近及远）：{fa}")
+
+    return ExternalPrediction(
+        source=_SM_SOURCE,
+        source_url=raw.get("url", ""),
+        summary=summary,
+        score_prediction=score_pred,
+        tips=tips,
+        note=(
+            "比分预测、预测首发与近期战绩取自 Sports Mole 英文赛前预览，"
+            "已整理为结构化中文数据（不含原文逐字转载），完整分析请见出处链接。"
+        ),
+    )
+
+
+# ─────────────────────────────────────────────
 # 查询入口
 # ─────────────────────────────────────────────
 def get_external_predictions(match: Match) -> list[ExternalPrediction]:
     """按参赛双方名字匹配外部来源预测（无视主客顺序）。
 
-    合并三类来源：
+    合并四类来源：
       1. ``_EXTERNAL_DB`` —— 人工整理（Squawka / 精修版 KickForm）；
       2. ``_KICKFORM_DB`` —— 后端接口自动生成的 KickForm 预测（32 场）；
-      3. ``_FOREBET_DB`` —— Forebet 列表页解析生成的预测（约 31 场）。
+      3. ``_FOREBET_DB`` —— Forebet 列表页解析生成的预测（约 31 场）；
+      4. ``_SPORTSMOLE_DB`` —— Sports Mole 预览页解析生成（比分预测 / 预测首发 /
+         近期战绩，随赛程刷新）。
     按来源名去重：若某来源已由人工整理给出，则不再追加其自动版本。
     所有自动来源都会按当前比赛主客顺序自动校正左右两栏。
     """
@@ -379,6 +467,10 @@ def get_external_predictions(match: Match) -> list[ExternalPrediction]:
     raw_fb = _FOREBET_DB.get(key)
     if raw_fb is not None and _FB_SOURCE not in present:
         result.append(_forebet_to_prediction(raw_fb, match.team_a_name))
+
+    raw_sm = _SPORTSMOLE_DB.get(key)
+    if raw_sm is not None and _SM_SOURCE not in present:
+        result.append(_sportsmole_to_prediction(raw_sm, match.team_a_name))
 
     return result
 
