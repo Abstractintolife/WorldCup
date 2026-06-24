@@ -30,16 +30,18 @@ from tests.conftest import QT_AVAILABLE
 #  Validates: Requirements 13.5, 13.7
 # ════════════════════════════════════════════════════════════════════
 @settings(max_examples=300)
-@given(t=st.floats(min_value=0.0, max_value=1_000_000.0,
+@given(t=st.floats(min_value=-1_000_000.0, max_value=1_000_000.0,
                    allow_nan=False, allow_infinity=False))
 def test_property18_breathing_opacity_within_bounds(t):
+    # t is randomized over a wide range incl. negative & large magnitudes —
+    # the breathing opacity must always stay within [0.7, 1.0].
     op = lmc.breathing_opacity(t)
     assert lmc.LIVE_OPACITY_MIN <= op <= lmc.LIVE_OPACITY_MAX
 
 
 @settings(max_examples=200)
 @given(
-    t=st.floats(min_value=0.0, max_value=10_000.0,
+    t=st.floats(min_value=-10_000.0, max_value=10_000.0,
                 allow_nan=False, allow_infinity=False),
     period=st.floats(min_value=0.2, max_value=8.0,
                      allow_nan=False, allow_infinity=False),

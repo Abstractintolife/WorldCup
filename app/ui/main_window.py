@@ -182,16 +182,18 @@ class MainWindow(QMainWindow):
         shell.addWidget(body_w, 1)
         central.setLayout(shell)
         self._titlebar.setStyleSheet(self._titlebar.styleSheet())  # noqa: ensure styled
-        body_w.setStyleSheet("background: transparent;")
 
         # 无边框窗口的边缘缩放手柄（铺在四边/四角，置于最上层）
         self._grips = ResizeGripManager(central)
         self._grips.reposition()
 
-        # 让动态背景透出来：内容区容器全部透明（侧栏/顶栏走 chrome_glass 半透明）
+        # 让 z0 舞台合成器透出：按设计 Z 序把内容宿主 + chrome 设为半透明。
+        # central（RootSurface）持有铺满整窗的背景子控件，自身保持透明即可。
         central.setStyleSheet("background: transparent;")
-        right_w.setStyleSheet("background: transparent;")
-        self._stack.setStyleSheet("background: transparent;")
+        self._setup_compositing_layers(
+            content_hosts=(body_w, right_w, self._stack),
+            chrome=(self._sidebar, self._topbar, self._subheader),
+        )
 
         # 状态栏
         self.setStatusBar(QStatusBar())
@@ -344,6 +346,31 @@ class MainWindow(QMainWindow):
         self._settings.set("bg_anim", self._bg_anim)
         msg = "动态背景已开启 ✨" if self._bg_anim else "动态背景已关闭 · 性能优先 ⚡"
         self.statusBar().showMessage(msg, 3000)
+
+    # ─── 合成层 / Z 序（让 z0 舞台合成器透出 chrome + 内容宿主）───────────
+    def _setup_compositing_layers(self, *, content_hosts, chrome) -> None:
+        """按设计 Z 序把内容宿主与 chrome 设为半透明，露出 z0「夜间球场」合成器。
+
+        对应需求 16.5（概览页用半透明 chrome/hero + 不透明滚动正文渲染于背景之上）
+        与设计「Compositing / Z-order」：
+
+        * **内容宿主**（包裹容器 / ``QStackedWidget``，设计 Z1）开启
+          ``WA_TranslucentBackground`` 并清空基底；各页面只让「滚动正文」走不透明底
+          （``#OpaqueBody`` / ``#PageContent`` QSS，见 ``hud_theme`` / ``theme``），
+          使长列表滚动时 GPU 合成器无需每帧重合成整棵控件树（性能权衡，沿用旧
+          ``theme.py`` 的「动态背景透出层」教训）。
+        * **chrome**（导航栏 / 顶栏 / 子标题，设计 Z2「半透明玻璃」）同样开启
+          ``WA_TranslucentBackground``，根框基底透明以透出背景；其内部玻璃元件
+          （nav 行高亮、搜索胶囊等）各自的样式不受影响。
+        """
+        for host in content_hosts:
+            host.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+            host.setStyleSheet("background: transparent;")
+        for w in chrome:
+            w.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
+            # 仅把 chrome 根框基底设为透明（按 objectName 精确匹配），不波及子级。
+            name = w.objectName() or type(w).__name__
+            w.setStyleSheet(f"QFrame#{name} {{ background: transparent; }}")
 
     # ─── 动态背景渲染后端（CPU / GPU 可热切换）───────────
     def _make_backdrop(self, parent: QWidget):

@@ -87,6 +87,34 @@ def test_property20_bar_settles_at_data(values):
 
 
 @settings(max_examples=200)
+@given(values=_values, r1=_reveals, r2=_reveals)
+def test_property20_bar_heights_monotonic_in_reveal(values, r1, r2):
+    # 非负数据：揭示比例增大 → 每根柱高度非递减（需求 24.1）。
+    max_value = max(values) + 1.0
+    full_h = 120.0
+    lo, hi = sorted((r1, r2))
+    a = cbar.bar_reveal_heights(values, max_value, full_h, lo)
+    b = cbar.bar_reveal_heights(values, max_value, full_h, hi)
+    for av, bv in zip(a, b):
+        assert bv >= av - _EPS
+
+
+@settings(max_examples=200)
+@given(values=_values, r1=_reveals, r2=_reveals)
+def test_property20_radar_radii_monotonic_in_reveal(values, r1, r2):
+    # 非负数据：揭示比例增大 → 每个顶点到圆心的半径非递减（需求 24.1）。
+    max_value = max(values) + 1.0
+    cx, cy, radius = 100.0, 100.0, 80.0
+    lo, hi = sorted((r1, r2))
+    va = cradar.radar_vertices(values, max_value, lo, cx, cy, radius)
+    vb = cradar.radar_vertices(values, max_value, hi, cx, cy, radius)
+    for (ax, ay), (bx, by) in zip(va, vb):
+        ra = math.hypot(ax - cx, ay - cy)
+        rb = math.hypot(bx - cx, by - cy)
+        assert rb >= ra - 1e-6
+
+
+@settings(max_examples=200)
 @given(values=_values)
 def test_property20_line_settles_at_all_points(values):
     # 用 (i, v) 作为折线顶点；落定时返回全部顶点且精确一致。

@@ -12,14 +12,16 @@
     - 点缀 大力神杯金 ``#FFD700``（GOLD，荣誉 / 强调）
     - 绿茵翠绿 ``#1B5E20`` / ``#2ED877``（球场 / 胜势）
 
-精简皮肤为四套（对应 SkinBackdrop 的四个动态场景）：
-    深蓝世界杯（默认）/ 黑金冠军 / 绿茵赛场 / 樱花限定。
+精简皮肤为三套（对应 StageCompositor 的夜间球场场景）：
+    深蓝世界杯（默认）/ 黑金冠军 / 绿茵赛场。
 """
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
 from PyQt6.QtGui import QColor
+
+from app.ui.design.hud_theme import NIGHT_STADIUM
 
 
 # ─── 设计令牌（供模块外引用） ─────────────────────────────────
@@ -578,5 +580,8 @@ def build_qss(t: ThemePalette) -> str:
     }}
     QWidget#PageRoot {{ background: transparent; }}
     QWidget#PageContent {{ background: {t.bg}; }}
+    /* 新 HUD 页面（如概览页）滚动正文不透明底 —— 需求 16.5：避免 GPU 合成器
+       每帧重合成整棵控件树；色值取 hud_theme 的 bg_opaque_body 令牌。 */
+    QWidget#OpaqueBody {{ background: {NIGHT_STADIUM.bg_opaque_body}; }}
     QWidget#ContentHost {{ background: transparent; }}
     """

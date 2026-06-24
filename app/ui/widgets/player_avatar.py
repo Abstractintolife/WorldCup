@@ -17,6 +17,7 @@ from PyQt6.QtGui import (
     QPainter,
     QPainterPath,
     QPen,
+    QPixmapCache,
     QRadialGradient,
 )
 from PyQt6.QtWidgets import QWidget
@@ -85,11 +86,28 @@ class PlayerAvatar(RemoteImage):
         p.fillRect(photo_rect, QColor(self._placeholder_color))
         pix = self._pixmap
         if pix is not None and not pix.isNull():
-            scaled = pix.scaled(
-                int(photo_rect.width()), int(photo_rect.height()),
-                Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                Qt.TransformationMode.SmoothTransformation,
-            )
+            # 共享缩放缓存（QPixmapCache）：同一 URL + 同一照片尺寸的头像在所有
+            # 行 / 卡片间复用一张缩放结果，避免每次 paintEvent 重复
+            # SmoothTransformation 缩放（射手榜 / 排行榜头像数量大 —— 性能需求
+            # 25.2 / 26.1）。
+            pw, ph = int(photo_rect.width()), int(photo_rect.height())
+            scaled = self._scaled
+            if scaled is None or scaled.isNull():
+                key = (
+                    f"wcavatar:{self._url}:{pw}x{ph}" if self._url else None
+                )
+                cached = QPixmapCache.find(key) if key else None
+                if cached is not None and not cached.isNull():
+                    scaled = cached
+                else:
+                    scaled = pix.scaled(
+                        pw, ph,
+                        Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                        Qt.TransformationMode.SmoothTransformation,
+                    )
+                    if key:
+                        QPixmapCache.insert(key, scaled)
+                self._scaled = scaled
             x = photo_rect.left() + (photo_rect.width() - scaled.width()) / 2
             y = photo_rect.top() + (photo_rect.height() - scaled.height()) / 2
             p.drawPixmap(int(x), int(y), scaled)

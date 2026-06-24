@@ -311,7 +311,17 @@ class StandingsTable(GlassCard):
 
     @property
     def active_group(self) -> str:
+        """当前激活的小组字母（默认 ``"A"``，需求 9.3）。"""
         return self._active
+
+    @property
+    def tab_letters(self) -> list[str]:
+        """分组选择器标签字母列表（顺序 A–L，需求 9.2）。"""
+        return list(self._tab_btns.keys())
+
+    def current_team_names(self) -> list[str]:
+        """当前激活组实际渲染的球队名（按行序）—— 供分组选择器单测断言。"""
+        return [r.team_name for r in self._rows_for_active()]
 
     # ── 标签选择 + 重渲染 ────────────────────
     def _select(self, letter: str) -> None:

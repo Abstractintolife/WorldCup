@@ -16,18 +16,19 @@ from __future__ import annotations
 
 from PyQt6.QtCore import (
     QAbstractAnimation,
-    QEasingCurve,
     QPropertyAnimation,
     pyqtProperty,
 )
 from PyQt6.QtWidgets import QWidget
 
 from app.config import LOW_PERF
+from app.ui.design.motion_system import EASE_STANDARD
 
 #: 图表刷新 / 揭示时长（毫秒）。
 CHART_REFRESH_MS = 300
-#: 唯一缓动曲线。
-EASE = QEasingCurve.Type.OutCubic
+#: 唯一缓动曲线 —— 复用统一动效系统的 ``EASE_STANDARD``（OutCubic），
+#: 确保图表与全应用共享同一条运动曲线（设计 "Motion Design System"）。
+EASE = EASE_STANDARD
 
 
 def _clamp(v: float, lo: float = 0.0, hi: float = 1.0) -> float:

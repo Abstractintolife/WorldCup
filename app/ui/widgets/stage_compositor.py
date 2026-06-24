@@ -263,6 +263,12 @@ class ParticleSpec:
             raise ValueError(
                 f"ParticleSpec.count 必须落在 [{PARTICLE_COUNT_MIN},{PARTICLE_COUNT_MAX}]，得到 {self.count}"
             )
+        # 先显式拒绝被设计排除的「网页小游戏 / 浪漫风」特效（需求 17.5），给出针对性报错。
+        if isinstance(self.kind, str) and self.kind.strip().lower() in BANNED_PARTICLE_KINDS:
+            raise ValueError(
+                f"ParticleSpec.kind 禁止使用 {self.kind!r}：花瓣/樱花/雪/流星等"
+                f"网页小游戏式特效被设计明确排除（需求 17.5），仅允许 {PARTICLE_KINDS}"
+            )
         if self.kind not in PARTICLE_KINDS:
             raise ValueError(
                 f"ParticleSpec.kind 必须 ∈ {PARTICLE_KINDS}（禁止花瓣/樱花/雪/流星），得到 {self.kind!r}"

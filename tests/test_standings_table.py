@@ -172,7 +172,13 @@ def test_standings_group_a_active_by_default(qapp):
 
 @pytestmark_qt
 def test_standings_selecting_tab_marks_active_and_renders_group(qapp):
-    """Req 9.4: selecting a tab marks it active and renders that group."""
+    """Req 9.4: selecting a tab marks it active and renders that group.
+
+    Inject distinct A/B groups via ``set_groups`` and assert that switching the
+    active tab re-renders the standings so ``current_team_names()`` reflects the
+    newly selected group (the table's rendered rows), while the previously
+    active tab is deactivated.
+    """
     from app.models.standing import GroupStanding, TeamStanding
     from app.ui.widgets.standings_table import StandingsTable
 
@@ -183,19 +189,34 @@ def test_standings_selecting_tab_marks_active_and_renders_group(qapp):
             matches_lost=rank - 1, goals_pro=5, goals_against=rank,
         )
 
+    group_a = GroupStanding(name="A组", teams=[
+        _team(1, "墨西哥", "mx"), _team(2, "韩国", "kr"),
+    ])
     group_b = GroupStanding(name="B组", teams=[
         _team(1, "巴西", "br"), _team(2, "塞尔维亚", "rs"), _team(3, "瑞士", "ch"),
     ])
     table = StandingsTable()
-    table.set_groups([group_b])
+    table.set_groups([group_a, group_b])
 
-    # 切到 B 组。
-    table._select("B")
+    # A 组初始激活并渲染 A 组真实数据。
+    assert table.active_group == "A"
+    assert table.current_team_names() == ["墨西哥", "韩国"]
+
+    # 触发 B 标签点击（公开点击路径）。
+    table._tab_btns["B"].click()
     assert table.active_group == "B"
     assert table._tab_btns["B"].isChecked() is True
     assert table._tab_btns["A"].isChecked() is False
-    # 渲染 B 组三行真实数据。
+    # 重渲染为 B 组：current_team_names() 反映选中组的真实球队，且行数一致。
+    assert table.current_team_names() == ["巴西", "塞尔维亚", "瑞士"]
     assert table._rows_box.count() == 3
+
+    # 切回 A 组（点击 A 标签）：再次反映 A 组。
+    table._tab_btns["A"].click()
+    assert table.active_group == "A"
+    assert table._tab_btns["A"].isChecked() is True
+    assert table._tab_btns["B"].isChecked() is False
+    assert table.current_team_names() == ["墨西哥", "韩国"]
 
 
 @pytestmark_qt

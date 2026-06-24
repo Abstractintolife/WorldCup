@@ -3,11 +3,18 @@
 包裹既有 :class:`~app.ui.widgets.flag_icon.FlagIcon`，让其在垂直方向以
 **±3px / 4 秒** 的正弦节律持续轻微浮动（Hero 区的「活起来」氛围）。
 
-实现：自定义 ``floatY`` 属性 + 单条循环 ``QPropertyAnimation``（4000ms、
-``LoopCount = -1``）。为避免「关键帧 + 缓动曲线」的相互作用歧义，动画推进的是
-一个 ``phase`` ∈ [0,1] 的线性相位，偏移量经纯函数 :func:`floating_offset_from_phase`
-（``A·sin(2π·phase)``）求得 —— 这正是一个平滑的正弦往复（InOutSine 形态），
-天然落在 ``[-3, +3]`` 内、周期精确 4 秒。
+实现：自定义 ``floatY`` 属性（:func:`PyQt6.QtCore.pyqtProperty`）+ 单条循环
+``QPropertyAnimation``（4000ms、``LoopCount = -1``、``InOutSine``）。动画直接
+驱动 ``floatY``：每帧把新的垂直偏移写入属性，``floatY`` 的 setter 立即按该偏移
+重新摆放内部旗面。
+
+关键帧取对称往复 ``0 → +3 → 0 → -3 → 0``（配 ``InOutSine`` 缓动），因此：
+
+* 垂直偏移恒落在 ``[-3, +3]`` 像素内（需求 22.1）；
+* 一个完整振荡周期精确为 4 秒（需求 22.2）。
+
+为便于在无头环境核对运动数学，正弦偏移另抽成纯函数 :func:`floating_offset`
+（``A·sin(2π·t/period)``），与动画的对称往复在幅度 / 周期上一致。
 
 对应需求 22.1（偏移 ∈ [-3,+3]）/ 22.2（周期 4 秒）。
 """
@@ -32,14 +39,6 @@ FLOAT_AMPLITUDE_PX = 3.0
 #: 一个完整振荡周期（秒 / 毫秒）。
 FLOAT_PERIOD_S = 4.0
 FLOAT_PERIOD_MS = int(FLOAT_PERIOD_S * 1000)
-
-
-def floating_offset_from_phase(phase: float, amplitude: float = FLOAT_AMPLITUDE_PX) -> float:
-    """纯函数：给定相位 ``phase`` ∈ [0,1]，返回垂直偏移 ``A·sin(2π·phase)``。
-
-    结果恒在 ``[-amplitude, +amplitude]`` 内；``phase`` 每 +1 即一个完整周期。
-    """
-    return amplitude * math.sin(2.0 * math.pi * phase)
 
 
 def floating_offset(t: float, amplitude: float = FLOAT_AMPLITUDE_PX,
@@ -77,17 +76,20 @@ class FloatingFlag(QWidget):
         # 预留上下浮动余量，避免裁切。
         self.setFixedSize(fw, fh + 2 * self._margin)
 
-        self._phase = 0.0
         self._float_y = 0.0
         self._place_flag()
 
-        self._anim = QPropertyAnimation(self, b"phase", self)
-        self._anim.setDuration(FLOAT_PERIOD_MS)      # 4s 周期
-        self._anim.setLoopCount(-1)                   # 持续循环（氛围动画）
-        self._anim.setStartValue(0.0)
-        self._anim.setEndValue(1.0)
-        # 线性推进相位；正弦由 floating_offset_from_phase 提供（即 InOutSine 往复）。
-        self._anim.setEasingCurve(QEasingCurve.Type.Linear)
+        # 单条循环动画，直接驱动自定义 floatY 属性。
+        self._anim = QPropertyAnimation(self, b"floatY", self)
+        self._anim.setDuration(FLOAT_PERIOD_MS)       # 4s 周期（需求 22.2）
+        self._anim.setLoopCount(-1)                    # 持续循环（氛围动画）
+        # 对称往复 0→+3→0→-3→0，偏移恒在 [-3,+3]（需求 22.1）。
+        self._anim.setKeyValueAt(0.0, 0.0)
+        self._anim.setKeyValueAt(0.25, FLOAT_AMPLITUDE_PX)
+        self._anim.setKeyValueAt(0.5, 0.0)
+        self._anim.setKeyValueAt(0.75, -FLOAT_AMPLITUDE_PX)
+        self._anim.setKeyValueAt(1.0, 0.0)
+        self._anim.setEasingCurve(QEasingCurve.Type.InOutSine)
 
     # ── 旗面定位 ─────────────────────────────
     def _place_flag(self) -> None:
@@ -103,26 +105,27 @@ class FloatingFlag(QWidget):
     def start_float(self) -> None:
         """开始浮动循环。``LOW_PERF`` 省电模式下保持静止（不启动定时驱动）。"""
         if LOW_PERF:
-            self._set_phase(0.0)
+            self._set_float_y(0.0)
             return
         if self._anim.state() != QAbstractAnimation.State.Running:
             self._anim.start()
 
     def stop_float(self) -> None:
         self._anim.stop()
-        self._set_phase(0.0)
+        self._set_float_y(0.0)
 
+    # ── floatY 属性（动画驱动） ────────────────
+    def _get_float_y(self) -> float:
+        return self._float_y
+
+    def _set_float_y(self, value: float) -> None:
+        self._float_y = float(value)
+        self._place_flag()
+
+    #: 自定义 Qt 属性 —— 动画每帧写入垂直偏移，setter 立即重摆旗面。
+    floatY = pyqtProperty(float, fget=_get_float_y, fset=_set_float_y)
+
+    # 只读 Python 便捷别名（保留既有调用习惯）。
     @property
     def float_y(self) -> float:
         return self._float_y
-
-    # ── phase 属性（动画驱动） ────────────────
-    def _set_phase(self, value: float) -> None:
-        self._phase = float(value)
-        self._float_y = floating_offset_from_phase(self._phase)
-        self._place_flag()
-
-    def get_phase(self) -> float:
-        return self._phase
-
-    phase = pyqtProperty(float, fget=get_phase, fset=_set_phase)
