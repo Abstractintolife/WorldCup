@@ -101,10 +101,20 @@ def test_live_badge_opacity_stays_in_bounds_when_driven(qapp):
 
 
 @pytest.mark.skipif(not QT_AVAILABLE, reason="Qt unavailable")
-def test_sample_render_matches_spec(qapp):
+def test_default_is_empty_state(qapp):
     panel = lmc.LiveMatchCenter()
-    # 默认样例：巴西 2 - 1 塞尔维亚 + 三条事件（需求 13.3 / 13.4）。
+    # 默认空态：无进行中比赛时留空，不展示任何虚构样例比赛。
+    assert panel.event_row_count == 0
+    assert panel._scoreline_w.isVisibleTo(panel) is False  # noqa: SLF001
+    assert panel._clock_lbl.text() == ""  # noqa: SLF001
+
+
+@pytest.mark.skipif(not QT_AVAILABLE, reason="Qt unavailable")
+def test_set_live_none_renders_empty(qapp):
+    panel = lmc.LiveMatchCenter()
+    panel._render_sample()  # noqa: SLF001 - 先填充样例
     assert panel.event_row_count == len(lmc.SAMPLE_EVENTS)
-    assert panel._score_lbl.text() == "2 - 1"  # noqa: SLF001
-    assert panel._home_name.text() == "巴西"  # noqa: SLF001
-    assert panel._away_name.text() == "塞尔维亚"  # noqa: SLF001
+    panel.set_live(None)
+    # 回到空态。
+    assert panel.event_row_count == 0
+    assert panel._scoreline_w.isVisibleTo(panel) is False  # noqa: SLF001
