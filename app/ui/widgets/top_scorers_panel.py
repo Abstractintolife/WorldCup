@@ -226,7 +226,7 @@ class TopScorersPanel(GlassCard):
     def _sample_row(self, s: SampleScorer) -> QWidget:
         w, row = self._row_frame()
         row.addWidget(self._rank_lbl(s.rank))
-        row.addWidget(PlayerAvatar(None, size=32))
+        row.addWidget(PlayerAvatar(None, size=32, ring=False))
         row.addWidget(self._name_block(s.name, s.country), 1)
         row.addWidget(self._goals_lbl(s.goals))
         return w
@@ -239,7 +239,7 @@ class TopScorersPanel(GlassCard):
                 lambda _e, p=pr: self.player_clicked.emit(p.person_id, p.person_name)
             )
         row.addWidget(self._rank_lbl(pr.rank))
-        row.addWidget(PlayerAvatar(pr.person_logo, size=32))
+        row.addWidget(PlayerAvatar(pr.person_logo, size=32, ring=False))
         row.addWidget(self._name_block(pr.person_name, pr.team_name), 1)
         row.addWidget(self._goals_lbl(pr.count))
         return w

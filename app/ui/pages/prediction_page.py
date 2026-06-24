@@ -520,7 +520,15 @@ class PredictionPage(BasePage):
         return None, 0
 
     def _qual_prob_for(self, team_id: str, team_name: str) -> float | None:
-        """小组出线（前 2）概率 —— 与首页小组积分榜同源（estimate_qual_prob）。"""
+        """小组出线（晋级淘汰赛）概率。
+
+        优先取 Opta 赛事模拟的真实出线概率（``qualify_pct``，与「概率预测」页 /
+        theanalyst.com 同源）；无该数据时回退组内名次启发式估计（与首页小组
+        积分榜同源），保证离线 / 旧数据下仍有合理展示。
+        """
+        tp = self._opta_for(team_name)
+        if tp is not None and tp.qualify_pct and tp.qualify_pct > 0:
+            return max(0.0, min(1.0, tp.qualify_pct / 100.0))
         rank, size = self._team_group_rank(team_id, team_name)
         if rank is None or size <= 0:
             return None
@@ -542,8 +550,8 @@ class PredictionPage(BasePage):
         lay.setSpacing(10)
         self._section(lay, "🎫  晋级概率")
         hint = QLabel(
-            "小组出线概率（基于积分榜模型测算，与首页「小组积分榜」概率栏一致）"
-            "及 Opta 超级计算机推算的夺冠 / 进决赛概率"
+            "出线（晋级淘汰赛）概率取自 Opta 超级计算机赛事模拟（与「概率预测」页、"
+            "首页「小组积分榜」概率栏同源），并附 Opta 推算的夺冠 / 进决赛概率"
         )
         hint.setStyleSheet("color:#B0BEC5; font-size:12px;")
         hint.setWordWrap(True)
