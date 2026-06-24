@@ -19,6 +19,8 @@ from __future__ import annotations
 import json
 import re
 import sys
+import time
+import urllib.parse
 import urllib.request
 
 OUTLET = "1mjq6w6ezkxe611ykkj8rgz7f1"
@@ -75,6 +77,81 @@ def _strip(htmltext: str) -> str:
     import html as _h
     t = re.sub(r"<[^>]+>", " ", htmltext)
     return re.sub(r"\s+", " ", _h.unescape(t)).strip()
+
+
+# ════════════════════════════════════════════════════════════════════
+#  机器翻译（英文 → 中文）—— 用于把整篇分析正文译为中文
+# ════════════════════════════════════════════════════════════════════
+#: 译文缓存（去重相同句子，跨场复用，显著减少请求数）。
+_TR_CACHE: dict[str, str] = {}
+_GT_URL = ("https://translate.googleapis.com/translate_a/single"
+           "?client=gtx&sl=en&tl=zh-CN&dt=t&q=")
+
+
+def _gt_once(text: str) -> str:
+    req = urllib.request.Request(
+        _GT_URL + urllib.parse.quote(text),
+        headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"},
+    )
+    with urllib.request.urlopen(req, timeout=30) as r:
+        data = json.loads(r.read().decode("utf-8", "replace"))
+    return "".join(seg[0] for seg in data[0] if seg and seg[0])
+
+
+def _translate(text: str) -> str:
+    """把一段英文译为中文（带缓存 + 重试）；失败时回退英文原文。"""
+    text = (text or "").strip()
+    if not text:
+        return ""
+    if text in _TR_CACHE:
+        return _TR_CACHE[text]
+    last = ""
+    for attempt in range(4):
+        try:
+            out = _gt_once(text).strip()
+            if out:
+                _TR_CACHE[text] = out
+                time.sleep(0.05)
+                return out
+        except Exception as exc:  # pragma: no cover - 网络/限流
+            last = str(exc)
+            time.sleep(0.6 * (attempt + 1))
+    print(f"    ! translate fail ({last}); 回退英文", file=sys.stderr)
+    _TR_CACHE[text] = text
+    return text
+
+
+def _translate_paras(paras: list[str]) -> list[str]:
+    """逐段翻译（按 ~1200 字符分块合并请求，换行可被保留），返回等长中文列表。"""
+    paras = [p for p in (paras or []) if p and p.strip()]
+    if not paras:
+        return []
+    out: list[str] = []
+    chunk: list[str] = []
+    size = 0
+
+    def flush() -> None:
+        nonlocal chunk, size
+        if not chunk:
+            return
+        joined = "\n".join(chunk)
+        zh = _translate(joined)
+        parts = zh.split("\n")
+        if len(parts) == len(chunk):
+            out.extend(p.strip() for p in parts)
+        else:
+            # 行数对不上：逐段单独翻译兜底，保证一一对应。
+            out.extend(_translate(p) for p in chunk)
+        chunk = []
+        size = 0
+
+    for p in paras:
+        if size + len(p) > 1200 and chunk:
+            flush()
+        chunk.append(p)
+        size += len(p) + 1
+    flush()
+    return out
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -277,6 +354,76 @@ def _fav_from_insight(bullet: str, home: str, away: str
     return other_pct, fav_pct
 
 
+def _clean_para(seg: str) -> str:
+    import html as _h
+    return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", _h.unescape(seg))).strip()
+
+
+#: 抓取正文时过滤掉的导航 / 页脚 / 促销类噪声段。
+_JUNK_KW = (
+    "Search", "World Cup 2026", "Subscribe", "newsletter", "Sign up", "Gamble",
+    "cookie", "All rights", "Follow", "Opta Analyst", "Read more", "READ MORE",
+    "Premier League", "Download", "App Store", "Google Play",
+)
+
+
+def _good_para(t: str) -> bool:
+    return len(t) >= 35 and not any(k in t for k in _JUNK_KW)
+
+
+def extract_analysis(article_html: str) -> list[tuple[str, list[str], bool]]:
+    """把预览文章正文切成有序分析块。
+
+    返回 ``[(中文小标题, 英文段落列表, 是否要点列表), ...]``，覆盖文章的**全部**
+    分析内容：关键数据速览（Key Insights 要点）、深度分析（叙述段落）、历史交锋
+    （Head-to-Head）、赛前预测（Prediction）。剔除导航 / 阵容 / 订阅等非分析区。
+    """
+    h = article_html
+    h2 = [(m.start(), m.end(), _clean_para(m.group(1)))
+          for m in re.finditer(r"<h2[^>]*>(.*?)</h2>", h, re.S)]
+
+    def find(kw: str):
+        for s, e, t in h2:
+            if kw.lower() in t.lower():
+                return (s, e, t)
+        return None
+
+    ki = find("Key Insights")
+    h2h = find("Head-to-Head")
+    pred = find("Prediction")
+    end = len(h)
+    for kw in ("Squads", "Predicted Lineups", "Subscribe"):
+        f = find(kw)
+        if f and pred and f[0] > pred[0]:
+            end = f[0]
+            break
+
+    def paras(seg: str) -> list[str]:
+        return [t for t in (_clean_para(p)
+                for p in re.findall(r"<p[^>]*>(.*?)</p>", seg, re.S)) if _good_para(t)]
+
+    def bullets(seg: str) -> list[str]:
+        return [t for t in (_clean_para(p)
+                for p in re.findall(r"<li[^>]*>(.*?)</li>", seg, re.S)) if _good_para(t)]
+
+    blocks: list[tuple[str, list[str], bool]] = []
+    if ki and h2h:
+        kb = bullets(h[ki[1]:h2h[0]])
+        if kb:
+            blocks.append(("关键数据速览", kb, True))
+        ana = paras(h[ki[1]:h2h[0]])
+        if ana:
+            blocks.append(("深度分析", ana, False))
+        hp = paras(h[h2h[1]:pred[0]]) if pred else paras(h[h2h[1]:end])
+        if hp:
+            blocks.append(("历史交锋", hp, False))
+    if pred:
+        pp = paras(h[pred[1]:end])
+        if pp:
+            blocks.append(("赛前预测（Opta 超算）", pp, False))
+    return blocks
+
+
 def parse_article(slug: str) -> dict | None:
     url = f"https://theanalyst.com/articles/{slug}"
     try:
@@ -307,12 +454,42 @@ def parse_article(slug: str) -> dict | None:
     # Prediction 段落（按「赛前模拟概率」锚点定位，避免历史数据百分比干扰）
     pred_text = _prediction_paras(h)
     hp, dp, ap = _split_1x2(pred_text, home_en, away_en)
-    # 校验三元组：和需接近 100，否则改用首条 Key Insight 兜底解析（更可靠）
+    # 首条 Key Insight 几乎总会**点名**夺冠热门 + 胜率，据此校正主客归属。
+    fav_h, fav_a = _fav_from_insight(insights[0] if insights else "",
+                                     home_en, away_en)
     if not _valid_triple(hp, dp, ap):
-        fav_h, fav_a = _fav_from_insight(insights[0] if insights else "",
-                                         home_en, away_en)
+        # 三元组不可靠：直接采用首条要点的解析结果（无平局率）。
         hp, ap = fav_h, fav_a
         dp = None
+    else:
+        # 三元组可靠，但主客可能被绰号句式搞反：用要点里的「热门方」校正。
+        ins_fav = ("home" if (fav_h or 0) >= (fav_a or 0) else "away") \
+            if (fav_h is not None or fav_a is not None) else None
+        if ins_fav and hp is not None and ap is not None and hp != ap:
+            tri_fav = "home" if hp >= ap else "away"
+            if tri_fav != ins_fav:
+                hp, ap = ap, hp
+
+    # ── 全文分析（中文译文）：覆盖关键数据 / 深度分析 / 历史交锋 / 赛前预测 ──
+    analysis_cn: list[list[str]] = []
+    for title, items, is_bullets in extract_analysis(h):
+        zh_items = _translate_paras(items)
+        if not zh_items:
+            continue
+        if is_bullets:
+            body = "\n".join(f"· {x}" for x in zh_items)
+        else:
+            body = "\n".join(zh_items)
+        analysis_cn.append([title, body])
+
+    # 中文综述：取「赛前预测」首段译文，回退「深度分析」首段。
+    summary_cn = ""
+    for title, body in analysis_cn:
+        if title.startswith("赛前预测"):
+            summary_cn = body.split("\n")[0]
+            break
+    if not summary_cn and analysis_cn:
+        summary_cn = analysis_cn[0][1].split("\n")[0].lstrip("· ")
 
     return {
         "slug": slug,
@@ -326,6 +503,8 @@ def parse_article(slug: str) -> dict | None:
         "away_pct": ap,
         "insights": insights,
         "prediction": pred_text,
+        "summary_cn": summary_cn,
+        "analysis_cn": analysis_cn,
     }
 
 
@@ -347,7 +526,8 @@ def main() -> None:
         if rec is not None:
             matches.append(rec)
             print(f"  ok {rec['home_cn']} vs {rec['away_cn']} "
-                  f"({rec['home_pct']}/{rec['draw_pct']}/{rec['away_pct']})",
+                  f"({rec['home_pct']}/{rec['draw_pct']}/{rec['away_pct']}) "
+                  f"· {len(rec['analysis_cn'])} 块分析译文",
                   file=sys.stderr)
 
     header = (

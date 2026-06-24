@@ -204,6 +204,7 @@ class HomePage(BasePage):
         self._live_card = LiveMatchCenter()
         self._live_card.setProperty("ia_region", "live")
         self._live_card.match_clicked.connect(self._on_live_match_clicked)
+        self._live_card.player_clicked.connect(self.player_clicked.emit)
         self._live_card.enter_clicked.connect(lambda: self.navigate.emit("live"))
 
         self._scorers_card = TopScorersCard()
@@ -284,6 +285,18 @@ class HomePage(BasePage):
             # 夺冠概率榜（Opta 超算）—— 实时接口失败时服务内部自动回退离线快照。
             self._cities_card.set_ranking(
                 TheAnalyst.instance().championship_ranking())
+            # 实时比赛阵容（大头照布阵图）：仅当有正在进行的比赛时拉取并展示。
+            live = next((m for m in self._last_matches
+                         if getattr(m, "is_live", False)), None)
+            if live is not None:
+                try:
+                    ml = await self._service.fetch_match_lineup(
+                        live.match_id, force=force)
+                except Exception:
+                    ml = None
+                self._live_card.set_lineup(ml)
+            else:
+                self._live_card.set_lineup(None)
         self.run_async(runner)
 
     def _apply(self, results) -> None:

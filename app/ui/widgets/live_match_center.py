@@ -43,6 +43,7 @@ from PyQt6.QtWidgets import (
 )
 
 from app.models.match import Match, MatchStatus
+from app.models.lineup import MatchLineup
 from app.ui.design import motion_system
 from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
@@ -353,6 +354,8 @@ class LiveMatchCenter(GlassCard):
     match_clicked = pyqtSignal(object)
     #: 点击底部「进入比赛中心」。
     enter_clicked = pyqtSignal()
+    #: 点击布阵图中的球员（person_id, name）。
+    player_clicked = pyqtSignal(str, str)
 
     def __init__(
         self,
@@ -389,6 +392,9 @@ class LiveMatchCenter(GlassCard):
 
         self._pitch = _MiniPitch(p)
         root.addWidget(self._pitch, 1)
+        self._root = root
+        # 实时阵容「大头照」布阵图（懒加载，set_lineup 时插入并替换事件迷你球场）。
+        self._formation = None
 
         self._footer_btn = QPushButton("进入比赛中心")
         self._footer_btn.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -556,6 +562,33 @@ class LiveMatchCenter(GlassCard):
         for ev in events:
             self.push_event(ev)
 
+    def set_lineup(self, lineup: "MatchLineup | None") -> None:
+        """注入实时比赛的双方阵容 → 在球场上以「大头照」布阵图展示。
+
+        有可用阵容（实际首发或赛前预测）时，用 :class:`PortraitLineupPitch`
+        替换事件迷你球场；否则移除布阵图、回到事件时间线。
+        """
+        # 先移除旧布阵图。
+        if self._formation is not None:
+            self._formation.hide()
+            self._formation.setParent(None)
+            self._formation.deleteLater()
+            self._formation = None
+
+        if lineup is None or not getattr(lineup, "available", False):
+            self._pitch.show()
+            return
+
+        from app.ui.widgets.portrait_lineup_pitch import PortraitLineupPitch
+        self._formation = PortraitLineupPitch(lineup.team_a, lineup.team_b,
+                                              color_a=self._palette.loss,
+                                              color_b=self._palette.primary_hi)
+        self._formation.player_clicked.connect(self.player_clicked.emit)
+        idx = self._root.indexOf(self._pitch)
+        self._root.insertWidget(idx + 1, self._formation, 1)
+        self._pitch.hide()
+        self._formation.show()
+
     @property
     def event_row_count(self) -> int:
         """当前事件行数（不含末尾的伸缩项）。"""
@@ -570,6 +603,7 @@ class LiveMatchCenter(GlassCard):
     def _render_empty(self) -> None:
         """空态：无进行中比赛时留空，仅显示一行居中提示（需求：没有就留空）。"""
         self._match = None
+        self.set_lineup(None)
         self._clear_events()
         self._scoreline_w.setVisible(False)
         self._badge.setVisible(False)

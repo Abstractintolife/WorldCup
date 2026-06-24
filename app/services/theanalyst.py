@@ -96,6 +96,8 @@ class MatchPreview:
     insights: list[str] = field(default_factory=list)
     prediction: str = ""
     url: str = ""
+    summary_cn: str = ""                       # 中文综述
+    analysis_cn: list[tuple[str, str]] = field(default_factory=list)  # [(小标题, 正文)]
 
     @property
     def has_probabilities(self) -> bool:
@@ -290,4 +292,7 @@ def get_match_preview(match: Match) -> MatchPreview | None:
         insights=list(raw.get("insights") or []),
         prediction=raw.get("prediction", ""),
         url=raw.get("url", ""),
+        summary_cn=raw.get("summary_cn", ""),
+        analysis_cn=[tuple(b) for b in (raw.get("analysis_cn") or [])
+                     if isinstance(b, (list, tuple)) and len(b) == 2],
     )
