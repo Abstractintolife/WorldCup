@@ -51,7 +51,7 @@ from array import array
 from dataclasses import dataclass
 from typing import Literal
 
-from app.config import BACKDROP_PARTICLE_SCALE, BACKDROP_RENDER_SCALE, LOW_PERF
+from app.config import BACKDROP_PARTICLE_SCALE, BACKDROP_RENDER_SCALE, BG_IMAGE_PATH, LOW_PERF
 from app.ui.design.frame_clock import REF_FPS, FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette
 
@@ -59,6 +59,37 @@ log = logging.getLogger(__name__)
 
 # 背景重绘上限：氛围运动 ~60fps 足矣，无需跟随动效内核可能高达 240Hz 的心跳。
 _BG_MIN_DT = 1.0 / 60.0
+
+# ── 自定义背景图（仓库根目录「背景图.png」）懒加载缓存 ──
+#   None  = 尚未尝试加载
+#   False = 已尝试但文件缺失 / 加载失败（不再重试）
+#   QPixmap = 加载成功的原图
+_BG_PIXMAP = None
+
+
+def has_background_image() -> bool:
+    """是否存在可用的自定义背景图（供 MainWindow 决定渲染后端）。"""
+    try:
+        return BG_IMAGE_PATH.is_file()
+    except OSError:
+        return False
+
+
+def load_background_image():
+    """懒加载并缓存自定义背景图 ``背景图.png``；缺失/失败返回 ``None``。"""
+    global _BG_PIXMAP
+    if _BG_PIXMAP is None:
+        from PyQt6.QtGui import QPixmap
+        try:
+            if BG_IMAGE_PATH.is_file():
+                pm = QPixmap(str(BG_IMAGE_PATH))
+                _BG_PIXMAP = pm if (pm is not None and not pm.isNull()) else False
+            else:
+                _BG_PIXMAP = False
+        except Exception as exc:  # pragma: no cover - 损坏文件等
+            log.warning("背景图加载失败：%s", exc)
+            _BG_PIXMAP = False
+    return _BG_PIXMAP or None
 
 # ── OpenGL 枚举常量（避免依赖 PyOpenGL；这些是 GL 规范固定值）──
 _GL_FLOAT = 0x1406
@@ -886,6 +917,10 @@ def _make_cpu_class():
             if w <= 1 or h <= 1:
                 return
             scale = BACKDROP_RENDER_SCALE
+            # 存在自定义背景图时，跳过低分离屏缓冲，直接全分辨率绘制，
+            # 避免把照片先缩到 0.6 再放大造成的模糊（保持背景清晰）。
+            if load_background_image() is not None:
+                scale = 1.0
             if scale >= 0.99:
                 p = QPainter(self)
                 p.setRenderHint(QPainter.RenderHint.Antialiasing)
@@ -915,6 +950,37 @@ def _make_cpu_class():
             pal = self._palette
             t = self._t
             rect = QRectF(0, 0, w, h)
+
+            # ── 自定义背景图（背景图.png）优先 ──
+            # 存在时作为底图铺满（等比覆盖、居中裁剪），叠加可读性遮罩，再点缀
+            # 轻量氛围（粒子 + 聚光灯横扫），不渲染「夜间球场」程序化场景。
+            bg = load_background_image()
+            if bg is not None and not bg.isNull():
+                p.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform, True)
+                iw, ih = bg.width(), bg.height()
+                if iw > 0 and ih > 0:
+                    cover = max(w / iw, h / ih)
+                    dw, dh = iw * cover, ih * cover
+                    dx, dy = (w - dw) / 2.0, (h - dh) / 2.0
+                    p.drawPixmap(QRectF(dx, dy, dw, dh), bg, QRectF(0, 0, iw, ih))
+                # 可读性遮罩：自上而下加深，保证前景文字/卡片清晰可读。
+                ov = QLinearGradient(rect.topLeft(), rect.bottomLeft())
+                ov.setColorAt(0.0, _qc(_hex_rgb(pal.bg_top), 0.34))
+                ov.setColorAt(0.5, _qc(_hex_rgb(pal.bg_mid), 0.42))
+                ov.setColorAt(1.0, _qc(_hex_rgb(pal.bg_bottom), 0.58))
+                p.fillRect(rect, ov)
+                # 轻量氛围：粒子 + 两束聚光灯横扫（与无图时同款，营造「活起来」）。
+                self._paint_particles(p, w, h)
+                flood_c = _hex_rgb(pal.floodlight)
+                x1, x2 = sweep_positions(t)
+                beam_r = 0.5 * max(w, h)
+                from PyQt6.QtCore import QPointF
+                for cxn in (x1, x2):
+                    rg = QRadialGradient(QPointF(cxn * w, h * 0.42), beam_r)
+                    rg.setColorAt(0.0, _qc(flood_c, SWEEP_BEAM_PEAK))
+                    rg.setColorAt(1.0, _qc(flood_c, 0.0))
+                    p.fillRect(rect, rg)
+                return
 
             # L1 三段竖向渐变
             g = QLinearGradient(rect.topLeft(), rect.bottomLeft())

@@ -639,8 +639,10 @@ class HeroMatchCard(GlassCard):
 
         home_zh = match.team_a_name if match is not None else "—"
         away_zh = match.team_b_name if match is not None else "—"
-        self._home_zh.setText(home_zh)
-        self._away_zh.setText(away_zh)
+        # 队名做显示用简写（最多 4 个汉字），紧凑且更美观（不影响底层数据）。
+        from app.utils.text_utils import short_country_name
+        self._home_zh.setText(short_country_name(home_zh) or "—")
+        self._away_zh.setText(short_country_name(away_zh) or "—")
         self._home_en.setText((meta.home_name_en or "").upper())
         self._away_en.setText((meta.away_name_en or "").upper())
 
@@ -686,8 +688,9 @@ class HeroMatchCard(GlassCard):
         if not valid:
             return
         h, d, a = (int(x) for x in meta.win_prob)
-        home_zh = match.team_a_name if match is not None else "主队"
-        away_zh = match.team_b_name if match is not None else "客队"
+        from app.utils.text_utils import short_country_name
+        home_zh = short_country_name(match.team_a_name) if match is not None else "主队"
+        away_zh = short_country_name(match.team_b_name) if match is not None else "客队"
         self._lbl_home.setText(f"{h}% {home_zh}胜")
         self._lbl_draw.setText(f"{d}% 平局")
         self._lbl_away.setText(f"{a}% {away_zh}胜")

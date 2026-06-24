@@ -293,19 +293,32 @@ class _RailFooter(QWidget):
         lay.setContentsMargins(18, 10, 18, 6)
         lay.setSpacing(6)
 
-        self._sync_label = QLabel("数据同步中… 98%")
+        # 实时数据状态行：脉冲圆点 + 文案（取代旧的「数据同步中… 98%」假进度）。
+        status_row = QHBoxLayout()
+        status_row.setContentsMargins(0, 0, 0, 0)
+        status_row.setSpacing(7)
+        self._dot = QLabel("●")
+        self._dot.setObjectName("SyncDot")
+        self._dot.setStyleSheet(
+            f"QLabel#SyncDot {{ color: {p.win};"
+            f" font-size: {Type.CAPTION}px; background: transparent; }}"
+        )
+        status_row.addWidget(self._dot)
+        self._sync_label = QLabel("实时数据 · 已连接")
         self._sync_label.setObjectName("SyncLabel")
         self._sync_label.setStyleSheet(
-            f"QLabel#SyncLabel {{ color: {p.text_dim};"
-            f" font-size: {Type.CAPTION}px; font-weight: {Type.W_MEDIUM};"
+            f"QLabel#SyncLabel {{ color: {p.win};"
+            f" font-size: {Type.CAPTION}px; font-weight: {Type.W_BOLD};"
             f" background: transparent; }}"
         )
-        lay.addWidget(self._sync_label)
+        status_row.addWidget(self._sync_label)
+        status_row.addStretch(1)
+        lay.addLayout(status_row)
 
         self._bar = QProgressBar()
         self._bar.setObjectName("SyncBar")
         self._bar.setRange(0, 100)
-        self._bar.setValue(98)
+        self._bar.setValue(100)
         self._bar.setTextVisible(False)
         self._bar.setFixedHeight(4)
         self._bar.setStyleSheet(
@@ -317,7 +330,7 @@ QProgressBar#SyncBar {{
 }}
 QProgressBar#SyncBar::chunk {{
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-        stop:0 {p.primary}, stop:1 {p.primary_hi});
+        stop:0 {p.win}, stop:1 {p.primary_hi});
     border-radius: 2px;
 }}
 """.strip()
@@ -334,9 +347,40 @@ QProgressBar#SyncBar::chunk {{
         lay.addWidget(self._version)
 
     def set_sync_progress(self, percent: int) -> None:
+        """历史兼容：仍接受同步百分比（更新进度条），文案改为实时状态语义。"""
         percent = max(0, min(100, int(percent)))
         self._bar.setValue(percent)
-        self._sync_label.setText(f"数据同步中… {percent}%")
+
+    def set_realtime(self, connected: bool) -> None:
+        """切换实时数据连接态：绿色「实时数据 · 已连接」/ 红色「实时数据 · 连接中断」。"""
+        p = self._palette
+        col = p.win if connected else p.loss
+        text = "实时数据 · 已连接" if connected else "实时数据 · 连接中断"
+        self._dot.setStyleSheet(
+            f"QLabel#SyncDot {{ color: {col};"
+            f" font-size: {Type.CAPTION}px; background: transparent; }}"
+        )
+        self._sync_label.setText(text)
+        self._sync_label.setStyleSheet(
+            f"QLabel#SyncLabel {{ color: {col};"
+            f" font-size: {Type.CAPTION}px; font-weight: {Type.W_BOLD};"
+            f" background: transparent; }}"
+        )
+        self._bar.setValue(100 if connected else 30)
+        self._bar.setStyleSheet(
+            f"""
+QProgressBar#SyncBar {{
+    background: {rgba(p.text, 0.08)};
+    border: none;
+    border-radius: 2px;
+}}
+QProgressBar#SyncBar::chunk {{
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop:0 {col}, stop:1 {p.primary_hi if connected else col});
+    border-radius: 2px;
+}}
+""".strip()
+        )
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -429,6 +473,10 @@ class NavRail(GlassCard):
     # ── 同步进度 ─────────────────────────────
     def set_sync_progress(self, percent: int) -> None:
         self._footer.set_sync_progress(percent)
+
+    def set_realtime(self, connected: bool) -> None:
+        """更新页脚实时数据连接状态（绿色已连接 / 红色中断）。"""
+        self._footer.set_realtime(connected)
 
     # ── 主题（HUD 固定 NIGHT_STADIUM；保留接口以兼容壳层调用） ──
     def apply_palette(self, palette=None) -> None:  # noqa: D401

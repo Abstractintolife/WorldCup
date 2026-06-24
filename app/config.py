@@ -22,6 +22,10 @@ ASSETS_DIR = ROOT_DIR / "assets"
 # 随软件打包的国旗位图目录（assets/flags/{code}.png）—— 本地直读，免下载、零延迟
 FLAGS_DIR = ASSETS_DIR / "flags"
 
+# 主页/全局背景图（用户放在仓库根目录的「背景图.png」）。存在时作为舞台合成器
+# 的底图渲染，叠加可读性遮罩与轻量氛围层；缺失时回退「夜间球场」程序化渐变。
+BG_IMAGE_PATH = ROOT_DIR / "背景图.png"
+
 CACHE_DIR = Path(user_cache_dir(APP_NAME, APP_VENDOR))
 DATA_DIR = Path(user_data_dir(APP_NAME, APP_VENDOR))
 IMAGE_CACHE_DIR = CACHE_DIR / "images"

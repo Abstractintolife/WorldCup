@@ -197,8 +197,9 @@ class TodayMatchesPanel(GlassCard):
         return t
 
     def _name_lbl(self, text: str, *, align_right: bool = False) -> QLabel:
+        from app.utils.text_utils import short_country_name
         p = self._palette
-        l = ElidedLabel(text, mode=Qt.TextElideMode.ElideRight)
+        l = ElidedLabel(short_country_name(text), mode=Qt.TextElideMode.ElideRight)
         l.setStyleSheet(
             f"color: {p.text}; font-size: 12px; font-weight: {Type.W_MEDIUM};"
             " background: transparent;"

@@ -132,6 +132,7 @@ class HomePage(BasePage):
     prediction_clicked = pyqtSignal(Match)
     navigate = pyqtSignal(str)
     live_state_changed = pyqtSignal(bool)   # 是否有比赛正在进行（驱动侧栏 LIVE 徽章）
+    connection_changed = pyqtSignal(bool)   # 实时数据连接态（驱动侧栏页脚实时状态）
 
     # 视觉权重（公开，供单测无显示读取）。
     WEIGHTS: dict[str, int] = dict(IA_WEIGHTS)
@@ -175,7 +176,7 @@ class HomePage(BasePage):
         self._standings_card.setProperty("ia_region", "standings")
         self._standings_card.setMinimumHeight(360)
         self._standings_card.team_clicked.connect(self.team_clicked.emit)
-        self._standings_card.view_all_clicked.connect(lambda: self.navigate.emit("积分榜"))
+        self._standings_card.view_all_clicked.connect(lambda: self.navigate.emit("standings"))
         self._hero_row = QHBoxLayout()
         self._hero_row.setSpacing(18)
         self._hero_row.addWidget(self._hero_card, HERO_COLUMN_WEIGHTS[0])
@@ -195,21 +196,21 @@ class HomePage(BasePage):
         self._today_card = TodayMatchesPanel()
         self._today_card.setProperty("ia_region", "schedule")
         self._today_card.match_clicked.connect(self.match_clicked.emit)
-        self._today_card.view_all_clicked.connect(lambda: self.navigate.emit("赛程中心"))
+        self._today_card.view_all_clicked.connect(lambda: self.navigate.emit("schedule"))
 
         self._live_card = LiveMatchCenter()
         self._live_card.setProperty("ia_region", "live")
         self._live_card.match_clicked.connect(self._on_live_match_clicked)
-        self._live_card.enter_clicked.connect(lambda: self.navigate.emit("实时比赛"))
+        self._live_card.enter_clicked.connect(lambda: self.navigate.emit("live"))
 
         self._scorers_card = TopScorersCard()
         self._scorers_card.setProperty("ia_region", "scorers")
         self._scorers_card.player_clicked.connect(self.player_clicked.emit)
-        self._scorers_card.view_all_clicked.connect(lambda: self.navigate.emit("射手榜"))
+        self._scorers_card.view_all_clicked.connect(lambda: self.navigate.emit("scorers"))
 
         self._cities_card = HostCitiesPanel()
         self._cities_card.setProperty("ia_region", "cities")
-        self._cities_card.view_all_clicked.connect(lambda: self.navigate.emit("场馆地图"))
+        self._cities_card.view_all_clicked.connect(lambda: self.navigate.emit("venue"))
 
         self._bottom_row = QHBoxLayout()
         self._bottom_row.setSpacing(18)
@@ -277,6 +278,7 @@ class HomePage(BasePage):
         return row
 
     def _set_connected(self, ok: bool) -> None:
+        self.connection_changed.emit(bool(ok))
         if ok:
             self._conn_badge.setText("● 实时数据已连接")
             self._conn_badge.setStyleSheet(
