@@ -65,6 +65,25 @@ def clean(s: str) -> str:
     return re.sub(r"\s+", " ", s).strip()
 
 
+def paras(segment: str) -> list[str]:
+    """从一段 HTML 中抽出干净的段落文本（剔除广告 / 博彩促销 / 阵容行 / 空段）。"""
+    out = []
+    skip_kw = ("akcelo", "slmadshb", "&pound;", "free bets",
+               "New Customer offer", "Gamble Responsibly", "T&amp;Cs apply")
+    for mm in re.finditer(r"<p[^>]*>(.*?)</p>", segment, re.S):
+        raw = mm.group(1)
+        if any(k in raw for k in skip_kw) or "possible starting lineup" in raw:
+            continue
+        txt = clean(raw)
+        if not txt or len(txt) <= 1:
+            continue
+        if txt.endswith("form:") or "form (all competitions):" in txt \
+                or "World Cup form:" in txt:  # 战绩小标题（W/D/L 另行结构化）
+            continue
+        out.append(txt)
+    return out
+
+
 def parse_form(html: str, team_en: str, scope: str) -> list[str]:
     """提取某队某口径（World Cup / all competitions）的 W/D/L 序列。"""
     label = re.escape(f"{team_en} {scope}:")
@@ -116,6 +135,25 @@ def parse_preview(url: str) -> dict | None:
     # 发布时间
     pub = re.search(r'article:published_time"[^>]*content="([^"]+)"', html)
 
+    # ── 全文 prose（用于翻译）：intro / Match preview / Team News ──
+    body_start = html.find('itemprop="articleBody"')
+    body_end = html.find("People mentioned in this article")
+    if body_end == -1:
+        body_end = len(html)
+    body = html[body_start:body_end] if body_start != -1 else html
+
+    p_prev = body.find("<h2>Match preview</h2>")
+    p_news = body.find("<h2>Team News</h2>")
+    p_say = body.find("We say:")
+    p_lineup = body.find("possible starting lineup")
+    # team news 在「预测首发」之前结束（避免把阵容名单/促销并入正文）
+    news_end_candidates = [x for x in (p_lineup, p_say) if x != -1] or [len(body)]
+    cut_news_end = min(news_end_candidates)
+
+    intro = paras(body[:p_prev]) if p_prev != -1 else []
+    preview = paras(body[p_prev:p_news]) if p_prev != -1 and p_news != -1 else []
+    team_news = paras(body[p_news:cut_news_end]) if p_news != -1 else []
+
     return {
         "article_id": int(re.search(r"_(\d+)\.html", url).group(1)),
         "home_en": home_en, "away_en": away_en,
@@ -127,6 +165,9 @@ def parse_preview(url: str) -> dict | None:
         "lineup_away": lineups.get(away_en, ""),
         "form_home": parse_form(html, home_en, "form (all competitions)"),
         "form_away": parse_form(html, away_en, "form (all competitions)"),
+        "intro_en": intro,
+        "preview_en": preview,
+        "team_news_en": team_news,
     }
 
 
