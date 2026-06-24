@@ -45,29 +45,19 @@ from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM
 from app.ui.widgets.effects import fade_slide_in
 from app.ui.widgets.fps_monitor import FpsMonitor
-from app.ui.widgets.nav_sidebar import NavSidebar
+from app.ui.widgets.nav_rail import NAV_ITEMS, NavRail
 from app.ui.widgets.stage_compositor import create_backdrop
-from app.ui.widgets.top_bar import TopBar
+from app.ui.widgets.sub_header import SubHeader
+from app.ui.widgets.top_hud_bar import TopHudBar
 from app.ui.widgets.window_chrome import ResizeGripManager, TitleBar
 
 log = logging.getLogger(__name__)
 
 
-# 主导航定义 —— 对照「想象中的样子」设计稿的菜单（含 LIVE 徽章）。
-# 每项 = (key, emoji, 中文标签[, 徽章])；key 映射到 _key_to_page 的页面。
-_PRIMARY_NAV: list[tuple] = [
-    ("home", "📊", "概览"),
-    ("schedule", "📅", "赛程中心"),
-    ("globe", "🌍", "地球仪"),
-    ("teams", "🛡", "球队"),
-    ("scorers", "⚽", "球员"),
-    ("standings", "🏆", "积分榜"),
-    ("prediction", "🔮", "预测中心"),
-    ("news", "📰", "新闻资讯"),
-    ("stadiums", "🏟", "球场"),
-    ("favorites", "⭐", "收藏夹"),
-    ("settings", "⚙️", "设置"),
-]
+# 主导航定义 —— 对照「想象中的样子」设计稿的菜单（12 项，严格顺序）。
+# 复用 NavRail 的 NAV_ITEMS（key, 中文, 英文, 图标）；这里转成壳层既有
+# 辅助函数期望的 (key, emoji, 中文标签) 形态。key 映射到 _key_to_page。
+_PRIMARY_NAV: list[tuple] = [(key, icon, zh) for key, zh, _en, icon in NAV_ITEMS]
 
 
 class MainWindow(QMainWindow):
@@ -101,8 +91,9 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(build_app_icon())
 
         # ── 控件 ──
-        self._sidebar = NavSidebar(_PRIMARY_NAV)
-        self._topbar = TopBar()
+        self._sidebar = NavRail(NAV_ITEMS)
+        self._topbar = TopHudBar()
+        self._subheader = SubHeader()
         self._stack = QStackedWidget()
 
         # 主页面
@@ -124,15 +115,22 @@ class MainWindow(QMainWindow):
         self._search = SearchPage(self._service)
 
         # ── 索引映射 ──
+        # 设计稿 12 项导航 → 实际页面。部分概念无独立页面，映射到最贴近的现有页：
+        #   live(实时比赛)→赛程中心  players(球员)/scorers(射手榜)→球员榜
+        #   analysis(数据分析)→预测中心  venue(场馆地图)→球场
         self._key_to_page: dict[str, QWidget] = {
             "home": self._home,
             "globe": self._globe,
             "schedule": self._schedule,
+            "live": self._schedule,
             "prediction": self._prediction,
+            "analysis": self._prediction,
             "standings": self._standings,
             "scorers": self._rankings,
+            "players": self._rankings,
             "teams": self._teams,
             "stadiums": self._stadiums,
+            "venue": self._stadiums,
             "news": self._news,
             "favorites": self._favorites_page,
             "match_detail": self._match_detail,
@@ -140,7 +138,8 @@ class MainWindow(QMainWindow):
             "team_detail": self._team_detail,
             "search": self._search,
         }
-        for w in self._key_to_page.values():
+        # 仅把「真实页面」对象加进 stack（去重，避免同一页面被多 key 重复 add）。
+        for w in dict.fromkeys(self._key_to_page.values()):
             self._stack.addWidget(w)
 
         # ── 布局 ──
@@ -165,6 +164,7 @@ class MainWindow(QMainWindow):
         right.setContentsMargins(0, 0, 0, 0)
         right.setSpacing(0)
         right.addWidget(self._topbar)
+        right.addWidget(self._subheader)
         right.addWidget(self._stack, 1)
         right_w = QWidget()
         right_w.setLayout(right)
@@ -199,9 +199,7 @@ class MainWindow(QMainWindow):
         # ── 信号 ──
         self._sidebar.selected.connect(self._on_nav_selected)
         self._topbar.search_submitted.connect(self._on_search)
-        self._topbar.refresh_clicked.connect(self._refresh_current)
-        self._topbar.skin_selected.connect(self._set_skin)
-        self._topbar.settings_clicked.connect(self._open_settings)
+        self._topbar.profile_clicked.connect(self._open_settings)
 
         self._home.match_clicked.connect(self._open_match)
         self._home.team_clicked.connect(self._open_team)
@@ -452,6 +450,8 @@ class MainWindow(QMainWindow):
             if cur_key and cur_key != key:
                 self._history.append(cur_key)
         self._stack.setCurrentWidget(page)
+        # 子标题栏（含实时连接胶囊）仅在概览页展示（需求 4.x 属概览页 chrome）。
+        self._subheader.setVisible(key == "home")
         # 全局动态背景：地球仪页持续自绘较重，切到该页时暂停背景动画省 CPU
         self._backdrop.set_paused(page is self._globe)
         # 页面切入：淡入 + 自下而上轻微滑入（地球仪页持续自绘，跳过以免离屏重渲染冲突）
@@ -500,8 +500,8 @@ class MainWindow(QMainWindow):
     def _open_prediction(self, match: Match) -> None:
         """从比赛详情跳转到该场的完整 AI 预测页。"""
         self._prediction.open_match(match)
-        self._sidebar.set_active("prediction")
-        self._navigate("prediction")
+        self._sidebar.set_active("analysis")
+        self._navigate("analysis")
 
     def _open_team(self, team_id: str) -> None:
         self._team_detail.open_team(team_id)

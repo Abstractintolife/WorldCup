@@ -46,6 +46,8 @@ from app.services.data_service import DataService
 from app.ui.pages.base import BasePage
 from app.ui.widgets.dashboard_charts import DualRadarChart, RingProgress, Sparkline
 from app.ui.widgets.flag_icon import FlagIcon
+from app.ui.widgets.glass_card import GlassCard
+from app.ui.widgets.hero_match_card import HeroMatchCard, HeroMeta, percentages_to_100
 from app.ui.widgets.image_loader import RemoteImage
 from app.ui.widgets.misc import Card
 from app.ui.widgets.player_avatar import PlayerAvatar
@@ -1009,6 +1011,49 @@ class QuickActionsPanel(Card):
 
 
 # ════════════════════════════════════════════════════════════
+#  概览页信息架构（IA）权重 —— 单一事实来源（供布局与单测共享）
+# ════════════════════════════════════════════════════════════
+#  设计稿 Hero:Overview:Standings:Schedule:Analysis:Other = 40:20:15:10:10:5
+#  （需求 1.2）。这些常量是模块级的，便于无显示环境下的单元测试直接读取。
+IA_WEIGHTS: dict[str, int] = {
+    "hero": 40,
+    "overview": 20,
+    "standings": 15,
+    "schedule": 10,
+    "analysis": 10,
+    "other": 5,
+}
+# 视觉权重的规范顺序（即 40:20:15:10:10:5 比值的排列顺序）。
+IA_WEIGHT_ORDER: tuple[str, ...] = (
+    "hero", "overview", "standings", "schedule", "analysis", "other",
+)
+# Hero 行横向列分配：焦点比赛 ~65%（左、宽）| 小组积分榜 ~35%（右、窄）（需求 1.4）。
+HERO_COLUMN_WEIGHTS: tuple[int, int] = (65, 35)
+
+
+def ia_weight_ratio(weights: dict[str, int] = IA_WEIGHTS) -> list[int]:
+    """返回 40:20:15:10:10:5 视觉权重比（按 :data:`IA_WEIGHT_ORDER` 排列）。"""
+    return [weights[k] for k in IA_WEIGHT_ORDER]
+
+
+def ia_row_stretches(weights: dict[str, int] = IA_WEIGHTS) -> tuple[int, int, int]:
+    """概览页三排（自上而下）的纵向 stretch 预算。
+
+    * 第 1 排（Hero 行）承载 ``hero`` 权重；小组积分榜以右侧列的形式同处此排
+      （列分配见 :data:`HERO_COLUMN_WEIGHTS`），故本排纵向预算取主导的 hero 权重。
+    * 第 2 排（Stat Strip）取 ``overview`` 权重。
+    * 第 3 排（底部多面板）取 ``schedule + analysis + other`` 之和。
+
+    无论窗口如何缩放，这些 stretch 比值都被 Qt 布局保持不变（需求 1.3）。
+    """
+    return (
+        weights["hero"],
+        weights["overview"],
+        weights["schedule"] + weights["analysis"] + weights["other"],
+    )
+
+
+# ════════════════════════════════════════════════════════════
 #  HomePage（概览仪表盘）
 # ════════════════════════════════════════════════════════════
 class HomePage(BasePage):
@@ -1021,6 +1066,9 @@ class HomePage(BasePage):
     prediction_clicked = pyqtSignal(Match)
     navigate = pyqtSignal(str)
     live_state_changed = pyqtSignal(bool)   # 是否有比赛正在进行（驱动侧栏 LIVE 徽章）
+
+    # 视觉权重（公开，供单测无显示读取）。
+    WEIGHTS: dict[str, int] = dict(IA_WEIGHTS)
 
     def __init__(self, service: DataService) -> None:
         super().__init__()
@@ -1038,57 +1086,114 @@ class HomePage(BasePage):
         outer.addWidget(scroll)
 
         body = QWidget()
+        # 滚动正文走不透明底（性能：避免整树随滚动重新合成；hud_theme #OpaqueBody）。
+        body.setObjectName("OpaqueBody")
         scroll.setWidget(body)
         v = QVBoxLayout(body)
         v.setContentsMargins(24, 22, 24, 26)
         v.setSpacing(18)
+        self._root_layout = v
 
+        # 顶部欢迎条（不计入 IA 视觉权重）。
         v.addLayout(self._welcome_bar())
 
-        # 第 1 排
-        self._live = LiveMatchPanel(
-            on_open=self.match_clicked.emit,
-            on_predict=self.prediction_clicked.emit,
-            on_watch=self._open_live_stream,
-        )
-        self._standings_panel = GroupStandingsPanel(on_team=self.team_clicked.emit)
-        row1 = QHBoxLayout()
-        row1.setSpacing(18)
-        row1.addWidget(self._live, 3)
-        row1.addWidget(self._standings_panel, 2)
-        v.addLayout(row1)
+        # ── 第 1 排：Hero 行（焦点比赛 ~65% | 小组积分榜 ~35%）──
+        # 焦点比赛核心看板（任务 8：HeroMatchCard）；小组积分榜占位待任务 10。
+        self._hero_card = HeroMatchCard()
+        self._hero_card.setProperty("ia_region", "hero")
+        self._hero_card.watch_clicked.connect(self._open_live_stream)
+        self._hero_card.analysis_clicked.connect(self._on_hero_analysis)
+        self._hero_card.h2h_clicked.connect(self._on_hero_h2h)
+        self._standings_card = self._placeholder(
+            "GROUP STANDINGS", "小组积分榜", "standings", min_height=360)
+        self._hero_row = QHBoxLayout()
+        self._hero_row.setSpacing(18)
+        self._hero_row.addWidget(self._hero_card, HERO_COLUMN_WEIGHTS[0])
+        self._hero_row.addWidget(self._standings_card, HERO_COLUMN_WEIGHTS[1])
+        hero_row_host = QWidget()
+        hero_row_host.setLayout(self._hero_row)
 
-        # 第 2 排：统计卡（动态填充）
-        self._stats_host = QWidget()
-        self._stats_layout = QHBoxLayout(self._stats_host)
-        self._stats_layout.setContentsMargins(0, 0, 0, 0)
-        self._stats_layout.setSpacing(16)
-        v.addWidget(self._stats_host)
+        # ── 第 2 排：Stat Strip（赛事大盘统计条）──
+        # 占位：真实六张统计卡在任务 11 落地。
+        self._stat_card = self._placeholder(
+            "OVERVIEW", "赛事大盘统计条", "overview", min_height=120)
 
-        # 第 3 排
-        self._today = TodaySchedulePanel(on_match=self.match_clicked.emit)
-        self._radar = RadarPanel()
-        self._scorers = TopScorersPanel(on_player=self.player_clicked.emit)
-        row3 = QHBoxLayout()
-        row3.setSpacing(18)
-        row3.addWidget(self._today, 1)
-        row3.addWidget(self._radar, 1)
-        row3.addWidget(self._scorers, 1)
-        v.addLayout(row3)
+        # ── 第 3 排：底部多面板行（今日赛程 / 分析 / 其他）──
+        # 占位：真实面板在任务 12 落地（今日赛程 / 实时比赛中心 / 射手榜 / 主办城市等）。
+        self._schedule_card = self._placeholder(
+            "TODAY'S MATCHES", "今日赛程", "schedule", min_height=280)
+        self._analysis_card = self._placeholder(
+            "ANALYSIS", "攻防数据分析", "analysis", min_height=280)
+        self._other_card = self._placeholder(
+            "MORE", "新闻资讯 / 快速操作", "other", min_height=280)
+        self._bottom_row = QHBoxLayout()
+        self._bottom_row.setSpacing(18)
+        self._bottom_row.addWidget(self._schedule_card, IA_WEIGHTS["schedule"])
+        self._bottom_row.addWidget(self._analysis_card, IA_WEIGHTS["analysis"])
+        self._bottom_row.addWidget(self._other_card, IA_WEIGHTS["other"])
+        bottom_row_host = QWidget()
+        bottom_row_host.setLayout(self._bottom_row)
 
-        # 第 4 排
-        self._favorites = FavoritesPanel(on_team=self.team_clicked.emit)
-        self._quick = QuickActionsPanel(on_navigate=self.navigate.emit)
-        row4 = QHBoxLayout()
-        row4.setSpacing(18)
-        row4.addWidget(self._favorites, 1)
-        row4.addWidget(self._quick, 1)
-        v.addLayout(row4)
+        # 三排按 IA 视觉权重设置纵向 stretch（40 / 20 / 25）。比值随缩放保持不变（需求 1.3）。
+        hero_s, stat_s, bottom_s = ia_row_stretches(self.WEIGHTS)
+        v.addWidget(hero_row_host, hero_s)
+        v.addWidget(self._stat_card, stat_s)
+        v.addWidget(bottom_row_host, bottom_s)
 
-        v.addStretch(1)
+        self._set_connected(False)
 
-        # 占位统计卡（数据到达前）
-        self._render_stats(total=0, played=0, goals=0, teams=0, scorer=None)
+    # ── 占位玻璃容器 ─────────────────────────
+    def _placeholder(self, en: str, zh: str, region: str, *,
+                     min_height: int = 160) -> GlassCard:
+        """临时玻璃占位容器（任务 7 仅搭骨架，真实控件后续替换）。
+
+        替换映射：``hero`` → ``HeroMatchCard``（任务 8）；``standings`` →
+        ``StandingsTable``（任务 10）；``overview`` → Stat Strip 六卡（任务 11）；
+        ``schedule`` / ``analysis`` / ``other`` → 底部多面板（任务 12）。
+        """
+        card = GlassCard(padding=0)
+        card.setProperty("ia_region", region)
+        card.setMinimumHeight(min_height)
+        card.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        col = QVBoxLayout(card)
+        col.setContentsMargins(20, 18, 20, 16)
+        col.setSpacing(4)
+        t = QLabel(zh)
+        t.setStyleSheet(
+            f"color:{C_TEXT}; font-size:15px; font-weight:900; background:transparent;")
+        col.addWidget(t)
+        e = QLabel(en)
+        e.setStyleSheet(
+            f"color:{C_PRIMARY}; font-size:9px; font-weight:800;"
+            " letter-spacing:1.6px; background:transparent;")
+        col.addWidget(e)
+        status = QLabel("数据加载中…")
+        status.setStyleSheet(
+            f"color:{C_FAINT}; font-size:11px; font-weight:600; background:transparent;")
+        col.addWidget(status)
+        col.addStretch(1)
+        card._status_label = status  # type: ignore[attr-defined]
+        return card
+
+    # ── IA 权重访问器（供单测无显示读取、并校验实际布局配置） ──
+    def region_weights(self) -> list[int]:
+        """40:20:15:10:10:5 视觉权重比（hero/overview/standings/schedule/analysis/other）。"""
+        return ia_weight_ratio(self.WEIGHTS)
+
+    def row_stretches(self) -> tuple[int, int, int]:
+        """三排（Hero / Stat Strip / 底部多面板）实际配置的纵向 stretch。"""
+        lay = self._root_layout
+        # index 0 是欢迎条（QHBoxLayout, stretch 0）；三个权重排依次紧随其后。
+        return (lay.stretch(1), lay.stretch(2), lay.stretch(3))
+
+    def hero_column_stretches(self) -> tuple[int, int]:
+        """Hero 行内 [焦点比赛, 小组积分榜] 的横向 stretch（~65 / ~35）。"""
+        return (self._hero_row.stretch(0), self._hero_row.stretch(1))
+
+    def bottom_column_stretches(self) -> tuple[int, int, int]:
+        """底部行内 [今日赛程, 分析, 其他] 的横向 stretch（10 / 10 / 5）。"""
+        return (self._bottom_row.stretch(0), self._bottom_row.stretch(1),
+                self._bottom_row.stretch(2))
 
     # ── 顶部欢迎条 ──────────────────────────
     def _welcome_bar(self) -> QHBoxLayout:
@@ -1174,14 +1279,14 @@ class HomePage(BasePage):
                 self._service.fetch_full_schedule(force=force),
                 self._service.fetch_standings(force=force),
                 self._service.fetch_ranking(RankingType.GOALS, force=force),
-                self._service.fetch_news(force=force),
                 return_exceptions=True,
             )
             self._apply(results)
         self.run_async(runner)
 
     def _apply(self, results) -> None:
-        sched, standings, scorers, news = results
+        # 所有数据均来自注入的 DataService（无任何直接网络访问，需求 26.2）。
+        sched, standings, scorers = results
 
         rounds: list[Round] = []
         matches: list[Match] = []
@@ -1191,78 +1296,79 @@ class HomePage(BasePage):
         if isinstance(standings, tuple):
             groups = standings[0]
         scorer_list: list[PlayerRanking] = scorers if isinstance(scorers, list) else []
-        news_list: list[NewsArticle] = news if isinstance(news, list) else []
 
         ok = bool(matches or groups or scorer_list)
         self._set_connected(ok)
 
-        # 是否有正在进行的比赛 —— 驱动侧栏 LIVE 徽章「仅进行中时显示」
-        self.live_state_changed.emit(any(m.is_live for m in matches))
+        # 是否有正在进行的比赛 —— 驱动侧栏 LIVE 徽章「仅进行中时显示」。
+        self.live_state_changed.emit(any(getattr(m, "is_live", False) for m in matches))
 
-        # 标注每场比赛所属阶段名（供焦点比赛展示）
-        round_name = {
-            str(r.round_id): r.name for r in rounds if r.round_id is not None
-        }
-        for m in matches:
-            try:
-                m._stage_name = round_name.get(str(m.round_id), "")
-            except Exception:
-                pass
-
-        # ── 焦点比赛 ──
-        self._live.set_match(self._pick_featured(matches))
-
-        # ── 积分榜 ──
-        self._standings_panel.set_groups(groups)
-
-        # ── 今日赛程 ──
-        today = sorted(
-            (m for m in matches if is_today(m.start_play)),
-            key=lambda x: x.start_play or x.team_a_name,
-        )
-        self._today.set_matches(today)
-
-        # ── 攻防雷达（焦点比赛双方）──
+        # 占位摘要（真实控件落地于任务 10/11/12；此处仅证明数据贯通 DataService）。
         featured = self._pick_featured(matches)
-        lookup = self._team_lookup(groups)
-        if featured is not None:
-            self._radar.set_teams(
-                featured.team_a_name,
-                RadarPanel._radar_vector(lookup.get(featured.team_a_id)),
-                featured.team_b_name,
-                RadarPanel._radar_vector(lookup.get(featured.team_b_id)),
-            )
-        elif groups and len(groups[0].teams) >= 2:
-            a, b = groups[0].teams[0], groups[0].teams[1]
-            self._radar.set_teams(
-                a.team_name, RadarPanel._radar_vector(a),
-                b.team_name, RadarPanel._radar_vector(b),
-            )
+        self._render_hero(featured, matches, groups)
 
-        # ── 射手榜 ──
-        self._scorers.set_scorers(scorer_list)
+        self._set_card_status(
+            self._standings_card,
+            f"{len(groups)} 个小组 · 实时积分榜" if groups else "暂无积分榜数据")
 
-        # ── 夺冠热门 ──
-        self._favorites.set_favorites(self._championship_odds(groups))
-
-        # ── 赛事大盘统计 ──
         played = [m for m in matches if m.status == MatchStatus.PLAYED]
-        total_goals = 0
-        recent: list[float] = []
-        for m in sorted(played, key=lambda x: x.start_play.timestamp() if x.start_play else 0.0):
-            g = _goals(m)
-            if g is not None:
-                total_goals += g[0] + g[1]
-                recent.append(float(g[0] + g[1]))
-        team_count = sum(len(g.teams) for g in groups)
-        self._render_stats(
-            total=len(matches),
-            played=len(played),
-            goals=total_goals,
-            teams=team_count,
-            scorer=scorer_list[0] if scorer_list else None,
-            recent_goals=recent[-12:] if len(recent) >= 2 else None,
+        self._set_card_status(
+            self._stat_card,
+            f"{len(matches)} 场比赛 · 已结束 {len(played)} 场")
+
+        today = [m for m in matches if is_today(m.start_play)]
+        self._set_card_status(self._schedule_card, f"今日 {len(today)} 场")
+        self._set_card_status(
+            self._analysis_card, "攻防分析就绪" if featured is not None else "等待数据")
+        if scorer_list:
+            top = scorer_list[0]
+            self._set_card_status(self._other_card, f"金靴 {top.person_name} · {top.count}")
+        else:
+            self._set_card_status(self._other_card, "等待数据")
+
+    @staticmethod
+    def _set_card_status(card: GlassCard, text: str) -> None:
+        lbl = getattr(card, "_status_label", None)
+        if lbl is not None:
+            lbl.setText(text)
+
+    # ── Hero 卡渲染（任务 8：HeroMatchCard + HeroMeta）──────
+    def _render_hero(self, featured: Match | None,
+                     matches: list[Match], groups: list[GroupStanding]) -> None:
+        """用焦点比赛与模型推算填充 HeroMatchCard。
+
+        胜平负来自既有纯计算预测引擎（``app.services.prediction``，无网络），
+        归一化为和恰为 100 的整数百分比；Elo / FIFA / 世界排名暂无公开数据源，
+        统一以 ``None`` 传入并渲染「—」（需求 8.2）。
+        """
+        if featured is None:
+            self._hero_card.set_match(None, HeroMeta())
+            return
+
+        win_prob = (0, 0, 0)
+        try:
+            from app.services.prediction import build_prediction
+            pred = build_prediction(featured, matches, groups)
+            win_prob = percentages_to_100((pred.win_a, pred.draw, pred.win_b))
+        except Exception:  # pragma: no cover - 预测失败则隐藏概率条
+            log.debug("hero win-prob 计算失败", exc_info=True)
+
+        meta = HeroMeta(
+            stage_label=getattr(featured, "_stage_name", "") or "世界杯",
+            status_label=self._hero_status_label(featured),
+            kickoff_utc=featured.start_play,
+            venue="",
+            win_prob=win_prob,
         )
+        self._hero_card.set_match(featured, meta)
+
+    @staticmethod
+    def _hero_status_label(match: Match) -> str:
+        if match.is_live:
+            return "直播中"
+        if match.status == MatchStatus.PLAYED:
+            return "已结束"
+        return "即将开始"
 
     # ── 工具：焦点比赛 ──────────────────────
     @staticmethod
@@ -1324,6 +1430,17 @@ class HomePage(BasePage):
         ]
         probs.sort(key=lambda x: x[2], reverse=True)
         return probs[:5]
+
+    # ── Hero 卡操作回调（保持既有信号 match_clicked / prediction_clicked 接通）──
+    def _on_hero_analysis(self, match: Match | None) -> None:
+        """赛前分析 → 复用既有 prediction_clicked 信号。"""
+        if match is not None:
+            self.prediction_clicked.emit(match)
+
+    def _on_hero_h2h(self, match: Match | None) -> None:
+        """历史交锋 → 复用既有 match_clicked 信号（进入比赛详情）。"""
+        if match is not None:
+            self.match_clicked.emit(match)
 
     # ── 观看直播 / 导入 M3U8 源 ──────────────
     def _open_live_stream(self, match: Match | None) -> None:
