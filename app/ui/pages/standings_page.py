@@ -5,6 +5,7 @@ import logging
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
+    QGridLayout,
     QHBoxLayout,
     QLabel,
     QScrollArea,
@@ -19,7 +20,6 @@ from app.models.standing import GroupStanding, TeamStanding
 from app.ui.pages.base import BasePage
 from app.ui.theme import THEMES, ThemePalette
 from app.ui.widgets.effects import stagger_fade
-from app.ui.widgets.flow_layout import FlowLayout
 from app.ui.widgets.group_card import GroupCard
 from app.ui.widgets.misc import Card
 from app.ui.widgets.team_logo import TeamLogo
@@ -76,8 +76,14 @@ class StandingsPage(BasePage):
         self._groups_scroll.setFrameShape(QScrollArea.Shape.NoFrame)
         self._groups_widget = QWidget()
         self._groups_scroll.setWidget(self._groups_widget)
-        self._groups_grid = FlowLayout(margin=4, h_spacing=14, v_spacing=14)
-        self._groups_widget.setLayout(self._groups_grid)
+        # 一排三个：固定 3 列等宽栅格
+        self._groups_cols = 3
+        self._groups_grid = QGridLayout(self._groups_widget)
+        self._groups_grid.setContentsMargins(4, 4, 4, 4)
+        self._groups_grid.setHorizontalSpacing(14)
+        self._groups_grid.setVerticalSpacing(14)
+        for c in range(self._groups_cols):
+            self._groups_grid.setColumnStretch(c, 1)
         self._tabs.addTab(self._groups_scroll, "🏆 小组赛")
 
         # tab 2：淘汰赛对阵
@@ -137,14 +143,16 @@ class StandingsPage(BasePage):
                     w.deleteLater()
 
             cards: list[QWidget] = []
-            for g in groups:
+            for idx, g in enumerate(groups):
                 gc = GroupCard(g, self._theme)
                 gc.team_clicked.connect(self.team_clicked.emit)
-                gc.setMinimumWidth(420)
+                gc.setMinimumWidth(300)
                 gc.setSizePolicy(
-                    QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+                    QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
                 )
-                self._groups_grid.addWidget(gc)
+                self._groups_grid.addWidget(
+                    gc, idx // self._groups_cols, idx % self._groups_cols
+                )
                 cards.append(gc)
             stagger_fade(cards, step=30, dx=0, dy=0)
 

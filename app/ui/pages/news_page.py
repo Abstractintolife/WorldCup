@@ -72,9 +72,14 @@ class NewsPage(BasePage):
     title = "新闻资讯"
     subtitle = "TOURNAMENT NEWS · 懂球帝资讯流"
 
+    _PAGE = 12   # 每次渲染/追加的条数
+
     def __init__(self, service: DataService) -> None:
         super().__init__()
         self._service = service
+        self._articles: list[NewsArticle] = []
+        self._shown = 0
+        self._auto_refreshing = False
 
         host = self.content_widget()
         outer = QVBoxLayout(host)
@@ -88,7 +93,7 @@ class NewsPage(BasePage):
         title = QLabel("📰  赛事资讯")
         title.setStyleSheet("font-size:18px; font-weight:900;")
         h_lay.addWidget(title)
-        sub = QLabel("2026 世界杯实时新闻 · 点击任一条查看球迷热评")
+        sub = QLabel("2026 世界杯实时新闻 · 向下滚动自动加载更多 / 到底刷新 · 点击查看球迷热评")
         sub.setStyleSheet("color:#B0BEC5; font-size:12px; font-weight:600;")
         h_lay.addWidget(sub)
         outer.addWidget(head)
@@ -96,8 +101,10 @@ class NewsPage(BasePage):
         self._scroll = QScrollArea()
         self._scroll.setWidgetResizable(True)
         self._scroll.setFrameShape(QScrollArea.Shape.NoFrame)
+        self._scroll.verticalScrollBar().valueChanged.connect(self._on_scroll)
         outer.addWidget(self._scroll, 1)
         self._list_layout: QVBoxLayout | None = None
+        self._footer: QLabel | None = None
 
     def _build_host(self) -> None:
         host = QWidget()
@@ -105,29 +112,65 @@ class NewsPage(BasePage):
         self._list_layout = QVBoxLayout(host)
         self._list_layout.setContentsMargins(2, 2, 2, 16)
         self._list_layout.setSpacing(10)
+        # 底部状态/加载提示（始终位于列表末尾）
+        self._footer = QLabel("")
+        self._footer.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._footer.setStyleSheet("color:#6B7689; font-size:12px; padding:10px;")
+        self._list_layout.addWidget(self._footer)
+        self._list_layout.addStretch(1)
 
     def refresh(self, force: bool = False) -> None:
         async def runner() -> None:
             articles = await self._service.fetch_news(force=force)
+            self._auto_refreshing = False
             self._render(articles)
         self.run_async(runner)
 
     def _render(self, articles: list[NewsArticle]) -> None:
+        self._articles = articles
+        self._shown = 0
         self._build_host()
         if not articles:
-            empty = QLabel("暂无资讯")
-            empty.setStyleSheet("color:#6B7689; padding:40px;")
-            empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self._list_layout.addWidget(empty)
-            self._list_layout.addStretch(1)
+            self._footer.setText("暂无资讯")
             return
+        self._append_more()
+
+    def _append_more(self) -> None:
+        """把后续若干条插入到列表（footer 之前）。"""
+        if self._list_layout is None:
+            return
+        start, end = self._shown, min(self._shown + self._PAGE, len(self._articles))
+        if start >= end:
+            return
+        # footer 与 stretch 固定在末尾两项，插入位置 = 现有条数
+        insert_at = self._shown
         rows: list[QWidget] = []
-        for a in articles:
+        for a in self._articles[start:end]:
             row = _NewsRow(a, self._open_comments)
-            self._list_layout.addWidget(row)
+            self._list_layout.insertWidget(insert_at, row)
+            insert_at += 1
             rows.append(row)
-        self._list_layout.addStretch(1)
-        stagger_fade(rows[:14], step=30, dx=0, dy=0)
+        self._shown = end
+        stagger_fade(rows, step=24, dx=0, dy=0)
+        remaining = len(self._articles) - self._shown
+        if remaining > 0:
+            self._footer.setText(f"向下滚动加载更多 · 还有 {remaining} 条")
+        else:
+            self._footer.setText(f"已展示全部 {self._shown} 条 · 继续下滑可刷新最新")
+
+    def _on_scroll(self, value: int) -> None:
+        bar = self._scroll.verticalScrollBar()
+        if bar.maximum() <= 0 or value < bar.maximum() - 8:
+            return
+        # 到达底部
+        if self._shown < len(self._articles):
+            self._append_more()
+        elif not self._auto_refreshing and self._articles:
+            # 已全部展示 → 触底刷新拉取最新
+            self._auto_refreshing = True
+            if self._footer is not None:
+                self._footer.setText("正在刷新最新资讯…")
+            self.refresh(force=True)
 
     def _open_comments(self, article: NewsArticle) -> None:
         try:

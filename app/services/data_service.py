@@ -268,25 +268,48 @@ class DataService:
         ]
 
     # ─── 赛事资讯 ─────────────────────────────
-    async def fetch_news(self, force: bool = False) -> list[NewsArticle]:
+    async def fetch_news(
+        self, force: bool = False, *, target: int = 30, max_calls: int = 24
+    ) -> list[NewsArticle]:
         """拉取最新世界杯资讯流（标题 / 缩略图 / 时间 / 原文链接）。
 
-        失败时返回空列表，由调用方兜底（不让整页因资讯接口抖动而崩）。
+        懂球帝 ``article/relative`` 接口每次只返回 ~3 条「相关」资讯，单一种子
+        远不够铺满资讯页。这里以种子文章为起点做**广度优先扩展**：把已返回文章
+        的 id 继续作为新的种子拉取其相关流，去重累积，直到收集到 ``target`` 条
+        或调用次数达到 ``max_calls`` 上限。接口结果有缓存，重复种子几乎零成本。
+
+        失败时返回已收集到的部分（不让整页因资讯接口抖动而崩）。
         """
-        url = f"{ENDPOINTS.news_relative}/{ENDPOINTS.news_seed_id}"
-        try:
-            data = await self._client.get_json(
-                url, cache_ttl=NEWS_CACHE_TTL, force=force
-            )
-        except Exception as exc:  # pragma: no cover - 网络
-            log.warning("拉取赛事资讯失败：%s", exc)
-            return []
-        items = (data or {}).get("relative") or []
-        articles = [
-            NewsArticle.from_raw(x)
-            for x in items
-            if isinstance(x, dict) and x.get("type") == "article" and x.get("title")
-        ]
+        from collections import deque
+
+        seed = str(ENDPOINTS.news_seed_id)
+        seen: dict[str, dict] = {}
+        queue: deque[str] = deque([seed])
+        visited: set[str] = {seed}
+        calls = 0
+        while queue and len(seen) < target and calls < max_calls:
+            aid = queue.popleft()
+            calls += 1
+            url = f"{ENDPOINTS.news_relative}/{aid}"
+            try:
+                data = await self._client.get_json(
+                    url, cache_ttl=NEWS_CACHE_TTL, force=force
+                )
+            except Exception as exc:  # pragma: no cover - 网络
+                log.warning("拉取赛事资讯失败（seed=%s）：%s", aid, exc)
+                continue
+            for x in (data or {}).get("relative") or []:
+                if (not isinstance(x, dict) or x.get("type") != "article"
+                        or not x.get("title")):
+                    continue
+                xid = str(x.get("id") or "")
+                if not xid:
+                    continue
+                seen.setdefault(xid, x)
+                if xid not in visited:
+                    visited.add(xid)
+                    queue.append(xid)
+        articles = [NewsArticle.from_raw(x) for x in seen.values()]
         # 按展示时间倒序（最新在前）
         articles.sort(key=lambda a: a.show_time or 0, reverse=True)
         return articles
