@@ -74,8 +74,8 @@ def test_homepage_configures_spec_stretches(qapp):
     assert home.row_stretches() == (40, 20, 25)
     # Hero row columns: Hero ~65% left, Standings ~35% right.
     assert home.hero_column_stretches() == (65, 35)
-    # Bottom row columns: Schedule(10) / Analysis(10) / Other(5).
-    assert home.bottom_column_stretches() == (10, 10, 5)
+    # Bottom row columns (Task 12): Today / Live / Top Scorers / Host Cities.
+    assert home.bottom_column_stretches() == (10, 10, 7, 7)
 
 
 @pytestmark_gui
