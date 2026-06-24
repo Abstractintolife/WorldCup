@@ -83,6 +83,13 @@ class MainWindow(QMainWindow):
         if self._theme_name not in THEMES:
             self._theme_name = "dark"
 
+        # 界面语言（中文 / 英文）—— 从设置载入并应用到全局 i18n 单例。
+        from app.i18n import set_language as _set_language
+        self._language: str = str(self._settings.get("language", "zh"))
+        if self._language not in ("zh", "en"):
+            self._language = "zh"
+        _set_language(self._language)
+
         # 动画帧率（240FPS 动效内核）—— 从设置载入并即时应用到全局帧时钟
         try:
             self._fps = int(self._settings.get("fps", ANIM_FPS) or ANIM_FPS)
@@ -210,10 +217,9 @@ class MainWindow(QMainWindow):
         self._sidebar.selected.connect(self._on_nav_selected)
         self._topbar.search_submitted.connect(self._on_search)
         self._topbar.profile_clicked.connect(self._open_settings)
-        # 通知铃 → 跳转最新资讯；区域球 → 状态栏提示当前区域/语言。
+        # 通知铃 → 跳转最新资讯；区域球 → 在中文 / 英文界面之间切换。
         self._topbar.notifications_clicked.connect(lambda: self._on_home_navigate("news"))
-        self._topbar.region_clicked.connect(
-            lambda: self.statusBar().showMessage("区域 / 语言：中国（CN）", 2500))
+        self._topbar.region_clicked.connect(self._toggle_language)
 
         self._home.match_clicked.connect(self._open_match)
         self._home.team_clicked.connect(self._open_team)
@@ -224,6 +230,8 @@ class MainWindow(QMainWindow):
         self._home.live_state_changed.connect(self._sidebar.set_live)
         # 侧栏页脚实时数据状态随连接态联动（绿色已连接 / 红色中断）
         self._home.connection_changed.connect(self._sidebar.set_realtime)
+        # 子标题栏右侧实时连接胶囊也随连接态联动（取代已移除的正文连接徽标）
+        self._home.connection_changed.connect(self._subheader.set_connected)
 
         self._globe.team_clicked.connect(self._open_team)
 
@@ -294,6 +302,9 @@ class MainWindow(QMainWindow):
         self._mouse_trail.raise_()
         self._mouse_trail.show()
 
+        # 应用已保存的界面语言（默认中文；英文则即时重译所有 chrome）。
+        self._apply_language(self._language)
+
         # 居中窗口
         screen = QGuiApplication.primaryScreen().availableGeometry()
         w = min(int(screen.width() * 0.92), 1600)
@@ -303,6 +314,38 @@ class MainWindow(QMainWindow):
             screen.left() + (screen.width() - w) // 2,
             screen.top() + (screen.height() - h) // 2,
         )
+
+    # ─── 语言（中文 / 英文界面切换）──────────────
+    def _toggle_language(self) -> None:
+        from app.i18n import current_language, set_language, tr
+        new = "en" if current_language() == "zh" else "zh"
+        set_language(new)
+        self._language = new
+        self._settings.set("language", new)
+        self._apply_language(new)
+        msg = (tr("已切换为英文界面（赛事数据仍为中文数据源）") if new == "en"
+               else "已切换为中文界面")
+        self.statusBar().showMessage(msg, 4000)
+
+    def _apply_language(self, lang: str) -> None:
+        """把界面语言应用到所有持久化 chrome（标题栏 / 顶栏 / 侧栏 / 子标题）。"""
+        from app.i18n import tr
+        from app.config import APP_TITLE_ZH
+        self.setWindowTitle(tr(APP_TITLE_ZH))
+        if hasattr(self, "_titlebar"):
+            self._titlebar.set_language(lang)
+        if hasattr(self, "_topbar"):
+            self._topbar.set_language(lang)
+        if hasattr(self, "_sidebar"):
+            self._sidebar.set_language(lang)
+        if hasattr(self, "_subheader"):
+            self._subheader.set_language(lang)
+        # 以当前页标题按新语言重译。
+        cur = self._current_key()
+        if cur:
+            page = self._key_to_page.get(cur)
+            if page is not None:
+                self._topbar.set_title(*self._title_for(cur, page))
 
     # ─── 主题 / 皮肤 ──────────────────────────
     def _apply_theme(self) -> None:

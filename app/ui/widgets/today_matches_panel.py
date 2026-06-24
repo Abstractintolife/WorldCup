@@ -196,6 +196,22 @@ class TodayMatchesPanel(GlassCard):
         )
         return t
 
+    def _rank_lbl(self, nationality: str) -> QLabel | None:
+        """国际足联世界排名小标注（如「#12」），紧贴国旗显示；无排名则不展示。"""
+        from app.services.fifa_rankings import FifaRankings
+        txt = FifaRankings.instance().rank_text(nationality)
+        if not txt:
+            return None
+        p = self._palette
+        lbl = QLabel(txt)
+        lbl.setToolTip("国际足联世界排名")
+        lbl.setStyleSheet(
+            f"color: {p.accent}; font-size: 9.5px; font-weight: {Type.W_BLACK};"
+            " background: transparent;"
+        )
+        lbl.setAlignment(Qt.AlignmentFlag.AlignBottom | Qt.AlignmentFlag.AlignLeft)
+        return lbl
+
     def _name_lbl(self, text: str, *, align_right: bool = False) -> QLabel:
         from app.utils.text_utils import short_country_name
         p = self._palette
@@ -245,6 +261,9 @@ class TodayMatchesPanel(GlassCard):
         w, row = self._row_frame()
         row.addWidget(self._time_lbl(fx.time_text))
         row.addWidget(FlagIcon(fx.home, height=18, radius=3))
+        rk_h = self._rank_lbl(fx.home)
+        if rk_h is not None:
+            row.addWidget(rk_h)
         row.addWidget(self._name_lbl(fx.home), 1)
 
         score_color = p.live if fx.status == "live" else (
@@ -252,6 +271,9 @@ class TodayMatchesPanel(GlassCard):
         row.addWidget(self._score_lbl(fx.score, score_color))
 
         row.addWidget(self._name_lbl(fx.away, align_right=True), 1)
+        rk_a = self._rank_lbl(fx.away)
+        if rk_a is not None:
+            row.addWidget(rk_a)
         row.addWidget(FlagIcon(fx.away, height=18, radius=3))
 
         if fx.status == "odds":
@@ -273,6 +295,9 @@ class TodayMatchesPanel(GlassCard):
         )
         row.addWidget(self._time_lbl(fmt_time(m.start_play)))
         row.addWidget(FlagIcon(m.team_a_name, height=18, radius=3))
+        rk_h = self._rank_lbl(m.team_a_name)
+        if rk_h is not None:
+            row.addWidget(rk_h)
         row.addWidget(self._name_lbl(m.team_a_name), 1)
 
         if m.status in (MatchStatus.FIXTURE, MatchStatus.UNKNOWN):
@@ -282,6 +307,9 @@ class TodayMatchesPanel(GlassCard):
             row.addWidget(self._score_lbl(m.display_score, color))
 
         row.addWidget(self._name_lbl(m.team_b_name, align_right=True), 1)
+        rk_a = self._rank_lbl(m.team_b_name)
+        if rk_a is not None:
+            row.addWidget(rk_a)
         row.addWidget(FlagIcon(m.team_b_name, height=18, radius=3))
 
         if m.is_live:

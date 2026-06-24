@@ -42,7 +42,7 @@ _WAVE_COUNT = 1.6             # 旗面上同时可见的波数（沿宽度方向
 _WAVE_AMPLITUDE_RATIO = 0.12  # 自由端最大垂直摆幅 ≈ 旗高 * 该比值
 _WAVE_SWAY_RATIO = 0.05       # 自由端最大水平摆幅 ≈ 旗高 * 该比值
 _STRIP_PX = 3                 # 竖条宽度（像素）—— 错切保证无缝，故可略宽以省开销
-_BG_MIN_DT = 1.0 / 60.0       # 重绘节流到 ~60fps（即便心跳高达 240Hz）
+_BG_MIN_DT = 1.0 / 120.0      # 重绘节流到 ~120fps —— 让旗帜飘动更顺滑（配合 120FPS 帧时钟）
 
 
 def floating_offset(t: float, amplitude: float = FLOAT_AMPLITUDE_PX,

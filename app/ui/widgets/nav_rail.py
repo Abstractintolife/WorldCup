@@ -183,6 +183,11 @@ QLabel#NavLiveBadge {{
         self._palette = palette
         self._apply_style()
 
+    def set_language(self, lang: str) -> None:
+        """切换导航项语言（中文 / 英文）。"""
+        self._text.setText(self._label_en if lang == "en" else self._label_zh)
+        self.setToolTip(f"{self._label_zh} · {self._label_en}")
+
     # ── 查询 ────────────────────────────────
     @property
     def key(self) -> str:
@@ -288,6 +293,7 @@ class _RailFooter(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         p = palette
         self._palette = p
+        self._connected = True
 
         lay = QVBoxLayout(self)
         lay.setContentsMargins(18, 10, 18, 6)
@@ -353,9 +359,12 @@ QProgressBar#SyncBar::chunk {{
 
     def set_realtime(self, connected: bool) -> None:
         """切换实时数据连接态：绿色「实时数据 · 已连接」/ 红色「实时数据 · 连接中断」。"""
+        self._connected = bool(connected)
+        from app.i18n import tr
         p = self._palette
         col = p.win if connected else p.loss
-        text = "实时数据 · 已连接" if connected else "实时数据 · 连接中断"
+        text = (tr("实时数据 · 已连接", "Live data · connected") if connected
+                else tr("实时数据 · 连接中断", "Live data · disconnected"))
         self._dot.setStyleSheet(
             f"QLabel#SyncDot {{ color: {col};"
             f" font-size: {Type.CAPTION}px; background: transparent; }}"
@@ -381,6 +390,10 @@ QProgressBar#SyncBar::chunk {{
 }}
 """.strip()
         )
+
+    def set_language(self, lang: str) -> None:
+        """语言切换：以当前连接态重新渲染本地化文案。"""
+        self.set_realtime(getattr(self, "_connected", True))
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -477,6 +490,12 @@ class NavRail(GlassCard):
     def set_realtime(self, connected: bool) -> None:
         """更新页脚实时数据连接状态（绿色已连接 / 红色中断）。"""
         self._footer.set_realtime(connected)
+
+    def set_language(self, lang: str) -> None:
+        """切换整条导航栏的语言（导航项 + 页脚状态文案）。"""
+        for row in self._rows.values():
+            row.set_language(lang)
+        self._footer.set_language(lang)
 
     # ── 主题（HUD 固定 NIGHT_STADIUM；保留接口以兼容壳层调用） ──
     def apply_palette(self, palette=None) -> None:  # noqa: D401

@@ -98,6 +98,7 @@ class TopHudBar(QFrame):
         title_box.setSpacing(1)
         self._title = QLabel("概览")
         self._title.setObjectName("HudTitle")
+        self._title_zh = "概览"
         self._title.setStyleSheet(
             f"QLabel#HudTitle {{ color: {p.text};"
             f" font-size: {Type.H2}px; font-weight: {Type.W_BLACK};"
@@ -220,13 +221,29 @@ QPushButton#HudAvatar:hover {{
 
         副标题优先用中文标题映射出的英文 OVERLINE（如 概览→OVERVIEW）；
         映射缺失时回退到传入 ``subtitle`` 的首段（按 ``·`` 切分），保证概览页
-        恒显示「OVERVIEW」（需求 3.1）。
+        恒显示「OVERVIEW」（需求 3.1）。标题本身按当前界面语言翻译。
         """
-        self._title.setText(title)
+        from app.i18n import tr
+        self._title_zh = title
+        self._title.setText(tr(title))
         en = _EN_SUBTITLE.get(title)
         if en is None:
             en = subtitle.split("·")[0].strip() if subtitle else ""
         self._subtitle.setText(en)
+
+    def set_language(self, lang: str) -> None:
+        """切换顶栏语言：区域按钮、搜索占位、提示，并按语言重译当前标题。"""
+        from app.i18n import tr
+        self._region.setText("🌐 EN" if lang == "en" else "🌐 CN")
+        self._region.setToolTip(
+            "Language: English (click to switch)" if lang == "en"
+            else "区域 / 语言：中文（点击切换）")
+        self._search.setPlaceholderText(tr("搜索球队 / 球员 / 比赛…"))
+        self._bell.setToolTip(tr("通知 · 查看最新资讯"))
+        self._avatar.setToolTip(tr("个人中心"))
+        # 以当前标题按新语言重译。
+        if getattr(self, "_title_zh", None):
+            self.set_title(self._title_zh)
 
     def set_current_skin(self, name: str) -> None:  # noqa: D401
         """兼容旧壳层调用 —— HUD 色板固定，无操作。"""

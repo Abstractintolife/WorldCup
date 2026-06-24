@@ -220,6 +220,10 @@ def test_homepage_retains_last_good_data_and_flags_error(qapp):
 
     home = HomePage(DataService())
 
+    # 连接态现经 connection_changed 信号广播（正文连接徽标已移除）。
+    conn_states: list[bool] = []
+    home.connection_changed.connect(conn_states.append)
+
     good_rounds: list = []
     good_matches = [_match()]
     good_groups = [_group()]
@@ -233,7 +237,7 @@ def test_homepage_retains_last_good_data_and_flags_error(qapp):
     assert home._last_groups == good_groups
     assert home._last_scorers == good_scorers
     assert home._had_good_data is True
-    assert "已连接" in home._conn_badge.text()
+    assert conn_states[-1] is True
 
     # All-failure tick — every source raises (asyncio.gather returns Exceptions).
     home._apply((RuntimeError("net"), TimeoutError("t/o"), RuntimeError("net")))
@@ -242,8 +246,8 @@ def test_homepage_retains_last_good_data_and_flags_error(qapp):
     assert home._last_matches == good_matches
     assert home._last_groups == good_groups
     assert home._last_scorers == good_scorers
-    # Connection badge reflects the failure (Req 28.1).
-    assert "失败" in home._conn_badge.text()
+    # Connection state reflects the failure (Req 28.1).
+    assert conn_states[-1] is False
 
 
 @pytestmark_qt

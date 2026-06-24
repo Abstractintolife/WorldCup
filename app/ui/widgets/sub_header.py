@@ -86,7 +86,14 @@ QFrame#LiveConnectionPill {{
         if text is not None:
             self._label.setText(text)
         else:
-            self._label.setText("实时数据已连接" if self._connected else "实时数据已断开")
+            from app.i18n import tr
+            self._label.setText(
+                tr("实时数据已连接") if self._connected
+                else tr("实时数据已断开"))
+
+    def set_language(self, lang: str) -> None:
+        """语言切换：以当前连接态重新本地化胶囊文案。"""
+        self.set_connected(self._connected)
 
     @property
     def is_connected(self) -> bool:
@@ -142,6 +149,13 @@ class SubHeader(QFrame):
     # ── 接口 ────────────────────────────────
     def set_connected(self, on: bool) -> None:
         self._pill.set_connected(on)
+
+    def set_language(self, lang: str) -> None:
+        """切换子标题栏语言（双行文案 + 实时连接胶囊）。"""
+        from app.i18n import tr
+        self._line1.setText(tr("2026 美加墨世界杯 · 实时数据总览"))
+        self._line2.setText(tr("OVERVIEW · 数据来源：懂球帝公开接口"))
+        self._pill.set_language(lang)
 
     @property
     def pill(self) -> LiveConnectionPill:

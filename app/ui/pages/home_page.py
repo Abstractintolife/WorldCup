@@ -161,8 +161,9 @@ class HomePage(BasePage):
         v.setSpacing(18)
         self._root_layout = v
 
-        # 顶部欢迎条（不计入 IA 视觉权重）。
-        v.addLayout(self._welcome_bar())
+        # 注：顶部「2026 美加墨世界杯 · 实时数据总览」双行欢迎条已移除 ——
+        # 该信息与子标题栏（SubHeader）完全重复，正文不再二次展示（更精炼）。
+        # 连接状态改由子标题栏右侧的实时连接胶囊呈现（见 MainWindow 接线）。
 
         # ── 第 1 排：Hero 行（焦点比赛 ~65% | 小组积分榜 ~35%）──
         # 焦点比赛核心看板（任务 8：HeroMatchCard）；小组积分榜占位待任务 10。
@@ -189,7 +190,9 @@ class HomePage(BasePage):
         # 样例值，真实数据到达后经 _apply → compute_stats 覆盖。
         self._stat_card = StatStrip()
         self._stat_card.setProperty("ia_region", "overview")
-        self._stat_card.setMinimumHeight(120)
+        self._stat_card.setMinimumHeight(96)
+        # 六张统计卡点击跳转到对应榜单（球队 / 球员 / 赛程 / 场馆）。
+        self._stat_card.clicked.connect(self._on_stat_clicked)
 
         # ── 第 3 排：底部多面板行（今日赛程 / 实时比赛 / 射手榜 / 主办城市）──
         # 任务 12：四块广播级面板，全部由注入的 DataService 喂数据（需求 1.1 / 26.2）。
@@ -245,8 +248,8 @@ class HomePage(BasePage):
     def row_stretches(self) -> tuple[int, int, int]:
         """三排（Hero / Stat Strip / 底部多面板）实际配置的纵向 stretch。"""
         lay = self._root_layout
-        # index 0 是欢迎条（QHBoxLayout, stretch 0）；三个权重排依次紧随其后。
-        return (lay.stretch(1), lay.stretch(2), lay.stretch(3))
+        # 欢迎条已移除：三个权重排现在分别位于 index 0 / 1 / 2。
+        return (lay.stretch(0), lay.stretch(1), lay.stretch(2))
 
     def hero_column_stretches(self) -> tuple[int, int]:
         """Hero 行内 [焦点比赛, 小组积分榜] 的横向 stretch（~65 / ~35）。"""
@@ -257,50 +260,25 @@ class HomePage(BasePage):
         return (self._bottom_row.stretch(0), self._bottom_row.stretch(1),
                 self._bottom_row.stretch(2), self._bottom_row.stretch(3))
 
-    # ── 顶部欢迎条 ──────────────────────────
-    def _welcome_bar(self) -> QHBoxLayout:
-        row = QHBoxLayout()
-        col = QVBoxLayout()
-        col.setSpacing(2)
-        hi = QLabel("2026 美加墨世界杯 · 实时数据总览")
-        hi.setStyleSheet(f"color:{C_TEXT}; font-size:22px; font-weight:900; background:transparent;")
-        col.addWidget(hi)
-        sub = QLabel("OVERVIEW · 数据来源：懂球帝公开接口")
-        sub.setStyleSheet(f"color:{C_DIM}; font-size:12.5px; font-weight:600; background:transparent;")
-        col.addWidget(sub)
-        row.addLayout(col)
-        row.addStretch(1)
-        self._conn_badge = QLabel("● 数据加载中…")
-        self._conn_badge.setStyleSheet(
-            f"color:{C_DIM}; font-size:11.5px; font-weight:800;"
-            f" background: rgba(255,255,255,0.06); border-radius:11px; padding:6px 14px;")
-        row.addWidget(self._conn_badge, alignment=Qt.AlignmentFlag.AlignVCenter)
-        return row
-
+    # ── 顶部欢迎条（已移除，连接态改由 SubHeader 胶囊呈现） ──
     def _set_connected(self, ok: bool) -> None:
+        # 仅广播连接态：MainWindow 据此驱动侧栏页脚与子标题栏的实时连接胶囊。
         self.connection_changed.emit(bool(ok))
-        if ok:
-            self._conn_badge.setText("● 实时数据已连接")
-            self._conn_badge.setStyleSheet(
-                f"color:{C_GREEN}; font-size:11.5px; font-weight:800;"
-                f" background: rgba({_rgb(C_GREEN)},0.12); border-radius:11px; padding:6px 14px;")
-        else:
-            self._conn_badge.setText("● 数据获取失败")
-            self._conn_badge.setStyleSheet(
-                f"color:{C_LIVE}; font-size:11.5px; font-weight:800;"
-                f" background: rgba({_rgb(C_LIVE)},0.12); border-radius:11px; padding:6px 14px;")
 
     # ── 数据加载 ────────────────────────────
     def refresh(self, force: bool = False) -> None:
         async def runner() -> None:
             import asyncio
+            from app.services.fifa_rankings import FifaRankings
             results = await asyncio.gather(
                 self._service.fetch_full_schedule(force=force),
                 self._service.fetch_standings(force=force),
                 self._service.fetch_ranking(RankingType.GOALS, force=force),
+                FifaRankings.instance().refresh(force=force),
                 return_exceptions=True,
             )
-            self._apply(results)
+            # FIFA 世界排名仅用于在对阵国旗旁标注名次，不计入主数据成功判定。
+            self._apply(results[:3])
         self.run_async(runner)
 
     def _apply(self, results) -> None:
@@ -392,8 +370,16 @@ class HomePage(BasePage):
             kickoff_utc=featured.start_play,
             venue="",
             win_prob=win_prob,
+            home_fifa_rank=self._fifa_rank(featured.team_a_name),
+            away_fifa_rank=self._fifa_rank(featured.team_b_name),
         )
         self._hero_card.set_match(featured, meta)
+
+    @staticmethod
+    def _fifa_rank(name: str | None) -> int | None:
+        """查国际足联世界排名（供 Hero 卡 FIFA 名次显示）。"""
+        from app.services.fifa_rankings import FifaRankings
+        return FifaRankings.instance().rank(name)
 
     @staticmethod
     def _hero_status_label(match: Match) -> str:
@@ -479,6 +465,22 @@ class HomePage(BasePage):
         """实时比赛中心比分行 → 复用既有 match_clicked 信号（进入比赛详情）。"""
         if isinstance(match, Match):
             self.match_clicked.emit(match)
+
+    # ── 赛事大盘统计卡点击 → 跳转对应榜单 ────────
+    #: 六张统计卡 key → 目标页面（球员相关统计跳球员榜，球队跳球队榜）。
+    _STAT_NAV = {
+        "matches": "schedule",   # 总比赛场次 → 赛程中心
+        "goals": "scorers",      # 总进球数 → 射手榜（球员）
+        "scorers": "scorers",    # 进球球员 → 射手榜（球员）
+        "avg": "scorers",        # 平均进球 → 射手榜（球员）
+        "teams": "teams",        # 参赛球队 → 球队榜
+        "cities": "venue",       # 主办城市 → 场馆地图
+    }
+
+    def _on_stat_clicked(self, key: str) -> None:
+        target = self._STAT_NAV.get(key)
+        if target:
+            self.navigate.emit(target)
 
     # ── 观看直播 / 导入 M3U8 源 ──────────────
     def _open_live_stream(self, match: Match | None) -> None:
