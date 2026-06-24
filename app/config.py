@@ -26,6 +26,12 @@ FLAGS_DIR = ASSETS_DIR / "flags"
 # 的底图渲染，叠加可读性遮罩与轻量氛围层；缺失时回退「夜间球场」程序化渐变。
 BG_IMAGE_PATH = ROOT_DIR / "背景图.png"
 
+# 自定义鼠标光标位图。优先用随包的 assets/cursor.png（ASCII 名、便于打包），
+# 缺失时回退到用户放在仓库根目录的「光标.png」。两者都不存在时使用系统默认
+# 箭头（见 app/ui/design/app_cursor.py）。
+CURSOR_IMAGE_PATH = ASSETS_DIR / "cursor.png"
+CURSOR_IMAGE_FALLBACK = ROOT_DIR / "光标.png"
+
 CACHE_DIR = Path(user_cache_dir(APP_NAME, APP_VENDOR))
 DATA_DIR = Path(user_data_dir(APP_NAME, APP_VENDOR))
 IMAGE_CACHE_DIR = CACHE_DIR / "images"

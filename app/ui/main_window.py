@@ -106,6 +106,12 @@ class MainWindow(QMainWindow):
         from app.ui.design.app_icon import build_app_icon
         self.setWindowIcon(build_app_icon())
 
+        # 项目自定义鼠标光标（assets/cursor.png）。设在窗口根上，所有未单独
+        # 指定光标的子控件会自动继承；而按钮 / 可点卡片等显式 setCursor 的
+        # 元件仍保留各自的「小手」等 hover 光标。缺图时静默回退系统箭头。
+        from app.ui.design.app_cursor import apply_app_cursor
+        apply_app_cursor(self)
+
         # ── 控件 ──
         self._sidebar = NavRail(NAV_ITEMS)
         self._topbar = TopHudBar()
