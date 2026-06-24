@@ -526,8 +526,7 @@ class LiveMatchCenter(GlassCard):
         ga, gb = self._match_goals(match)
         self._score_lbl.setText(f"{ga} - {gb}")
         if match.is_live:
-            minute = (match.minute or "").strip()
-            self._clock_lbl.setText(f"{minute}'" if minute else "进行中")
+            self._clock_lbl.setText(self._format_live_minute(match))
             self._badge.setVisible(True)
         elif match.status == MatchStatus.PLAYED:
             self._clock_lbl.setText("已结束")
@@ -535,6 +534,20 @@ class LiveMatchCenter(GlassCard):
         else:
             self._clock_lbl.setText("即将开赛")
             self._badge.setVisible(False)
+
+    @staticmethod
+    def _format_live_minute(match: Match) -> str:
+        """正在进行的比赛：返回带「分钟符号」的比赛时间，如 ``67'`` / ``45+2'``。
+
+        无具体分钟数据时回退「进行中」。
+        """
+        minute = (getattr(match, "minute", "") or "").strip().rstrip("'")
+        extra = (getattr(match, "minute_extra", "") or "").strip().rstrip("'").lstrip("+")
+        if not minute:
+            return "进行中"
+        if extra and extra not in ("0", ""):
+            return f"{minute}+{extra}'"
+        return f"{minute}'"
 
     def push_event(self, ev: MatchEvent) -> QWidget:
         """推送一条事件 —— **恰好**新增一行（需求 13.5，Property 19）。

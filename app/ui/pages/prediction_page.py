@@ -21,6 +21,7 @@ from PyQt6.QtWidgets import (
     QGridLayout,
     QHBoxLayout,
     QLabel,
+    QProgressBar,
     QPushButton,
     QScrollArea,
     QSizePolicy,
@@ -40,10 +41,12 @@ from app.services.external_predictions import (
 )
 from app.services.match_markets import MarketGroup, MatchMarkets, build_markets
 from app.services.prediction import MatchPrediction, Trend, build_prediction
+from app.services.theanalyst import TeamProbability, TheAnalyst
 from app.ui.pages.base import BasePage
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.flow_layout import FlowLayout
 from app.ui.widgets.misc import Card, HLine
+from app.ui.widgets.standings_table import estimate_qual_prob
 from app.ui.widgets.team_logo import TeamLogo
 from app.utils.time_utils import fmt_datetime, fmt_relative
 
@@ -299,6 +302,11 @@ class PredictionPage(BasePage):
                 self._groups = groups
             except Exception:  # pragma: no cover - 网络
                 self._groups = []
+            # 晋级概率：拉取 Opta 赛事模拟（夺冠 / 进决赛概率）；失败自动回退离线快照。
+            try:
+                await TheAnalyst.instance().refresh(force=force)
+            except Exception:  # pragma: no cover - 网络
+                pass
             self._populate_combo()
             self._render()
 
@@ -381,6 +389,7 @@ class PredictionPage(BasePage):
 
         self._body.addWidget(self._hero_card(pred))
         self._body.addWidget(self._prob_card(pred))
+        self._body.addWidget(self._advance_card(pred))
         self._body.addWidget(self._trends_card(pred))
         ext = get_external_predictions(m)
         if ext:
@@ -500,6 +509,108 @@ class PredictionPage(BasePage):
         verdict.setWordWrap(True)
         lay.addWidget(verdict)
         return card
+
+    # ── 晋级概率（出线 + Opta 夺冠 / 进决赛）────────────────────
+    def _team_group_rank(self, team_id: str, team_name: str) -> tuple[int | None, int]:
+        """在小组积分榜里定位某队的组内名次与小组规模（找不到 → (None, 0)）。"""
+        for g in self._groups:
+            for ts in g.teams:
+                if (team_id and ts.team_id == team_id) or ts.team_name == team_name:
+                    return ts.rank, len(g.teams)
+        return None, 0
+
+    def _qual_prob_for(self, team_id: str, team_name: str) -> float | None:
+        """小组出线（前 2）概率 —— 与首页小组积分榜同源（estimate_qual_prob）。"""
+        rank, size = self._team_group_rank(team_id, team_name)
+        if rank is None or size <= 0:
+            return None
+        return estimate_qual_prob(rank, size)
+
+    @staticmethod
+    def _opta_for(team_name: str) -> TeamProbability | None:
+        """Opta 赛事模拟里某队的夺冠 / 进决赛概率（按中文 / 英文名匹配）。"""
+        for tp in TheAnalyst.instance().championship_ranking():
+            if tp.team_cn == team_name or tp.team_en == team_name:
+                return tp
+        return None
+
+    def _advance_card(self, pred: MatchPrediction) -> QWidget:
+        m = pred.match
+        card = Card(padding=18)
+        lay = QVBoxLayout(card)
+        lay.setContentsMargins(20, 14, 20, 16)
+        lay.setSpacing(10)
+        self._section(lay, "🎫  晋级概率")
+        hint = QLabel(
+            "小组出线概率（基于积分榜模型测算，与首页「小组积分榜」概率栏一致）"
+            "及 Opta 超级计算机推算的夺冠 / 进决赛概率"
+        )
+        hint.setStyleSheet("color:#B0BEC5; font-size:12px;")
+        hint.setWordWrap(True)
+        lay.addWidget(hint)
+
+        lay.addWidget(self._advance_row(m.team_a_id, m.team_a_name, _A))
+        lay.addWidget(self._advance_row(m.team_b_id, m.team_b_name, _B))
+        return card
+
+    def _advance_row(self, team_id: str, team_name: str, color: str) -> QWidget:
+        qual = self._qual_prob_for(team_id, team_name)
+        tp = self._opta_for(team_name)
+
+        wrap = QWidget()
+        col = QVBoxLayout(wrap)
+        col.setContentsMargins(0, 4, 0, 4)
+        col.setSpacing(6)
+
+        # 队名 + 出线概率条 + 百分比
+        top = QHBoxLayout()
+        top.setSpacing(10)
+        nm = QLabel(team_name)
+        nm.setStyleSheet(f"color:{color}; font-size:14px; font-weight:900;")
+        nm.setMinimumWidth(96)
+        top.addWidget(nm)
+
+        bar = QProgressBar()
+        bar.setRange(0, 1000)
+        bar.setValue(int((qual or 0.0) * 1000))
+        bar.setTextVisible(False)
+        bar.setFixedHeight(10)
+        bar.setStyleSheet(
+            "QProgressBar{background:rgba(255,255,255,0.08); border:none; border-radius:5px;}"
+            f"QProgressBar::chunk{{background:qlineargradient(x1:0,y1:0,x2:1,y2:0,"
+            f"stop:0 {color}, stop:1 {_GOLD}); border-radius:5px;}}"
+        )
+        top.addWidget(bar, 1)
+
+        qpct = QLabel(f"{round(qual * 100)}%" if qual is not None else "—")
+        qpct.setFixedWidth(52)
+        qpct.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        qpct.setStyleSheet(f"color:{_GOLD}; font-size:15px; font-weight:900;")
+        top.addWidget(qpct)
+        col.addLayout(top)
+
+        # 标签行：出线概率 + Opta 夺冠 / 进决赛
+        tags = QHBoxLayout()
+        tags.setSpacing(8)
+        tags.addWidget(self._adv_chip("小组出线",
+                                      f"{round(qual * 100)}%" if qual is not None else "—",
+                                      "#2ED883"))
+        if tp is not None:
+            tags.addWidget(self._adv_chip("进决赛", f"{tp.final_pct:.1f}%", _B))
+            tags.addWidget(self._adv_chip("夺冠", f"{tp.win_pct:.1f}%", _GOLD))
+        tags.addStretch(1)
+        col.addLayout(tags)
+        return wrap
+
+    @staticmethod
+    def _adv_chip(label: str, value: str, color: str) -> QWidget:
+        chip = QLabel(f"{label} {value}")
+        chip.setStyleSheet(
+            f"color:{color}; font-size:11.5px; font-weight:800;"
+            "background:rgba(255,255,255,0.06); border-radius:8px; padding:3px 9px;"
+        )
+        chip.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        return chip
 
     def _trends_card(self, pred: MatchPrediction) -> QWidget:
         card = Card(padding=18)

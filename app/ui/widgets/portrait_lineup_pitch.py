@@ -72,31 +72,14 @@ class PortraitLineupPitch(QWidget):
 
     # ── 头像 URL 收集 + 异步加载订阅 ──────────────
     def _collect_urls(self) -> None:
-        for team in (self._a, self._b):
-            for pl in team.starters:
-                url = best_portrait(pl.person_id, pl.name, pl.logo)
-                if url:
-                    self._urls[pl.person_id] = url
+        # 已改用球衣号码圆牌渲染，不再加载球员照片（省去网络请求与裁剪开销）。
+        return
 
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
-        try:
-            self._img.image_ready.connect(self._on_image)
-        except Exception:
-            pass
-        # 预热请求（命中缓存立即可画，否则到位后经信号重绘）。
-        for url in self._urls.values():
-            self._img.request(url)
 
     def hideEvent(self, ev) -> None:
-        try:
-            self._img.image_ready.disconnect(self._on_image)
-        except (TypeError, RuntimeError):
-            pass
         super().hideEvent(ev)
-
-    def _on_image(self, _url: str, _pm: QPixmap) -> None:
-        self.update()
 
     # ── 阵型 → 列分组（与 LineupPitch 一致）──────────
     @staticmethod
@@ -163,9 +146,11 @@ class PortraitLineupPitch(QWidget):
         cols_b = self._columns(self._b)
         col_count = max(len(cols_a), len(cols_b), 1)
         max_rows = max([len(c) for c in cols_a] + [len(c) for c in cols_b] + [1])
-        radius = min((play.width() / 2) / col_count / 2.2,
-                     play.height() / max_rows / 2.5, 22.0)
-        radius = max(11.0, radius)
+        # 缩小球衣号圆牌，避免相邻列 / 行的圆与姓名标签互相重叠（更大的除数 +
+        # 更低的上限 / 下限），让 11 人也能在小面板里互不挤压地铺开。
+        radius = min((play.width() / 2) / col_count / 2.8,
+                     play.height() / max_rows / 3.0, 15.0)
+        radius = max(8.5, radius)
         for pl, c in self._layout_half(cols_a, left, True):
             self._draw_player(p, pl, c, radius, self._color_a)
         for pl, c in self._layout_half(cols_b, right, False):
@@ -224,28 +209,21 @@ class PortraitLineupPitch(QWidget):
         p.setBrush(QColor(0, 0, 0, 80))
         p.drawEllipse(QRectF(cx - radius, cy - radius + 2, radius * 2, radius * 2))
 
-        url = self._urls.get(pl.person_id)
-        pm = self._img.get_cached(url) if url else None
-        if pm and not pm.isNull():
-            d = int(radius * 2)
-            p.drawPixmap(int(cx - radius), int(cy - radius),
-                         self._circular_portrait(pm, d))
-        else:
-            # 回退：纯色圆牌 + 球衣号（照片到位前 / 无照片时）。
-            grad = QLinearGradient(circle.topLeft(), circle.bottomLeft())
-            grad.setColorAt(0.0, base.lighter(118))
-            grad.setColorAt(1.0, base.darker(110))
-            p.setBrush(grad)
-            p.setPen(Qt.PenStyle.NoPen)
-            p.drawEllipse(circle)
-            num = pl.number or ""
-            if num:
-                f = QFont(self.font())
-                f.setPointSizeF(max(8.0, radius * 0.8))
-                f.setBold(True)
-                p.setFont(f)
-                p.setPen(QColor("#FFFFFF"))
-                p.drawText(circle, int(Qt.AlignmentFlag.AlignCenter), num)
+        # 纯色圆牌 + 球衣号（按需求：用球衣号码替代球员照片，圆圈更小、互不重叠）。
+        grad = QLinearGradient(circle.topLeft(), circle.bottomLeft())
+        grad.setColorAt(0.0, base.lighter(118))
+        grad.setColorAt(1.0, base.darker(110))
+        p.setBrush(grad)
+        p.setPen(Qt.PenStyle.NoPen)
+        p.drawEllipse(circle)
+        num = (pl.number or "").strip()
+        if num:
+            f = QFont(self.font())
+            f.setPointSizeF(max(8.0, radius * 0.95))
+            f.setBold(True)
+            p.setFont(f)
+            p.setPen(QColor("#FFFFFF"))
+            p.drawText(circle, int(Qt.AlignmentFlag.AlignCenter), num)
         # 描边（队伍色）
         p.setBrush(Qt.BrushStyle.NoBrush)
         p.setPen(QPen(base.lighter(125), 2))
