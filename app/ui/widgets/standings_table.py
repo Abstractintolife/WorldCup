@@ -163,7 +163,7 @@ class StandingsTable(GlassCard):
     _W_WDL = 44
     _W_GD = 34
     _W_PTS = 26
-    _W_QUAL = 52
+    _W_QUAL = 70
 
     def __init__(
         self,
@@ -257,6 +257,9 @@ class StandingsTable(GlassCard):
             b.setCheckable(True)
             b.setCursor(Qt.CursorShape.PointingHandCursor)
             b.setFixedHeight(28)
+            # 字母不省略：12 个标签挤在窄面板时，给一个能容下单字母的最小宽度，
+            # 避免被压到比文字还窄而触发 QPushButton 的「…」省略（看起来像乱码）。
+            b.setMinimumWidth(22)
             b.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
             b.clicked.connect(lambda _c=False, key=letter: self._select(key))
             self._tab_btns[letter] = b
@@ -345,6 +348,7 @@ class StandingsTable(GlassCard):
                 b.setStyleSheet(
                     "QPushButton {"
                     f" background: {p.primary}; color: #04121A; border: none;"
+                    " padding: 0px;"
                     f" border-radius: 8px; font-size: 12px; font-weight: {Type.W_BLACK}; }}"
                 )
             else:
@@ -352,6 +356,7 @@ class StandingsTable(GlassCard):
                     "QPushButton {"
                     f" background: {p.glass_fill}; color: {p.text_dim};"
                     f" border: 1px solid {p.glass_border};"
+                    " padding: 0px;"
                     f" border-radius: 8px; font-size: 12px; font-weight: {Type.W_BOLD}; }}"
                     "QPushButton:hover {"
                     f" background: {rgba(p.primary, 0.12)}; color: {p.text}; }}"

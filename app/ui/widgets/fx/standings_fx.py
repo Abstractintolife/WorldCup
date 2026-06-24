@@ -198,11 +198,11 @@ class QualBar(QWidget):
 
         row = QHBoxLayout(self)
         row.setContentsMargins(0, 0, 0, 0)
-        row.setSpacing(8)
+        row.setSpacing(6)
         self._track = _QualTrack(palette, self)
         row.addWidget(self._track, 1)
         self._label = QLabel("—")
-        self._label.setMinimumWidth(34)
+        self._label.setMinimumWidth(30)
         self._label.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         self._label.setStyleSheet(
             f"color: {palette.text}; font-size: {Type.CAPTION}px;"
@@ -231,7 +231,7 @@ class _QualTrack(QWidget):
         self._palette = palette
         self._fraction = 0.0
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
-        self.setMinimumWidth(40)
+        self.setMinimumWidth(24)
         self.setFixedHeight(8)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 
