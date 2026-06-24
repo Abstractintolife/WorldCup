@@ -31,6 +31,34 @@
     "3.5 Write property test for frame-rate independence": {
       "status": "passed",
       "lastRunTimestamp": 1782296748610
+    },
+    "5.2 Write property test for count-up exact settle": {
+      "status": "passed",
+      "lastRunTimestamp": 1782297528303
+    },
+    "5.5 Write property test for mouse trail bound and fade": {
+      "status": "passed",
+      "lastRunTimestamp": 1782297529786
+    },
+    "5.7 Write property test for chart reveal settling": {
+      "status": "passed",
+      "lastRunTimestamp": 1782297529858
+    },
+    "8.3 Write property test for countdown monotonicity": {
+      "status": "passed",
+      "lastRunTimestamp": 1782299285984
+    },
+    "8.5 Write property test for win-probability split integrity": {
+      "status": "passed",
+      "lastRunTimestamp": 1782299288916
+    },
+    "10.2 Write property tests for standings helpers": {
+      "status": "passed",
+      "lastRunTimestamp": 1782299791759
+    },
+    "12.3 Write tests for Live Match Center behaviors": {
+      "status": "passed",
+      "lastRunTimestamp": 1782301108804
     }
   },
   "executionHistory": {}

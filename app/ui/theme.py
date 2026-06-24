@@ -228,59 +228,18 @@ PITCH = ThemePalette(
     chrome_glass="rgba(4,18,11,0.68)",
 )
 
-# ════════════════════════════════════════════════════════════════════
-#  🌸 樱花限定 —— 暮色梅紫 + 柔粉樱花花瓣
-# ════════════════════════════════════════════════════════════════════
-SAKURA = ThemePalette(
-    name="sakura",
-    bg="#160A12",
-    bg_elevated="#26121F",
-    bg_hover="#341A2B",
-    bg_sidebar="#11070E",
-    bg_topbar="#160A12",
-    surface="#26121F",
-    border="rgba(255,180,210,0.18)",
-    divider="rgba(255,180,210,0.08)",
-    text="#FFF0F6",
-    text_dim="#D8AEC2",
-    text_faint="#9C7387",
-    text_inverse="#160A12",
-    primary="#FF8FB1",
-    primary_hover="#FFB3CD",
-    primary_press="#E0648C",
-    primary_soft="rgba(255,143,177,0.18)",
-    secondary="#B79BFF",
-    accent="#FFD700",
-    success="#7CE0C0",
-    warning="#FFC857",
-    danger="#FF6B8E",
-    live="#FF5A8A",
-    hero_grad_a="#2A1020",
-    hero_grad_b="#5A2042",
-    hero_grad_c="#160A12",
-    glass_top="rgba(255,200,225,0.07)",
-    glass_bottom="rgba(255,200,225,0.02)",
-    glass_border="rgba(255,180,210,0.20)",
-    glass_border_strong="rgba(255,143,177,0.42)",
-    scene="sakura",
-    chrome_glass="rgba(18,8,15,0.68)",
-)
-
-
 THEMES: dict[str, ThemePalette] = {
     "dark": DARK,
     "gold": GOLD_THEME,
     "pitch": PITCH,
-    "sakura": SAKURA,
 }
 
 # 皮肤切换菜单的展示顺序与元信息：name -> (中文名, emoji, 一句话简介)
-THEME_ORDER: tuple[str, ...] = ("dark", "gold", "pitch", "sakura")
+THEME_ORDER: tuple[str, ...] = ("dark", "gold", "pitch")
 THEME_META: dict[str, tuple[str, str, str]] = {
     "dark": ("深蓝世界杯", "🌃", "电光蓝 · 聚光灯粒子"),
     "gold": ("黑金冠军", "🏆", "焦黑底 · 大力神杯金"),
     "pitch": ("绿茵赛场", "🌱", "翠绿草地 · 体育场灯光"),
-    "sakura": ("樱花限定", "🌸", "暮色梅紫 · 飘落花瓣"),
 }
 
 

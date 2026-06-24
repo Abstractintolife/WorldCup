@@ -43,8 +43,9 @@ from app.ui.pages.team_rankings_page import TeamRankingsPage
 from app.ui.theme import THEMES, ThemePalette, build_qss
 from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM
-from app.ui.widgets.effects import fade_slide_in
+from app.ui.design import motion_system
 from app.ui.widgets.fps_monitor import FpsMonitor
+from app.ui.widgets.fx.mouse_trail import MouseTrailOverlay
 from app.ui.widgets.nav_rail import NAV_ITEMS, NavRail
 from app.ui.widgets.stage_compositor import create_backdrop
 from app.ui.widgets.sub_header import SubHeader
@@ -269,6 +270,15 @@ class MainWindow(QMainWindow):
             self._fps_monitor.raise_()
             self._position_fps_monitor()
 
+        # ── 鼠标拖尾叠层（任务 5）──
+        # 顶层、对鼠标事件透明的克制拖尾，铺满整个中央区域；由唯一 FrameClock
+        # 驱动（不新增定时器）。置于最上层，但 WA_TransparentForMouseEvents 保证
+        # 不拦截任何点击 / 拖拽（含无边框缩放手柄）。需求 23.x / 首开广播场景 29.1。
+        self._mouse_trail = MouseTrailOverlay(central, palette=NIGHT_STADIUM)
+        self._mouse_trail.setGeometry(central.rect())
+        self._mouse_trail.raise_()
+        self._mouse_trail.show()
+
         # 居中窗口
         screen = QGuiApplication.primaryScreen().availableGeometry()
         w = min(int(screen.width() * 0.92), 1600)
@@ -454,9 +464,11 @@ class MainWindow(QMainWindow):
         self._subheader.setVisible(key == "home")
         # 全局动态背景：地球仪页持续自绘较重，切到该页时暂停背景动画省 CPU
         self._backdrop.set_paused(page is self._globe)
-        # 页面切入：淡入 + 自下而上轻微滑入（地球仪页持续自绘，跳过以免离屏重渲染冲突）
+        # 页面切入：180ms 淡入 + 自下而上轻微滑入（经统一动效系统 motion_system，
+        # 缓动恒 OutCubic、时长 ≤ 500ms；LOW_PERF 下瞬时完成 —— 需求 29.2 / 28.3）。
+        # 地球仪页持续自绘，跳过以免离屏重渲染冲突。
         if page is not self._globe:
-            fade_slide_in(page, duration=360, dx=0, dy=22)
+            motion_system.page_transition(page, dy=22)
         title, subtitle = self._title_for(key, page)
         self._topbar.set_title(title, subtitle)
         # 触发数据刷新
@@ -556,6 +568,9 @@ class MainWindow(QMainWindow):
             self._backdrop.lower()
         if hasattr(self, "_grips"):
             self._grips.reposition()
+        if hasattr(self, "_mouse_trail") and hasattr(self, "_central"):
+            self._mouse_trail.setGeometry(self._central.rect())
+            self._mouse_trail.raise_()
         if hasattr(self, "_titlebar"):
             self._titlebar.sync_max_glyph()
         if hasattr(self, "_fps_monitor") and self._fps_monitor.isVisible():

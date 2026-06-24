@@ -17,16 +17,31 @@
 """
 from __future__ import annotations
 
-from PyQt6.QtCore import QEasingCurve, QObject, QPoint, QPropertyAnimation
+from PyQt6.QtCore import (
+    QEasingCurve,
+    QObject,
+    QPoint,
+    QPropertyAnimation,
+    QRect,
+    QTimer,
+)
+from PyQt6.QtWidgets import QGraphicsOpacityEffect
 
+from app.config import LOW_PERF
 from app.ui.design import tokens
 from app.ui.design.animation_manager import AnimationManager
+
+try:  # 用 sip 可靠判断底层 C++ 对象是否已析构
+    from PyQt6 import sip  # type: ignore
+except ImportError:  # pragma: no cover
+    sip = None  # type: ignore
 
 # ── 运动令牌 ────────────────────────────────
 EASE_STANDARD = QEasingCurve.Type.OutCubic   # 唯一曲线
 DUR_STANDARD = 180                           # 标准过渡时长（ms）
 DUR_MAX = 500                                # 硬上限；> 500ms 被禁止
 HOVER_LIFT_DY = -6                           # 悬停 translateY(-6px)
+PAGE_SLIDE_DY = 22                           # 页面切入：自下而上轻微滑入像素
 
 # ── 与 tokens 对齐（设计要求：retarget） ─────
 # 把结构令牌中的「快速过渡」与「标准缓动」重定向到本系统的定义，
@@ -107,3 +122,102 @@ def hover_lift(
     anim = std_anim(widget, b"pos", current, target, duration=duration)
     anim.start()
     return anim
+
+
+def _is_alive(obj) -> bool:
+    """底层 C++ 对象是否仍存活（避免页面切换销毁后访问抛 RuntimeError）。"""
+    if obj is None:
+        return False
+    if sip is not None:
+        try:
+            return not sip.isdeleted(obj)
+        except (TypeError, RuntimeError):
+            return False
+    try:  # pragma: no cover - sip 缺失兜底
+        obj.objectName()
+        return True
+    except RuntimeError:
+        return False
+
+
+def page_transition(
+    widget,
+    *,
+    duration: int = DUR_STANDARD,
+    dy: int = PAGE_SLIDE_DY,
+):
+    """页面切入过渡：180ms「淡入 + 自下而上滑入」（需求 29.2）。
+
+    这是页面级过渡的**唯一**合法入口（经本系统 → ``std_anim``，故缓动恒为
+    OutCubic、时长被夹紧到 ≤ 500ms，满足 Property 1 / 2）。
+
+    低性能模式（``WC_LITE=1`` / ``LOW_PERF``）下过渡**瞬时完成**（需求 28.3）：
+    清除可能残留的不透明度 effect、不创建任何动画，UI 立即可用。
+
+    返回淡入动画（``None`` 表示瞬时 / 控件不可用）。
+    """
+    if not _is_alive(widget):
+        return None
+
+    # LOW_PERF：瞬时过渡 —— 移除残留 effect，确保控件完全可见，不建动画。
+    if LOW_PERF:
+        try:
+            eff = widget.graphicsEffect()
+            if isinstance(eff, QGraphicsOpacityEffect):
+                widget.setGraphicsEffect(None)
+        except RuntimeError:  # pragma: no cover
+            pass
+        return None
+
+    # 停掉该控件上一轮页面淡入（避免「animation without target」告警）。
+    prev = getattr(widget, "_page_fade_ref", None)
+    if prev is not None:
+        try:
+            prev.stop()
+        except RuntimeError:  # pragma: no cover
+            pass
+
+    # 淡入：复用 / 创建不透明度 effect。
+    eff = widget.graphicsEffect()
+    if not isinstance(eff, QGraphicsOpacityEffect):
+        eff = QGraphicsOpacityEffect(widget)
+        widget.setGraphicsEffect(eff)
+    eff.setOpacity(0.0)
+
+    fade = std_anim(eff, b"opacity", 0.0, 1.0, duration=duration)
+    setattr(widget, "_page_fade_ref", fade)
+
+    def _cleanup() -> None:
+        # 动画结束移除 effect：避免常驻在持续重绘的页面上拖累性能。
+        if not _is_alive(widget):
+            return
+        try:
+            cur = widget.graphicsEffect()
+            if isinstance(cur, QGraphicsOpacityEffect):
+                widget.setGraphicsEffect(None)
+        except RuntimeError:  # pragma: no cover
+            pass
+
+    fade.finished.connect(_cleanup)
+    fade.start()
+
+    # 滑入：推迟到事件循环下一轮，待父 layout 给出有效 geometry 再做位移
+    # （否则会与布局争用，导致兄弟节点堆叠 —— 见 effects.fade_slide_in 注释）。
+    if dy:
+        def _slide_after_layout() -> None:
+            if not _is_alive(widget):
+                return
+            try:
+                geo = widget.geometry()
+            except RuntimeError:
+                return
+            if geo.width() <= 0 or geo.height() <= 0:
+                return
+            start = QRect(geo)
+            start.translate(0, dy)
+            slide = std_anim(widget, b"geometry", start, geo, duration=duration)
+            slide.start()
+
+        QTimer.singleShot(1, _slide_after_layout)
+
+    return fade
