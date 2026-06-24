@@ -188,11 +188,13 @@ class SettingsDialog(QDialog):
     backend_selected = pyqtSignal(bool)  # 渲染后端：True=GPU(GLSL) / False=CPU
     cache_cleared = pyqtSignal()       # 用户点击「清空缓存」
 
+    # 仅提供能「真实达成」的档位。240 已移除：CPU 渲染下无法稳定喂满，徒有
+    # 高数字却卡顿；144 是单线程顺滑上限（详见 FrameClock.FPS_MAX 说明）。
     _FPS_CHOICES: tuple[tuple[int, str], ...] = (
         (60, "60\n标准"),
-        (120, "120\n顺滑"),
+        (90, "90\n顺滑"),
+        (120, "120\n流畅"),
         (144, "144\n电竞"),
-        (240, "240\n极致"),
     )
 
     def __init__(

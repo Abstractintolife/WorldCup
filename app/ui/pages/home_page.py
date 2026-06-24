@@ -285,6 +285,9 @@ class HomePage(BasePage):
             # 夺冠概率榜（Opta 超算）—— 实时接口失败时服务内部自动回退离线快照。
             self._cities_card.set_ranking(
                 TheAnalyst.instance().championship_ranking())
+            # 小组积分榜「出线概率」栏同步真实 Opta 出线概率（与概率预测页同源）。
+            self._standings_card.set_qualify_probs(
+                TheAnalyst.instance().qualification_map())
             # 实时比赛阵容（大头照布阵图）：仅当有正在进行的比赛时拉取并展示。
             live = next((m for m in self._last_matches
                          if getattr(m, "is_live", False)), None)

@@ -175,6 +175,9 @@ class StandingsTable(GlassCard):
         self._palette = palette
         # 真实小组数据（按组字母索引）；空 → 渲染设计稿样例。
         self._groups_by_letter: dict[str, GroupStanding] = {}
+        # 出线概率覆盖表（中文队名 → 分数 [0,1]）：来自 Opta 赛事模拟，优先于
+        # 组内名次启发式估计（estimate_qual_prob）。
+        self._qualify_override: dict[str, float] = {}
         self._tab_btns: dict[str, QPushButton] = {}
         self._active: str = "A"          # 默认 A 激活（需求 9.3）
         self.setMinimumWidth(360)
@@ -316,6 +319,15 @@ class StandingsTable(GlassCard):
             if letter:
                 self._groups_by_letter[letter] = g
         self._select(self._active)
+
+    def set_qualify_probs(self, mapping: dict[str, float]) -> None:
+        """注入真实出线概率（中文队名 → 分数 ``[0,1]``，来自 Opta 赛事模拟）。
+
+        提供后，概率栏优先展示该真实值（与「概率预测」页 / theanalyst 同源）；
+        未覆盖到的球队仍回退组内名次启发式估计。
+        """
+        self._qualify_override = dict(mapping or {})
+        self._render_active()
 
     @property
     def active_group(self) -> str:
@@ -480,8 +492,10 @@ class StandingsTable(GlassCard):
         # 积分。
         row.addWidget(self._cell(str(r.points), self._W_PTS, p.accent, bold=True))
 
-        # 出线概率（条 + %）—— 末列。
-        qual_bar = QualBar(r.qual_prob, palette=p)
+        # 出线概率（条 + %）—— 末列。优先用 Opta 真实出线概率（覆盖表），
+        # 未覆盖到的球队回退组内名次启发式估计（StandingRow.qual_prob）。
+        prob = self._qualify_override.get(r.team_name, r.qual_prob)
+        qual_bar = QualBar(prob, palette=p)
         qual_host = QWidget()
         qh = QHBoxLayout(qual_host)
         qh.setContentsMargins(0, 0, 0, 0)
