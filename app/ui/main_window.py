@@ -42,10 +42,11 @@ from app.ui.pages.team_detail_page import TeamDetailPage
 from app.ui.pages.team_rankings_page import TeamRankingsPage
 from app.ui.theme import THEMES, ThemePalette, build_qss
 from app.ui.design.frame_clock import FrameClock
+from app.ui.design.hud_theme import NIGHT_STADIUM
 from app.ui.widgets.effects import fade_slide_in
 from app.ui.widgets.fps_monitor import FpsMonitor
 from app.ui.widgets.nav_sidebar import NavSidebar
-from app.ui.widgets.skin_backdrop import SkinBackdrop
+from app.ui.widgets.stage_compositor import create_backdrop
 from app.ui.widgets.top_bar import TopBar
 from app.ui.widgets.window_chrome import ResizeGripManager, TitleBar
 
@@ -338,18 +339,45 @@ class MainWindow(QMainWindow):
 
     # ─── 动态背景渲染后端（CPU / GPU 可热切换）───────────
     def _make_backdrop(self, parent: QWidget):
-        """按当前后端选择创建背景控件；GPU 不可用时自动降级回 CPU 版。"""
-        palette = THEMES.get(self._theme_name, THEMES["dark"])
-        if self._gpu_bg:
-            try:
-                from app.ui.widgets.gl_backdrop import GLBackdrop
-                bd = GLBackdrop(parent, palette=palette)
-                log.info("动态背景渲染后端：GPU (GLSL / QOpenGLWidget)")
-                return bd
-            except Exception as exc:  # 缺少 QtOpenGLWidgets / 构造失败 → 降级
-                log.warning("GPU 背景初始化失败，降级为 CPU：%s", exc)
-                self._gpu_bg = False
-        return SkinBackdrop(parent, palette=palette)
+        """创建「夜间球场」舞台合成器背景；GPU 不可用时工厂自动降级回 CPU 版。
+
+        统一由 :func:`create_backdrop` 工厂选择后端（取代旧的
+        ``SkinBackdrop`` / ``GLBackdrop``），并连接 GPU 运行期失败信号以便
+        热切换到 CPU 后端（需求 27.1–27.4）。
+        """
+        bd = create_backdrop(NIGHT_STADIUM, parent=parent, prefer_gpu=self._gpu_bg)
+        # 反映工厂实际选定的后端（GPU 构造失败时会回退为 CPU）。
+        self._gpu_bg = type(bd).__name__ == "StageCompositor"
+        if hasattr(bd, "gpu_failed"):
+            bd.gpu_failed.connect(self._on_gpu_backdrop_failed)
+        backend = "GPU (GLSL)" if self._gpu_bg else "CPU (QPainter)"
+        log.info("舞台合成器后端：%s", backend)
+        return bd
+
+    def _on_gpu_backdrop_failed(self) -> None:
+        """GPU 后端在 initializeGL 期检测到着色器编译/链接失败 → 热切到 CPU。"""
+        if not self._gpu_bg:
+            return
+        self._gpu_bg = False
+        log.warning("检测到 GPU 舞台合成器运行期失败，准备热切换到 CPU 后端")
+        # 延后到事件循环空闲时重建，避免在 paint/initializeGL 内销毁自身。
+        QTimer.singleShot(0, self._swap_to_cpu_backdrop)
+
+    def _swap_to_cpu_backdrop(self) -> None:
+        old = self._backdrop
+        if old is not None:
+            old.set_enabled(False)  # 取消帧时钟订阅
+            old.setParent(None)
+            old.deleteLater()
+        self._gpu_bg = False
+        self._backdrop = create_backdrop(NIGHT_STADIUM, parent=self._central, prefer_gpu=False)
+        self._backdrop.setGeometry(self._central.rect())
+        self._backdrop.set_enabled(self._bg_anim)
+        self._backdrop.set_paused(self._stack.currentWidget() is self._globe)
+        self._backdrop.lower()
+        self._backdrop.show()
+        self._settings.set("gpu_bg", False)
+        self.statusBar().showMessage("GPU 后端异常，已热切换到 CPU 渲染 ⚙️", 3500)
 
     def _set_gpu_bg(self, on: bool) -> None:
         """运行时切换 CPU/GPU 背景后端（销毁旧实例、重建新实例）并持久化。"""
@@ -366,7 +394,6 @@ class MainWindow(QMainWindow):
         # 重建（_make_backdrop 可能因 GPU 不可用把 _gpu_bg 复位为 False）
         self._backdrop = self._make_backdrop(self._central)
         self._backdrop.setGeometry(self._central.rect())
-        self._backdrop.set_palette(THEMES.get(self._theme_name, THEMES["dark"]))
         self._backdrop.set_enabled(self._bg_anim)
         self._backdrop.set_paused(self._stack.currentWidget() is self._globe)
         self._backdrop.lower()

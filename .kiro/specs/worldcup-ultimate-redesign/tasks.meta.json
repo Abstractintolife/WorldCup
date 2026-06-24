@@ -1,0 +1,37 @@
+{
+  "pbtResults": {
+    "1.4 Write property test for motion easing uniformity": {
+      "status": "passed",
+      "lastRunTimestamp": 1782295543532
+    },
+    "1.5 Write property test for animation duration ceiling": {
+      "status": "passed",
+      "lastRunTimestamp": 1782295544441
+    },
+    "1.7 Write property test for hover lift magnitude": {
+      "status": "passed",
+      "lastRunTimestamp": 1782295545610
+    },
+    "2.3 Write unit tests for ambient layer opacity bands and static trophy": {
+      "status": "passed",
+      "lastRunTimestamp": 1782296286333
+    },
+    "2.6 Write integration test for backend selection/equivalence": {
+      "status": "passed",
+      "lastRunTimestamp": 1782296289204
+    },
+    "3.2 Write property tests for particle bounds": {
+      "status": "passed",
+      "lastRunTimestamp": 1782296747476
+    },
+    "3.4 Write property test for floodlight sweep periodicity": {
+      "status": "passed",
+      "lastRunTimestamp": 1782296748378
+    },
+    "3.5 Write property test for frame-rate independence": {
+      "status": "passed",
+      "lastRunTimestamp": 1782296748610
+    }
+  },
+  "executionHistory": {}
+}

@@ -1,0 +1,11 @@
+# ===== 世界杯赛事终端 — 开发 / 测试依赖 =====
+# 运行依赖见 requirements.txt。以下仅用于本地测试与属性化测试。
+#
+# 用法：
+#   python -m venv .venv && source .venv/bin/activate
+#   pip install -r requirements.txt -r requirements-dev.txt
+#   QT_QPA_PLATFORM=offscreen pytest -q
+
+pytest>=8.0.0
+# 属性化测试（每个属性 >= 100 次迭代）。
+hypothesis>=6.100.0
