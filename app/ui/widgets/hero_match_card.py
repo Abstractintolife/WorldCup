@@ -221,13 +221,16 @@ class _FlipDigit(QWidget):
     def __init__(self, unit: str, palette: HudPalette, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._palette = palette
+        # 固定整格尺寸（数字盒 + 下方单位标签），为单位文字预留独立行高，
+        # 杜绝「时/分/秒 小字与上方数字重叠」（需求：修正时分秒与具体时间重叠）。
+        self.setFixedSize(58, 80)
         col = QVBoxLayout(self)
         col.setContentsMargins(0, 0, 0, 0)
-        col.setSpacing(4)
+        col.setSpacing(6)
 
         self._num = QLabel("00")
         self._num.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self._num.setFixedSize(56, 56)
+        self._num.setFixedSize(58, 56)
         self._num.setStyleSheet(
             f"background: {rgba('#000000', 0.35)};"
             f" border: 1px solid {palette.glass_border};"
@@ -240,6 +243,7 @@ class _FlipDigit(QWidget):
 
         self._unit = QLabel(unit)
         self._unit.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._unit.setFixedHeight(16)
         self._unit.setStyleSheet(
             f"color: {palette.text_dim}; font-size: {Type.CAPTION}px;"
             f" font-weight: {Type.W_BOLD}; background: transparent;"
@@ -440,8 +444,8 @@ class HeroMatchCard(GlassCard):
         self._chev_l.clicked.connect(self.prev_clicked.emit)
         mid.addWidget(self._chev_l, alignment=Qt.AlignmentFlag.AlignVCenter)
 
-        self._home_flag = FloatingFlag(None, height=62, radius=8)
-        self._away_flag = FloatingFlag(None, height=62, radius=8)
+        self._home_flag = FloatingFlag(None, height=82, radius=10)
+        self._away_flag = FloatingFlag(None, height=82, radius=10)
         self._home_zh, self._home_en, home_col = self._team_col(self._home_flag)
         mid.addWidget(home_col, 1)
 
@@ -677,10 +681,8 @@ class HeroMatchCard(GlassCard):
 
     def _format_ratings(self, elo: int | None, fifa: int | None,
                         world: int | None) -> str:
-        return (
-            f"Elo {fmt_rank(elo)}   FIFA #{fmt_rank(fifa)}   "
-            f"世界排名 #{fmt_rank(world)}"
-        )
+        """仅展示国际足联（FIFA）世界排名（已按需求移除 Elo / 世界排名两项）。"""
+        return f"FIFA 世界排名 #{fmt_rank(fifa)}"
 
     def _render_win_prob(self, match: Match | None, meta: HeroMeta) -> None:
         valid = self._prob_bar.set_probabilities(meta.win_prob)

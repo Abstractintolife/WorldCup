@@ -233,11 +233,12 @@ class StatCard(GlassCard):
         super().__init__(parent, padding=0, palette=palette)
         self._palette = palette
         self._spec = spec
-        # 更紧凑：缩小卡片最小高度（原 120），整条统计区更精炼。
-        self.setMinimumHeight(84)
+        # 更紧凑：缩小卡片最小高度，并让纵向尺寸「按内容收缩」（不再向下撑出大片
+        # 空白），底部强调条紧贴「已结束 48 场」次级文案。
+        self.setMinimumHeight(72)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setToolTip("点击查看对应榜单")
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         self._build_ui()
         self.set_spec(spec)
 
@@ -314,10 +315,10 @@ class StatCard(GlassCard):
             " background: transparent;"
         )
         col.addWidget(self._secondary)
-        col.addStretch(1)
 
-        # 底部强调色条。
+        # 底部强调色条（紧贴次级文案下方，不再用弹性空白把卡片撑高）。
         from PyQt6.QtWidgets import QFrame
+        col.addSpacing(6)
         bar = QFrame()
         bar.setFixedHeight(3)
         bar.setStyleSheet(
@@ -425,7 +426,7 @@ class StatStrip(QWidget):
     ) -> None:
         super().__init__(parent)
         self._palette = palette
-        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
 
         self._row = QHBoxLayout(self)
         self._row.setContentsMargins(0, 0, 0, 0)

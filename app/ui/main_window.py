@@ -41,6 +41,7 @@ from app.ui.pages.news_page import NewsPage
 from app.ui.pages.player_detail_page import PlayerDetailPage
 from app.ui.pages.player_rankings_page import PlayerRankingsPage
 from app.ui.pages.prediction_page import PredictionPage
+from app.ui.pages.probability_page import ProbabilityPage
 from app.ui.pages.schedule_page import SchedulePage
 from app.ui.pages.search_page import SearchPage
 from app.ui.pages.stadiums_page import StadiumsPage
@@ -116,6 +117,7 @@ class MainWindow(QMainWindow):
         self._globe = GlobePage(self._service)
         self._schedule = SchedulePage(self._service)
         self._prediction = PredictionPage(self._service)
+        self._probability = ProbabilityPage(self._service)
         self._standings = StandingsPage(self._service)
         self._rankings = PlayerRankingsPage(self._service)
         self._teams = TeamRankingsPage(self._service)
@@ -140,6 +142,7 @@ class MainWindow(QMainWindow):
             "live": self._schedule,
             "prediction": self._prediction,
             "analysis": self._prediction,
+            "probability": self._probability,
             "standings": self._standings,
             "scorers": self._rankings,
             "players": self._rankings,
@@ -239,6 +242,8 @@ class MainWindow(QMainWindow):
 
         self._prediction.team_clicked.connect(self._open_team)
         self._prediction.match_clicked.connect(self._open_match)
+
+        self._probability.team_clicked.connect(self._open_team)
 
         self._standings.team_clicked.connect(self._open_team)
 
@@ -554,8 +559,9 @@ class MainWindow(QMainWindow):
             if cur_key and cur_key != key:
                 self._history.append(cur_key)
         self._stack.setCurrentWidget(page)
-        # 子标题栏（含实时连接胶囊）仅在概览页展示（需求 4.x 属概览页 chrome）。
-        self._subheader.setVisible(key == "home")
+        # 子标题栏双行文案已按需求移除（信息与顶栏标题重复）；连接状态改由侧栏
+        # 页脚的实时状态指示承担，故概览页不再展示子标题栏，正文整体上移。
+        self._subheader.setVisible(False)
         # 全局动态背景：地球仪页持续自绘较重，切到该页时暂停背景动画省 CPU
         self._backdrop.set_paused(page is self._globe)
         # 页面切入：180ms 淡入 + 自下而上轻微滑入（经统一动效系统 motion_system，

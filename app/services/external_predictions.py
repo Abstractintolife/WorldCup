@@ -37,6 +37,7 @@ from app.services.kickform_data import KICKFORM_RAW
 from app.services.sportsmole_data import SPORTSMOLE_RAW
 from app.services.freesupertips_data import FREESUPERTIPS_RAW
 from app.services.prediction_analysis_cn import SPORTSMOLE_CN, FREESUPERTIPS_CN
+from app.services.theanalyst import get_match_preview
 
 
 # ─────────────────────────────────────────────
@@ -375,6 +376,7 @@ _SPORTSMOLE_DB: dict[frozenset[str], dict] = {
 
 _SM_SOURCE = "Sports Mole"
 _FST_SOURCE = "FreeSuperTips"
+_TA_SOURCE = "The Analyst（Opta 超算）"
 
 _FORM_CN = {"W": "胜", "D": "平", "L": "负"}
 
@@ -540,6 +542,67 @@ def _freesupertips_to_prediction(raw: dict, team_a_name: str) -> ExternalPredict
 
 
 # ─────────────────────────────────────────────
+# The Analyst（Opta 超级计算机）赛前预测
+# ─────────────────────────────────────────────
+def _theanalyst_to_prediction(match: Match):
+    """把 The Analyst（Opta 超算）赛前模拟转成一份 :class:`ExternalPrediction`。
+
+    含 25,000 次赛前模拟的胜 / 平 / 负概率（齐全时渲染概率条）、关键事实
+    （Key Insights）与预测正文（英文原文）。无命中返回 ``None``。
+    """
+    pv = get_match_preview(match)
+    if pv is None:
+        return None
+    hcn, acn = pv.home_cn, pv.away_cn
+
+    # 胜平负概率：三者齐全才传给概率条（避免误导），否则只在综述里点名热门胜率。
+    if pv.home_pct is not None and pv.draw_pct is not None and pv.away_pct is not None:
+        win_a = pv.home_pct / 100.0
+        draw = pv.draw_pct / 100.0
+        win_b = pv.away_pct / 100.0
+    else:
+        win_a = draw = win_b = None
+
+    def _fav_phrase() -> str:
+        pairs = [(hcn, pv.home_pct), (acn, pv.away_pct)]
+        named = [(n, p) for n, p in pairs if p is not None]
+        if not named:
+            return "Opta 超算给出赛前模拟概率"
+        top = max(named, key=lambda x: x[1])
+        return f"Opta 超算看好{top[0]}（取胜概率 {top[1]:.1f}%）"
+
+    bits = []
+    if pv.home_pct is not None:
+        bits.append(f"{hcn} {pv.home_pct:.1f}%")
+    if pv.draw_pct is not None:
+        bits.append(f"平 {pv.draw_pct:.1f}%")
+    if pv.away_pct is not None:
+        bits.append(f"{acn} {pv.away_pct:.1f}%")
+    summary = f"{_fav_phrase()}。" + ("　胜平负模拟：" + " · ".join(bits) if bits else "")
+
+    tips = [f"关键事实：{s}" for s in pv.insights]
+    analysis = []
+    if pv.prediction:
+        analysis.append(("Opta 超算赛前研判（英文原文）", pv.prediction))
+
+    return ExternalPrediction(
+        source=_TA_SOURCE,
+        source_url=pv.url,
+        summary=summary,
+        win_a=win_a,
+        draw=draw,
+        win_b=win_b,
+        tips=tips,
+        analysis=analysis,
+        analysis_lang="en" if (pv.prediction or pv.insights) else "zh",
+        note=(
+            "数据取自 The Analyst（Opta 超级计算机），基于 25,000 次赛前模拟；"
+            "胜平负概率与关键事实为模型实测，分析正文为英文原文。"
+        ),
+    )
+
+
+# ─────────────────────────────────────────────
 # 查询入口
 # ─────────────────────────────────────────────
 def get_external_predictions(match: Match) -> list[ExternalPrediction]:
@@ -576,8 +639,14 @@ def get_external_predictions(match: Match) -> list[ExternalPrediction]:
     if raw_fst is not None and _FST_SOURCE not in present:
         result.append(_freesupertips_to_prediction(raw_fst, match.team_a_name))
 
+    # The Analyst（Opta 超级计算机）—— 实时同源的赛前模拟概率 + 关键事实
+    if _TA_SOURCE not in present:
+        ta = _theanalyst_to_prediction(match)
+        if ta is not None:
+            result.append(ta)
+
     # 排序：有长篇分析（Sports Mole / FreeSuperTips）的来源优先靠前展示
-    _order = {_SM_SOURCE: 0, _FST_SOURCE: 1}
+    _order = {_SM_SOURCE: 0, _FST_SOURCE: 1, _TA_SOURCE: 2}
     result.sort(key=lambda ep: _order.get(ep.source, 9))
     return result
 

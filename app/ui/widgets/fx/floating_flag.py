@@ -37,10 +37,10 @@ FLOAT_PERIOD_S = 4.0
 FLOAT_PERIOD_MS = int(FLOAT_PERIOD_S * 1000)
 
 #: 旗帜飘动参数。
-_WAVE_PERIOD_S = 2.2          # 一个主波周期（秒）—— 风的节律
-_WAVE_COUNT = 1.6             # 旗面上同时可见的波数（沿宽度方向）
-_WAVE_AMPLITUDE_RATIO = 0.12  # 自由端最大垂直摆幅 ≈ 旗高 * 该比值
-_WAVE_SWAY_RATIO = 0.05       # 自由端最大水平摆幅 ≈ 旗高 * 该比值
+_WAVE_PERIOD_S = 2.0          # 一个主波周期（秒）—— 风的节律（略快、更有动感）
+_WAVE_COUNT = 1.8             # 旗面上同时可见的波数（沿宽度方向，褶皱更丰富）
+_WAVE_AMPLITUDE_RATIO = 0.17  # 自由端最大垂直摆幅 ≈ 旗高 * 该比值（加大、更震撼）
+_WAVE_SWAY_RATIO = 0.08       # 自由端最大水平摆幅 ≈ 旗高 * 该比值
 _STRIP_PX = 3                 # 竖条宽度（像素）—— 错切保证无缝，故可略宽以省开销
 _BG_MIN_DT = 1.0 / 120.0      # 重绘节流到 ~120fps —— 让旗帜飘动更顺滑（配合 120FPS 帧时钟）
 
