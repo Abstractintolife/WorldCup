@@ -26,35 +26,34 @@ from PyQt6.QtWidgets import (
 )
 
 
-# 窗口控制按钮（最小化 / 最大化 / 关闭）——文字字形，hover 高亮，关闭悬停转红
+# 窗口控制按钮（最小化 / 最大化）——圆形玻璃风，与右上角 HUD 按钮一体化
 _BTN_QSS = (
-    "QPushButton{{background:transparent; color:#C8D0E0; border:none;"
-    " font-size:{fs}px; font-weight:700;}}"
-    "QPushButton:hover{{background:rgba(255,255,255,0.12); color:#FFFFFF;}}"
+    "QPushButton{{background:rgba(255,255,255,0.06); color:#C8D0E0; border:none;"
+    " border-radius:14px; font-size:{fs}px; font-weight:700;}}"
+    "QPushButton:hover{{background:rgba(255,255,255,0.16); color:#FFFFFF;}}"
 )
+# 关闭按钮：常态同样的玻璃圆，悬停转品牌红
 _CLOSE_QSS = (
-    "QPushButton{background:transparent; color:#C8D0E0; border:none;"
-    " font-size:15px; font-weight:700;}"
+    "QPushButton{background:rgba(255,255,255,0.06); color:#C8D0E0; border:none;"
+    " border-radius:14px; font-size:14px; font-weight:700;}"
     "QPushButton:hover{background:#E5484D; color:#FFFFFF;}"
 )
 
 
 class TitleBar(QFrame):
-    """与主体融合的自绘标题栏。"""
+    """与主体融合的自绘标题栏（无独立底色 / 无分隔线，浑然一体）。"""
 
     def __init__(self, title: str, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self.setObjectName("TitleBar")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setFixedHeight(40)
-        self.setStyleSheet(
-            "QFrame#TitleBar{background: rgba(10,14,28,0.55);"
-            " border-bottom:1px solid rgba(255,255,255,0.06);}"
-        )
+        # 透明底、无边框：标题栏与下方内容、动态背景连成一体（一体化）。
+        self.setStyleSheet("QFrame#TitleBar{background: transparent; border: none;}")
 
         row = QHBoxLayout(self)
-        row.setContentsMargins(14, 0, 8, 0)
-        row.setSpacing(10)
+        row.setContentsMargins(14, 0, 10, 0)
+        row.setSpacing(8)
 
         # 应用徽标（程序化大力神杯）+ 标题
         try:
@@ -76,10 +75,10 @@ class TitleBar(QFrame):
         self._close_btn = QPushButton("\u2715")       # ✕
         for b in (self._min_btn, self._max_btn, self._close_btn):
             b.setCursor(Qt.CursorShape.PointingHandCursor)
-            b.setFixedSize(44, 32)
+            b.setFixedSize(28, 28)
             b.setFocusPolicy(Qt.FocusPolicy.NoFocus)
-        self._min_btn.setStyleSheet(_BTN_QSS.format(fs=15))
-        self._max_btn.setStyleSheet(_BTN_QSS.format(fs=13))
+        self._min_btn.setStyleSheet(_BTN_QSS.format(fs=14))
+        self._max_btn.setStyleSheet(_BTN_QSS.format(fs=12))
         self._close_btn.setStyleSheet(_CLOSE_QSS)
         row.addWidget(self._min_btn)
         row.addWidget(self._max_btn)

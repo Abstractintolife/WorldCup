@@ -3,8 +3,15 @@ from __future__ import annotations
 
 import logging
 
-from PyQt6.QtCore import QTimer, Qt
-from PyQt6.QtGui import QGuiApplication, QIcon, QKeySequence, QShortcut
+from PyQt6.QtCore import QRectF, QTimer, Qt
+from PyQt6.QtGui import (
+    QGuiApplication,
+    QIcon,
+    QKeySequence,
+    QPainterPath,
+    QRegion,
+    QShortcut,
+)
 from PyQt6.QtWidgets import (
     QApplication,
     QHBoxLayout,
@@ -203,6 +210,10 @@ class MainWindow(QMainWindow):
         self._sidebar.selected.connect(self._on_nav_selected)
         self._topbar.search_submitted.connect(self._on_search)
         self._topbar.profile_clicked.connect(self._open_settings)
+        # 通知铃 → 跳转最新资讯；区域球 → 状态栏提示当前区域/语言。
+        self._topbar.notifications_clicked.connect(lambda: self._on_home_navigate("news"))
+        self._topbar.region_clicked.connect(
+            lambda: self.statusBar().showMessage("区域 / 语言：中国（CN）", 2500))
 
         self._home.match_clicked.connect(self._open_match)
         self._home.team_clicked.connect(self._open_team)
@@ -211,6 +222,8 @@ class MainWindow(QMainWindow):
         self._home.navigate.connect(self._on_home_navigate)
         # LIVE 徽章仅在有比赛进行中时点亮
         self._home.live_state_changed.connect(self._sidebar.set_live)
+        # 侧栏页脚实时数据状态随连接态联动（绿色已连接 / 红色中断）
+        self._home.connection_changed.connect(self._sidebar.set_realtime)
 
         self._globe.team_clicked.connect(self._open_team)
 
@@ -380,7 +393,10 @@ class MainWindow(QMainWindow):
         ``SkinBackdrop`` / ``GLBackdrop``），并连接 GPU 运行期失败信号以便
         热切换到 CPU 后端（需求 27.1–27.4）。
         """
-        bd = create_backdrop(NIGHT_STADIUM, parent=parent, prefer_gpu=self._gpu_bg)
+        from app.ui.widgets.stage_compositor import has_background_image
+        # 存在自定义背景图时强制用 CPU 后端渲染（GPU 着色器路径不绘制该照片）。
+        prefer_gpu = self._gpu_bg and not has_background_image()
+        bd = create_backdrop(NIGHT_STADIUM, parent=parent, prefer_gpu=prefer_gpu)
         # 反映工厂实际选定的后端（GPU 构造失败时会回退为 CPU）。
         self._gpu_bg = type(bd).__name__ == "StageCompositor"
         if hasattr(bd, "gpu_failed"):
@@ -461,6 +477,14 @@ class MainWindow(QMainWindow):
     # ─── 导航 ──────────────────────────────
     def _on_home_navigate(self, key: str) -> None:
         """概览页「快速操作」跳转到对应主页面，并同步侧栏高亮。"""
+        # 兼容中文标签 → 页面 key（部分面板历史上发出中文名）。
+        _ZH_ALIAS = {
+            "概览": "home", "赛程中心": "schedule", "实时比赛": "live",
+            "球队": "teams", "球员": "players", "数据分析": "analysis",
+            "积分榜": "standings", "射手榜": "scorers", "场馆地图": "venue",
+            "新闻资讯": "news", "收藏夹": "favorites",
+        }
+        key = _ZH_ALIAS.get(key, key)
         if key not in self._key_to_page:
             return
         if key in {item[0] for item in _PRIMARY_NAV}:
@@ -588,8 +612,26 @@ class MainWindow(QMainWindow):
         self._fps_monitor.move(max(0, x), m)
 
     # ─── 几何 ──────────────────────────────
+    def _apply_round_mask(self) -> None:
+        """给无边框窗口加圆角遮罩，让边框 / 标题栏 / 内容浑然一体。
+
+        最大化 / 全屏时清除遮罩（铺满屏幕、直角）。
+        """
+        if self.isMaximized() or self.isFullScreen():
+            self.clearMask()
+            return
+        radius = 14.0
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(0, 0, self.width(), self.height()), radius, radius)
+        self.setMask(QRegion(path.toFillPolygon().toPolygon()))
+
+    def showEvent(self, ev) -> None:  # noqa: D401
+        super().showEvent(ev)
+        self._apply_round_mask()
+
     def resizeEvent(self, ev) -> None:  # noqa: D401
         super().resizeEvent(ev)
+        self._apply_round_mask()
         if hasattr(self, "_backdrop") and hasattr(self, "_central"):
             self._backdrop.setGeometry(self._central.rect())
             self._backdrop.lower()

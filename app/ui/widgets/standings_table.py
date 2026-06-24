@@ -263,7 +263,9 @@ class StandingsTable(GlassCard):
         p = self._palette
         w = QWidget()
         row = QHBoxLayout(w)
-        row.setContentsMargins(8, 0, 8, 0)
+        # 数据行（QFrame#StandingRow）有 3px 左侧色条边框，会把行内内容整体右移 3px；
+        # 表头无该边框，故左内边距补足 3px（8+3），使表头与数据列严格对齐。
+        row.setContentsMargins(11, 0, 8, 0)
         row.setSpacing(6)
 
         def lbl(text: str, width: int | None, align) -> QLabel:
@@ -441,7 +443,8 @@ class StandingsTable(GlassCard):
         team_box.setContentsMargins(0, 0, 0, 0)
         team_box.setSpacing(7)
         team_box.addWidget(FlagIcon(r.team_name, height=18, radius=3))
-        nm = QLabel(r.team_name)
+        from app.utils.text_utils import short_country_name
+        nm = QLabel(short_country_name(r.team_name))
         nm.setStyleSheet(
             f"color: {p.text}; font-size: 12.5px; font-weight: {Type.W_MEDIUM};"
             " background: transparent;"

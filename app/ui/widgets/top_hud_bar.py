@@ -149,8 +149,18 @@ QLineEdit#HudSearch:focus {{
         outer.addStretch(1)
 
         # ── 右侧控件：通知铃 / 区域球(CN) / 头像 ──
-        self._bell = _circle_icon_button("🔔", "通知", p)
+        self._bell = _circle_icon_button("🔔", "通知 · 查看最新资讯", p)
         self._bell.clicked.connect(self.notifications_clicked.emit)
+        # 未读提醒红点徽标（叠在铃铛右上角）。
+        self._bell_badge = QLabel(self._bell)
+        self._bell_badge.setObjectName("HudBellBadge")
+        self._bell_badge.setFixedSize(9, 9)
+        self._bell_badge.move(26, 6)
+        self._bell_badge.setStyleSheet(
+            f"QLabel#HudBellBadge {{ background: {p.live};"
+            f" border: 1.5px solid {p.bg_mid}; border-radius: 4px; }}"
+        )
+        self._bell_badge.show()
         outer.addWidget(self._bell)
 
         # 区域地球：地球图标 + 「CN」标签
