@@ -30,6 +30,7 @@ from PyQt6.QtWidgets import (
 
 from app.models.player import PlayerRanking
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
+from app.ui.widgets.elided_label import ElidedLabel
 from app.ui.widgets.glass_card import GlassCard
 from app.ui.widgets.player_avatar import PlayerAvatar
 
@@ -69,7 +70,7 @@ class TopScorersPanel(GlassCard):
         super().__init__(parent, padding=0, hover=False, palette=palette)
         self._palette = palette
         self.setMinimumHeight(300)
-        self.setMinimumWidth(240)
+        self.setMinimumWidth(185)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._build_ui()
         self._render_sample()
@@ -186,13 +187,13 @@ class TopScorersPanel(GlassCard):
         col = QVBoxLayout(w)
         col.setContentsMargins(0, 0, 0, 0)
         col.setSpacing(0)
-        nm = QLabel(name)
+        nm = ElidedLabel(name, mode=Qt.TextElideMode.ElideRight)
         nm.setStyleSheet(
             f"color: {p.text}; font-size: 12.5px; font-weight: {Type.W_BOLD};"
             " background: transparent;"
         )
         col.addWidget(nm)
-        ct = QLabel(country)
+        ct = ElidedLabel(country, mode=Qt.TextElideMode.ElideRight)
         ct.setStyleSheet(
             f"color: {p.text_faint}; font-size: 10px; font-weight: {Type.W_MEDIUM};"
             " background: transparent;"

@@ -706,7 +706,7 @@ void main() {
 def _make_gpu_class():
     """惰性构造 GPU 后端类（隔离 QtOpenGL 导入，便于无 GL 环境回退）。"""
     from PyQt6.QtCore import Qt, pyqtSignal
-    from PyQt6.QtGui import QSurfaceFormat, QVector3D
+    from PyQt6.QtGui import QOpenGLFunctions, QSurfaceFormat, QVector3D
     from PyQt6.QtOpenGL import (
         QOpenGLBuffer,
         QOpenGLShader,
@@ -742,6 +742,7 @@ def _make_gpu_class():
             self._vao = QOpenGLVertexArrayObject()
             self._vbo = QOpenGLBuffer(QOpenGLBuffer.Type.VertexBuffer)
             self._gl_ok = False
+            self._glf: QOpenGLFunctions | None = None
             self._res = (1.0, 1.0)
             self._QVector3D = QVector3D
 
@@ -755,7 +756,20 @@ def _make_gpu_class():
             self._hide_unsubscribe()
 
         # ── OpenGL ──────────────────────────────
+        def _gl(self) -> "QOpenGLFunctions":
+            """返回绑定到当前上下文的 QOpenGLFunctions（PyQt6 无 context().functions()）。"""
+            f = self._glf
+            if f is None:
+                f = QOpenGLFunctions(self.context())
+                f.initializeOpenGLFunctions()
+                self._glf = f
+            return f
+
         def initializeGL(self) -> None:
+            # 上下文已就绪，初始化可复用的 GL 函数入口。
+            self._glf = QOpenGLFunctions(self.context())
+            self._glf.initializeOpenGLFunctions()
+
             prog = QOpenGLShaderProgram(self)
             ok = prog.addShaderFromSourceCode(QOpenGLShader.ShaderTypeBit.Vertex, _VERT_SRC)
             ok = prog.addShaderFromSourceCode(QOpenGLShader.ShaderTypeBit.Fragment, _FRAG_SRC) and ok
@@ -784,12 +798,12 @@ def _make_gpu_class():
             self._gl_ok = True
 
         def resizeGL(self, w: int, h: int) -> None:
-            f = self.context().functions()
+            f = self._gl()
             f.glViewport(0, 0, max(1, w), max(1, h))
             self._res = (float(max(1, w)), float(max(1, h)))
 
         def paintGL(self) -> None:
-            f = self.context().functions()
+            f = self._gl()
             top = _hex_rgb(self._palette.bg_top)
             f.glClearColor(top[0], top[1], top[2], 1.0)
             f.glClear(_GL_COLOR_BUFFER_BIT)

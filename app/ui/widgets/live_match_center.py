@@ -46,6 +46,7 @@ from app.models.match import Match, MatchStatus
 from app.ui.design import motion_system
 from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
+from app.ui.widgets.elided_label import ElidedLabel
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.glass_card import GlassCard
 
@@ -202,9 +203,34 @@ class _MiniPitch(QFrame):
         self._events_box.setSpacing(6)
         self._events_box.addStretch(1)
 
+        # 空态占位（无进行中比赛时居中显示，覆盖事件区）。
+        self._placeholder = QLabel("", self)
+        self._placeholder.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
+        self._placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self._placeholder.setWordWrap(True)
+        self._placeholder.setStyleSheet(
+            f"color: {rgba(palette.text, 0.45)}; font-size: 13px;"
+            f" font-weight: {Type.W_MEDIUM}; background: transparent;"
+        )
+        self._placeholder.hide()
+
     @property
     def events_box(self) -> QVBoxLayout:
         return self._events_box
+
+    def show_placeholder(self, text: str) -> None:
+        """显示居中空态文案（覆盖整块迷你球场）。"""
+        self._placeholder.setText(text)
+        self._placeholder.setGeometry(self.rect())
+        self._placeholder.raise_()
+        self._placeholder.show()
+
+    def hide_placeholder(self) -> None:
+        self._placeholder.hide()
+
+    def resizeEvent(self, ev) -> None:
+        super().resizeEvent(ev)
+        self._placeholder.setGeometry(self.rect())
 
     def paintEvent(self, _ev) -> None:
         p = QPainter(self)
@@ -338,7 +364,7 @@ class LiveMatchCenter(GlassCard):
         self._palette = palette
         self._match: Match | None = None
         self.setMinimumHeight(300)
-        self.setMinimumWidth(300)
+        self.setMinimumWidth(220)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         self._build_ui()
@@ -347,8 +373,8 @@ class LiveMatchCenter(GlassCard):
         self._flash = _FlashOverlay(self, palette)
         self._scanline = _ScanlineOverlay(self, palette)
 
-        # 默认渲染设计稿样例（无真实数据时，需求 13.3 / 13.4）。
-        self._render_sample()
+        # 默认空态：无真实进行中比赛时留空（不展示任何虚构样例比赛）。
+        self._render_empty()
 
     # ── 构建骨架 ─────────────────────────────
     def _build_ui(self) -> None:
@@ -358,7 +384,8 @@ class LiveMatchCenter(GlassCard):
         root.setSpacing(12)
 
         root.addWidget(self._header())
-        root.addWidget(self._scoreline())
+        self._scoreline_w = self._scoreline()
+        root.addWidget(self._scoreline_w)
 
         self._pitch = _MiniPitch(p)
         root.addWidget(self._pitch, 1)
@@ -441,7 +468,7 @@ class LiveMatchCenter(GlassCard):
         # 主队（旗 + 名）。
         self._home_flag = FlagIcon(SAMPLE_HOME, height=26, radius=4)
         row.addWidget(self._home_flag)
-        self._home_name = QLabel(SAMPLE_HOME)
+        self._home_name = ElidedLabel(SAMPLE_HOME, mode=Qt.TextElideMode.ElideRight)
         self._home_name.setStyleSheet(
             f"color: {p.text}; font-size: 14px; font-weight: {Type.W_BOLD};"
             " background: transparent;"
@@ -458,7 +485,7 @@ class LiveMatchCenter(GlassCard):
         row.addWidget(self._score_lbl)
 
         # 客队（名 + 旗）。
-        self._away_name = QLabel(SAMPLE_AWAY)
+        self._away_name = ElidedLabel(SAMPLE_AWAY, mode=Qt.TextElideMode.ElideLeft)
         self._away_name.setAlignment(
             Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
         self._away_name.setStyleSheet(
@@ -479,9 +506,12 @@ class LiveMatchCenter(GlassCard):
         """
         self._match = match
         if match is None:
-            self._render_sample()
+            self._render_empty()
             return
 
+        # 进入真实比赛态：隐藏空态、恢复比分行。
+        self._pitch.hide_placeholder()
+        self._scoreline_w.setVisible(True)
         self._set_flag(self._home_flag_slot(), match.team_a_name)
         self._home_name.setText(match.team_a_name)
         self._away_name.setText(match.team_b_name)
@@ -537,8 +567,19 @@ class LiveMatchCenter(GlassCard):
         return count
 
     # ── 内部：渲染样例 ───────────────────────
+    def _render_empty(self) -> None:
+        """空态：无进行中比赛时留空，仅显示一行居中提示（需求：没有就留空）。"""
+        self._match = None
+        self._clear_events()
+        self._scoreline_w.setVisible(False)
+        self._badge.setVisible(False)
+        self._clock_lbl.setText("")
+        self._pitch.show_placeholder("当前没有正在进行的比赛")
+
     def _render_sample(self) -> None:
         p = self._palette
+        self._pitch.hide_placeholder()
+        self._scoreline_w.setVisible(True)
         self._home_name.setText(SAMPLE_HOME)
         self._away_name.setText(SAMPLE_AWAY)
         self._score_lbl.setText(f"{SAMPLE_SCORE[0]} - {SAMPLE_SCORE[1]}")

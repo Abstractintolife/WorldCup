@@ -32,6 +32,7 @@ from PyQt6.QtWidgets import (
 
 from app.models.match import Match, MatchStatus
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
+from app.ui.widgets.elided_label import ElidedLabel
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.glass_card import GlassCard
 
@@ -75,7 +76,7 @@ class TodayMatchesPanel(GlassCard):
         super().__init__(parent, padding=0, hover=False, palette=palette)
         self._palette = palette
         self.setMinimumHeight(300)
-        self.setMinimumWidth(280)
+        self.setMinimumWidth(210)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._build_ui()
         self._render_sample()
@@ -197,13 +198,15 @@ class TodayMatchesPanel(GlassCard):
 
     def _name_lbl(self, text: str, *, align_right: bool = False) -> QLabel:
         p = self._palette
-        l = QLabel(text)
+        l = ElidedLabel(text, mode=Qt.TextElideMode.ElideRight)
         l.setStyleSheet(
             f"color: {p.text}; font-size: 12px; font-weight: {Type.W_MEDIUM};"
             " background: transparent;"
         )
         if align_right:
             l.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter)
+        else:
+            l.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         return l
 
     def _score_lbl(self, text: str, color: str) -> QLabel:

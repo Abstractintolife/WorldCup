@@ -187,7 +187,7 @@ class HostCitiesPanel(GlassCard):
         self._palette = palette
         self._cities = list(cities) if cities else list(HOST_CITIES)
         self.setMinimumHeight(300)
-        self.setMinimumWidth(260)
+        self.setMinimumWidth(200)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self._build_ui()
 

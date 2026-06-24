@@ -350,13 +350,13 @@ class HomePage(BasePage):
         today = [m for m in matches if is_today(m.start_play)]
         self._today_card.set_matches(today)
 
-        # 实时比赛中心：优先正在进行的比赛；无进行中则回退焦点比赛 / 设计稿样例。
+        # 实时比赛中心：仅展示真实「正在进行」的比赛；无进行中则留空（不再回退虚构样例）。
         live_now = next((m for m in matches if getattr(m, "is_live", False)), None)
         if live_now is not None:
             self._live_card.set_live(live_now)
-        elif featured is not None and featured.is_live:
-            self._live_card.set_live(featured)
-        # 否则保留默认设计稿样例（巴西 2-1 塞尔维亚 + 事件，需求 13.3 / 13.4）。
+        else:
+            # 没有正在进行的比赛 → 留空（需求：没有就留空，不展示假的实时比赛）。
+            self._live_card.set_live(None)
 
         # 射手榜：射手榜数据（无则回退设计稿样例，需求 14.3）。
         self._scorers_card.set_scorers(scorer_list)
