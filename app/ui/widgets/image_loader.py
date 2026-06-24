@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from PyQt6.QtCore import QRectF, QSize, Qt
-from PyQt6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen, QPixmap
+from PyQt6.QtGui import QBrush, QColor, QPainter, QPainterPath, QPen, QPixmap, QPixmapCache
 from PyQt6.QtWidgets import QLabel, QSizePolicy, QWidget
 
 from app.services.image_service import ImageService
@@ -99,12 +99,21 @@ class RemoteImage(QLabel):
 
         if self._pixmap and not self._pixmap.isNull():
             if self._scaled is None:
-                self._scaled = self._pixmap.scaled(
-                    self._size,
-                    self._size,
-                    Qt.AspectRatioMode.KeepAspectRatio,
-                    Qt.TransformationMode.SmoothTransformation,
-                )
+                # 共享缩放缓存（QPixmapCache）：同一 URL + 同一尺寸的队徽 / 头像
+                # 在所有行 / 卡片间复用一张缩放结果（性能需求 25.2 / 26.1）。
+                key = f"wcimg:{self._url}:{self._size}" if self._url else None
+                cached = QPixmapCache.find(key) if key else None
+                if cached is not None and not cached.isNull():
+                    self._scaled = cached
+                else:
+                    self._scaled = self._pixmap.scaled(
+                        self._size,
+                        self._size,
+                        Qt.AspectRatioMode.KeepAspectRatio,
+                        Qt.TransformationMode.SmoothTransformation,
+                    )
+                    if key:
+                        QPixmapCache.insert(key, self._scaled)
             scaled = self._scaled
             x = (self.width() - scaled.width()) // 2
             y = (self.height() - scaled.height()) // 2

@@ -42,31 +42,23 @@ from app.ui.pages.team_detail_page import TeamDetailPage
 from app.ui.pages.team_rankings_page import TeamRankingsPage
 from app.ui.theme import THEMES, ThemePalette, build_qss
 from app.ui.design.frame_clock import FrameClock
-from app.ui.widgets.effects import fade_slide_in
+from app.ui.design.hud_theme import NIGHT_STADIUM
+from app.ui.design import motion_system
 from app.ui.widgets.fps_monitor import FpsMonitor
-from app.ui.widgets.nav_sidebar import NavSidebar
-from app.ui.widgets.skin_backdrop import SkinBackdrop
-from app.ui.widgets.top_bar import TopBar
+from app.ui.widgets.fx.mouse_trail import MouseTrailOverlay
+from app.ui.widgets.nav_rail import NAV_ITEMS, NavRail
+from app.ui.widgets.stage_compositor import create_backdrop
+from app.ui.widgets.sub_header import SubHeader
+from app.ui.widgets.top_hud_bar import TopHudBar
 from app.ui.widgets.window_chrome import ResizeGripManager, TitleBar
 
 log = logging.getLogger(__name__)
 
 
-# 主导航定义 —— 对照「想象中的样子」设计稿的菜单（含 LIVE 徽章）。
-# 每项 = (key, emoji, 中文标签[, 徽章])；key 映射到 _key_to_page 的页面。
-_PRIMARY_NAV: list[tuple] = [
-    ("home", "📊", "概览"),
-    ("schedule", "📅", "赛程中心"),
-    ("globe", "🌍", "地球仪"),
-    ("teams", "🛡", "球队"),
-    ("scorers", "⚽", "球员"),
-    ("standings", "🏆", "积分榜"),
-    ("prediction", "🔮", "预测中心"),
-    ("news", "📰", "新闻资讯"),
-    ("stadiums", "🏟", "球场"),
-    ("favorites", "⭐", "收藏夹"),
-    ("settings", "⚙️", "设置"),
-]
+# 主导航定义 —— 对照「想象中的样子」设计稿的菜单（12 项，严格顺序）。
+# 复用 NavRail 的 NAV_ITEMS（key, 中文, 英文, 图标）；这里转成壳层既有
+# 辅助函数期望的 (key, emoji, 中文标签) 形态。key 映射到 _key_to_page。
+_PRIMARY_NAV: list[tuple] = [(key, icon, zh) for key, zh, _en, icon in NAV_ITEMS]
 
 
 class MainWindow(QMainWindow):
@@ -100,8 +92,9 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(build_app_icon())
 
         # ── 控件 ──
-        self._sidebar = NavSidebar(_PRIMARY_NAV)
-        self._topbar = TopBar()
+        self._sidebar = NavRail(NAV_ITEMS)
+        self._topbar = TopHudBar()
+        self._subheader = SubHeader()
         self._stack = QStackedWidget()
 
         # 主页面
@@ -123,15 +116,22 @@ class MainWindow(QMainWindow):
         self._search = SearchPage(self._service)
 
         # ── 索引映射 ──
+        # 设计稿 12 项导航 → 实际页面。部分概念无独立页面，映射到最贴近的现有页：
+        #   live(实时比赛)→赛程中心  players(球员)/scorers(射手榜)→球员榜
+        #   analysis(数据分析)→预测中心  venue(场馆地图)→球场
         self._key_to_page: dict[str, QWidget] = {
             "home": self._home,
             "globe": self._globe,
             "schedule": self._schedule,
+            "live": self._schedule,
             "prediction": self._prediction,
+            "analysis": self._prediction,
             "standings": self._standings,
             "scorers": self._rankings,
+            "players": self._rankings,
             "teams": self._teams,
             "stadiums": self._stadiums,
+            "venue": self._stadiums,
             "news": self._news,
             "favorites": self._favorites_page,
             "match_detail": self._match_detail,
@@ -139,7 +139,8 @@ class MainWindow(QMainWindow):
             "team_detail": self._team_detail,
             "search": self._search,
         }
-        for w in self._key_to_page.values():
+        # 仅把「真实页面」对象加进 stack（去重，避免同一页面被多 key 重复 add）。
+        for w in dict.fromkeys(self._key_to_page.values()):
             self._stack.addWidget(w)
 
         # ── 布局 ──
@@ -164,6 +165,7 @@ class MainWindow(QMainWindow):
         right.setContentsMargins(0, 0, 0, 0)
         right.setSpacing(0)
         right.addWidget(self._topbar)
+        right.addWidget(self._subheader)
         right.addWidget(self._stack, 1)
         right_w = QWidget()
         right_w.setLayout(right)
@@ -198,9 +200,7 @@ class MainWindow(QMainWindow):
         # ── 信号 ──
         self._sidebar.selected.connect(self._on_nav_selected)
         self._topbar.search_submitted.connect(self._on_search)
-        self._topbar.refresh_clicked.connect(self._refresh_current)
-        self._topbar.skin_selected.connect(self._set_skin)
-        self._topbar.settings_clicked.connect(self._open_settings)
+        self._topbar.profile_clicked.connect(self._open_settings)
 
         self._home.match_clicked.connect(self._open_match)
         self._home.team_clicked.connect(self._open_team)
@@ -270,6 +270,15 @@ class MainWindow(QMainWindow):
             self._fps_monitor.raise_()
             self._position_fps_monitor()
 
+        # ── 鼠标拖尾叠层（任务 5）──
+        # 顶层、对鼠标事件透明的克制拖尾，铺满整个中央区域；由唯一 FrameClock
+        # 驱动（不新增定时器）。置于最上层，但 WA_TransparentForMouseEvents 保证
+        # 不拦截任何点击 / 拖拽（含无边框缩放手柄）。需求 23.x / 首开广播场景 29.1。
+        self._mouse_trail = MouseTrailOverlay(central, palette=NIGHT_STADIUM)
+        self._mouse_trail.setGeometry(central.rect())
+        self._mouse_trail.raise_()
+        self._mouse_trail.show()
+
         # 居中窗口
         screen = QGuiApplication.primaryScreen().availableGeometry()
         w = min(int(screen.width() * 0.92), 1600)
@@ -338,18 +347,45 @@ class MainWindow(QMainWindow):
 
     # ─── 动态背景渲染后端（CPU / GPU 可热切换）───────────
     def _make_backdrop(self, parent: QWidget):
-        """按当前后端选择创建背景控件；GPU 不可用时自动降级回 CPU 版。"""
-        palette = THEMES.get(self._theme_name, THEMES["dark"])
-        if self._gpu_bg:
-            try:
-                from app.ui.widgets.gl_backdrop import GLBackdrop
-                bd = GLBackdrop(parent, palette=palette)
-                log.info("动态背景渲染后端：GPU (GLSL / QOpenGLWidget)")
-                return bd
-            except Exception as exc:  # 缺少 QtOpenGLWidgets / 构造失败 → 降级
-                log.warning("GPU 背景初始化失败，降级为 CPU：%s", exc)
-                self._gpu_bg = False
-        return SkinBackdrop(parent, palette=palette)
+        """创建「夜间球场」舞台合成器背景；GPU 不可用时工厂自动降级回 CPU 版。
+
+        统一由 :func:`create_backdrop` 工厂选择后端（取代旧的
+        ``SkinBackdrop`` / ``GLBackdrop``），并连接 GPU 运行期失败信号以便
+        热切换到 CPU 后端（需求 27.1–27.4）。
+        """
+        bd = create_backdrop(NIGHT_STADIUM, parent=parent, prefer_gpu=self._gpu_bg)
+        # 反映工厂实际选定的后端（GPU 构造失败时会回退为 CPU）。
+        self._gpu_bg = type(bd).__name__ == "StageCompositor"
+        if hasattr(bd, "gpu_failed"):
+            bd.gpu_failed.connect(self._on_gpu_backdrop_failed)
+        backend = "GPU (GLSL)" if self._gpu_bg else "CPU (QPainter)"
+        log.info("舞台合成器后端：%s", backend)
+        return bd
+
+    def _on_gpu_backdrop_failed(self) -> None:
+        """GPU 后端在 initializeGL 期检测到着色器编译/链接失败 → 热切到 CPU。"""
+        if not self._gpu_bg:
+            return
+        self._gpu_bg = False
+        log.warning("检测到 GPU 舞台合成器运行期失败，准备热切换到 CPU 后端")
+        # 延后到事件循环空闲时重建，避免在 paint/initializeGL 内销毁自身。
+        QTimer.singleShot(0, self._swap_to_cpu_backdrop)
+
+    def _swap_to_cpu_backdrop(self) -> None:
+        old = self._backdrop
+        if old is not None:
+            old.set_enabled(False)  # 取消帧时钟订阅
+            old.setParent(None)
+            old.deleteLater()
+        self._gpu_bg = False
+        self._backdrop = create_backdrop(NIGHT_STADIUM, parent=self._central, prefer_gpu=False)
+        self._backdrop.setGeometry(self._central.rect())
+        self._backdrop.set_enabled(self._bg_anim)
+        self._backdrop.set_paused(self._stack.currentWidget() is self._globe)
+        self._backdrop.lower()
+        self._backdrop.show()
+        self._settings.set("gpu_bg", False)
+        self.statusBar().showMessage("GPU 后端异常，已热切换到 CPU 渲染 ⚙️", 3500)
 
     def _set_gpu_bg(self, on: bool) -> None:
         """运行时切换 CPU/GPU 背景后端（销毁旧实例、重建新实例）并持久化。"""
@@ -366,7 +402,6 @@ class MainWindow(QMainWindow):
         # 重建（_make_backdrop 可能因 GPU 不可用把 _gpu_bg 复位为 False）
         self._backdrop = self._make_backdrop(self._central)
         self._backdrop.setGeometry(self._central.rect())
-        self._backdrop.set_palette(THEMES.get(self._theme_name, THEMES["dark"]))
         self._backdrop.set_enabled(self._bg_anim)
         self._backdrop.set_paused(self._stack.currentWidget() is self._globe)
         self._backdrop.lower()
@@ -425,11 +460,15 @@ class MainWindow(QMainWindow):
             if cur_key and cur_key != key:
                 self._history.append(cur_key)
         self._stack.setCurrentWidget(page)
+        # 子标题栏（含实时连接胶囊）仅在概览页展示（需求 4.x 属概览页 chrome）。
+        self._subheader.setVisible(key == "home")
         # 全局动态背景：地球仪页持续自绘较重，切到该页时暂停背景动画省 CPU
         self._backdrop.set_paused(page is self._globe)
-        # 页面切入：淡入 + 自下而上轻微滑入（地球仪页持续自绘，跳过以免离屏重渲染冲突）
+        # 页面切入：180ms 淡入 + 自下而上轻微滑入（经统一动效系统 motion_system，
+        # 缓动恒 OutCubic、时长 ≤ 500ms；LOW_PERF 下瞬时完成 —— 需求 29.2 / 28.3）。
+        # 地球仪页持续自绘，跳过以免离屏重渲染冲突。
         if page is not self._globe:
-            fade_slide_in(page, duration=360, dx=0, dy=22)
+            motion_system.page_transition(page, dy=22)
         title, subtitle = self._title_for(key, page)
         self._topbar.set_title(title, subtitle)
         # 触发数据刷新
@@ -473,8 +512,8 @@ class MainWindow(QMainWindow):
     def _open_prediction(self, match: Match) -> None:
         """从比赛详情跳转到该场的完整 AI 预测页。"""
         self._prediction.open_match(match)
-        self._sidebar.set_active("prediction")
-        self._navigate("prediction")
+        self._sidebar.set_active("analysis")
+        self._navigate("analysis")
 
     def _open_team(self, team_id: str) -> None:
         self._team_detail.open_team(team_id)
@@ -529,6 +568,9 @@ class MainWindow(QMainWindow):
             self._backdrop.lower()
         if hasattr(self, "_grips"):
             self._grips.reposition()
+        if hasattr(self, "_mouse_trail") and hasattr(self, "_central"):
+            self._mouse_trail.setGeometry(self._central.rect())
+            self._mouse_trail.raise_()
         if hasattr(self, "_titlebar"):
             self._titlebar.sync_max_glyph()
         if hasattr(self, "_fps_monitor") and self._fps_monitor.isVisible():
