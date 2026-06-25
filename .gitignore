@@ -15,6 +15,7 @@ build/
 dist/
 *.spec
 !WorldCupConsole.spec
+!WorldCupConsole-onefile.spec
 # diskcache & app data
 .app_cache/
 .app_data/

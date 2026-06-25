@@ -18,14 +18,18 @@ APP_TITLE_ZH = "世界杯赛事终端"
 APP_TITLE_EN = "FIFA World Cup Console 2026"
 
 # ─── 路径 ───────────────────────────────────────────────────
-# 资源根目录。开发态 = 仓库根（config.py 的上上级）；PyInstaller 打包态 =
-# 解包根目录（onefile 为临时解包目录 sys._MEIPASS；onedir 为可执行文件旁的
-# _internal/）。spec 里 datas 目标为 "." 的资源（背景图.png / 光标.png / …）
-# 与 assets/、flags/ 都落在这个根下，所以下面所有派生路径在「python main.py」
-# 与「打包后的可执行文件」两种运行方式下都能正确命中（修复打包后背景图丢失）。
-if getattr(sys, "frozen", False):
+# 资源根目录。需同时兼容三种运行方式，保证 assets/、flags/、背景图.png、光标等
+# 资源都能被正确命中（修复打包后背景图丢失）：
+#   • Nuitka 编译态：随包数据与编译后的模块同处「解包根」（onefile 为临时解包目录），
+#     用 __file__ 反推上上级即可命中。放在最前，避免 Nuitka 万一也设了 sys.frozen
+#     时错走下面的 PyInstaller 分支。
+#   • PyInstaller 打包态：onefile = 临时解包目录 sys._MEIPASS；onedir = _internal/。
+#   • 开发态（python main.py）：仓库根（config.py 的上上级）。
+if "__compiled__" in globals():                       # Nuitka
+    ROOT_DIR = Path(__file__).resolve().parent.parent
+elif getattr(sys, "frozen", False):                   # PyInstaller
     ROOT_DIR = Path(getattr(sys, "_MEIPASS", None) or Path(sys.executable).resolve().parent)
-else:
+else:                                                 # 开发态
     ROOT_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = ROOT_DIR / "assets"
 # 随软件打包的国旗位图目录（assets/flags/{code}.png）—— 本地直读，免下载、零延迟
