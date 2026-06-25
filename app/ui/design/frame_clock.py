@@ -25,9 +25,12 @@ from PyQt6.QtCore import QObject, Qt, QTimer, pyqtSignal
 
 from app.config import ANIM_FPS, LOW_PERF
 
-# 帧率允许范围
+# 帧率允许范围。上限定在 144（「真实电竞帧」）：CPU 软件栅格化的动态背景
+# 无法稳定喂满 240Hz，硬开 240 反而因定时器过冲 / 帧积压而「假高帧、真卡顿」。
+# 144Hz（间隔 ~7ms）是单线程 QPainter 能稳定达成、肉眼顺滑的真实上限；保存过
+# 240 的旧设置在 set_fps 时会被夹到 144。
 FPS_MIN = 30
-FPS_MAX = 240
+FPS_MAX = 144
 # 单帧 dt 的安全上限（窗口被挂起/拖动后恢复时，避免一次性巨大跳变）
 _MAX_DT = 0.05
 

@@ -170,7 +170,7 @@ def _env_int(name: str, default: int) -> int:
 # —— 配合静态背景图，120FPS 让国旗飘动与鼠标拖尾明显更顺滑；想省电可设
 # ``WC_FPS=60``，追求极致可设 144 / 240。注意：动态背景是 CPU 软件栅格化，
 # 过高帧率会增加占用 —— 真正消除「卡顿」的是下方的离屏缩放与粒子系数。
-ANIM_FPS = int(_clampf(_env_int("WC_FPS", 120), 20, 240))
+ANIM_FPS = int(_clampf(_env_int("WC_FPS", 144), 20, 144))
 ANIM_INTERVAL_MS = max(4, round(1000 / ANIM_FPS))
 
 # 动态背景离屏渲染缩放（0.3~1.0）。<1 时背景先画到低分辨率位图再放大，

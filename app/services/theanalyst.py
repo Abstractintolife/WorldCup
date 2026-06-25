@@ -82,6 +82,7 @@ class TeamProbability:
     final_pct: float        # 进决赛概率（%）
     points: int = 0
     played: int = 0
+    qualify_pct: float = 0.0   # 小组出线 / 晋级淘汰赛概率（%）；0 视为无数据
 
 
 @dataclass(frozen=True)
@@ -157,6 +158,7 @@ def parse_simulations(data: dict) -> list[TeamProbability]:
                 final_pct=round(fin, 2),
                 points=int(r.get("points", 0) or 0),
                 played=int(r.get("matchesPlayed", 0) or 0),
+                qualify_pct=_qualify_from_ranking(r),
             )
             # 去重：同队若多次出现取夺冠概率更高者
             prev = out.get(tp.team_en)
@@ -177,6 +179,31 @@ def _to_pct(value) -> float:
         return 0.0
 
 
+def _qualify_from_ranking(entry: dict) -> float:
+    """从小组排名条目的 ``overallPredictions`` 求「出线 / 晋级淘汰赛概率」(%)。
+
+    Opta 在每支小组球队的 ``overallPredictions[0].rankPrediction`` 列出其各种最终
+    名次的概率，其中 ``rankStatus`` 含「16th Finals」的项即「晋级 1/16 决赛（淘汰
+    赛）」——直接出线 + 凭最佳第三名出线（「Possible 16th Finals」）相加即总出线
+    概率（与 theanalyst.com 预测页一致）。解析失败返回 0。
+    """
+    try:
+        op = entry.get("overallPredictions") or []
+        if not op:
+            return 0.0
+        rp = op[0].get("rankPrediction") or []
+    except (AttributeError, IndexError, TypeError):
+        return 0.0
+    total = 0.0
+    for x in rp:
+        if not isinstance(x, dict):
+            continue
+        status = str(x.get("rankStatus") or "")
+        if "16th Finals" in status:   # 含「16th Finals」与「Possible 16th Finals」
+            total += _to_pct(x.get("value"))
+    return min(100.0, round(total, 2))
+
+
 def _snapshot_teams() -> list[TeamProbability]:
     """离线快照 → 球队概率列表（去重并按夺冠概率降序）。"""
     out: dict[str, TeamProbability] = {}
@@ -190,6 +217,7 @@ def _snapshot_teams() -> list[TeamProbability]:
             final_pct=float(r.get("final_pct", 0.0) or 0.0),
             points=int(r.get("points", 0) or 0),
             played=int(r.get("played", 0) or 0),
+            qualify_pct=float(r.get("qualify_pct", 0.0) or 0.0),
         )
         prev = out.get(tp.team_en)
         if prev is None or tp.win_pct >= prev.win_pct:
@@ -254,6 +282,18 @@ class TheAnalyst:
         out: dict[str, list[TeamProbability]] = {}
         for t in self.championship_ranking():
             out.setdefault(t.group or "—", []).append(t)
+        return out
+
+    def qualification_map(self) -> dict[str, float]:
+        """中文队名 → 出线 / 晋级概率（分数 ``[0,1]``）。
+
+        仅收录有明确出线概率（``qualify_pct > 0``）的球队；供首页小组积分榜 /
+        预测页「晋级概率」直接取用（与 theanalyst.com 同源）。
+        """
+        out: dict[str, float] = {}
+        for t in self.championship_ranking():
+            if t.qualify_pct and t.qualify_pct > 0:
+                out[t.team_cn] = max(0.0, min(1.0, t.qualify_pct / 100.0))
         return out
 
     @property
