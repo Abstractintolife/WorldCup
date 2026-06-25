@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -17,7 +18,15 @@ APP_TITLE_ZH = "世界杯赛事终端"
 APP_TITLE_EN = "FIFA World Cup Console 2026"
 
 # ─── 路径 ───────────────────────────────────────────────────
-ROOT_DIR = Path(__file__).resolve().parent.parent
+# 资源根目录。开发态 = 仓库根（config.py 的上上级）；PyInstaller 打包态 =
+# 解包根目录（onefile 为临时解包目录 sys._MEIPASS；onedir 为可执行文件旁的
+# _internal/）。spec 里 datas 目标为 "." 的资源（背景图.png / 光标.png / …）
+# 与 assets/、flags/ 都落在这个根下，所以下面所有派生路径在「python main.py」
+# 与「打包后的可执行文件」两种运行方式下都能正确命中（修复打包后背景图丢失）。
+if getattr(sys, "frozen", False):
+    ROOT_DIR = Path(getattr(sys, "_MEIPASS", None) or Path(sys.executable).resolve().parent)
+else:
+    ROOT_DIR = Path(__file__).resolve().parent.parent
 ASSETS_DIR = ROOT_DIR / "assets"
 # 随软件打包的国旗位图目录（assets/flags/{code}.png）—— 本地直读，免下载、零延迟
 FLAGS_DIR = ASSETS_DIR / "flags"

@@ -23,7 +23,15 @@ from __future__ import annotations
 import math
 
 from PyQt6.QtCore import QPointF, QPropertyAnimation, QRectF, Qt, pyqtProperty
-from PyQt6.QtGui import QColor, QPainter, QPixmap, QPixmapCache, QTransform
+from PyQt6.QtGui import (
+    QColor,
+    QLinearGradient,
+    QPainter,
+    QPainterPath,
+    QPixmap,
+    QPixmapCache,
+    QTransform,
+)
 from PyQt6.QtWidgets import QWidget
 
 from app.config import LOW_PERF
@@ -38,11 +46,15 @@ FLOAT_PERIOD_MS = int(FLOAT_PERIOD_S * 1000)
 
 #: 旗帜飘动参数。
 _WAVE_PERIOD_S = 2.0          # 一个主波周期（秒）—— 风的节律（略快、更有动感）
-_WAVE_COUNT = 1.8             # 旗面上同时可见的波数（沿宽度方向，褶皱更丰富）
+_WAVE_COUNT = 2.0             # 旗面上同时可见的波数（沿宽度方向，褶皱更丰富）
 _WAVE_AMPLITUDE_RATIO = 0.17  # 自由端最大垂直摆幅 ≈ 旗高 * 该比值（加大、更震撼）
 _WAVE_SWAY_RATIO = 0.08       # 自由端最大水平摆幅 ≈ 旗高 * 该比值
 _STRIP_PX = 3                 # 竖条宽度（像素）—— 错切保证无缝，故可略宽以省开销
-_BG_MIN_DT = 1.0 / 120.0      # 重绘节流到 ~120fps —— 让旗帜飘动更顺滑（配合 120FPS 帧时钟）
+# 重绘节流：跟随全局帧时钟（最高 144FPS）—— 不再压到 120，飘动更顺滑、更高帧率。
+_BG_MIN_DT = 1.0 / 144.0
+# 动态高光「扫光」周期（秒）：一道亮带周期性掠过旗面，模拟布料反光，更炫酷。
+_SHEEN_PERIOD_S = 3.4
+_SHEEN_ALPHA = 46             # 高光峰值不透明度（0–255），克制以免发白
 
 
 def floating_offset(t: float, amplitude: float = FLOAT_AMPLITUDE_PX,
@@ -278,6 +290,28 @@ class FloatingFlag(QWidget):
                 if a > 0:
                     p.fillRect(QRectF(x0, 0, sw, fh), QColor(255, 255, 255, a))
         p.resetTransform()
+
+        # ── 动态高光「扫光」：一道斜向亮带周期性掠过旗面（更炫酷的反光质感）──
+        # 叠加在飘动旗面之上，裁剪到旗面圆角矩形内；用三段式线性渐变形成一道
+        # 柔和的窄高光，中心随时间从左外侧扫到右外侧后循环。
+        phase = (t % _SHEEN_PERIOD_S) / _SHEEN_PERIOD_S      # 0→1 循环
+        sweep = -0.35 + phase * 1.70                          # 高光中心（归一化 x，含越界余量）
+        cx = base_x + sweep * fw
+        band = max(8.0, fw * 0.28)                            # 高光带宽度
+        # 斜向：顶部略偏右、底部略偏左，呈自然的对角反光。
+        grad = QLinearGradient(cx - band, base_y, cx + band, base_y + fh)
+        grad.setColorAt(0.0, QColor(255, 255, 255, 0))
+        grad.setColorAt(0.5, QColor(255, 255, 255, _SHEEN_ALPHA))
+        grad.setColorAt(1.0, QColor(255, 255, 255, 0))
+        clip = QPainterPath()
+        flag_rect = QRectF(base_x + 0.5, base_y + 0.5, fw - 1, fh - 1)
+        if self._radius > 0:
+            clip.addRoundedRect(flag_rect, float(self._radius), float(self._radius))
+        else:
+            clip.addRect(flag_rect)
+        p.setClipPath(clip)
+        p.fillRect(QRectF(base_x, base_y, fw, fh), grad)
+        p.setClipping(False)
 
     # ── 历史兼容属性 ──
     def _get_float_y(self) -> float:
