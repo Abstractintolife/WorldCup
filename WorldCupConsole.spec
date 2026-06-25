@@ -24,6 +24,11 @@ hiddenimports = ["h2", "hpack", "hyperframe", "certifi"] + collect_submodules("p
 datas = [
     ("assets", "assets"),                            # 国旗位图 assets/flags/*.png（及字体 assets/fonts/*.ttf 若有）
     ("app/services/land_mask.b64", "app/services"),  # 3D 地球仪陆地掩膜
+    # 仓库根目录的资源：config.py 用 ROOT_DIR/__file__ 反推后从「包根」读取，
+    # 因此目标目录填 "."（即解包根 _MEIPASS / onedir 的 _internal 根）。
+    ("背景图.png", "."),                              # 主页/全局背景图（缺则回退程序化渐变）
+    ("光标.png", "."),                               # 默认箭头光标兜底（主图为 assets/cursor.png）
+    ("点击光标.png", "."),                            # 点击手型光标兜底（主图为 assets/click_cursor.png）
 ]
 # certifi 的 cacert.pem —— 确保 httpx/ssl 在打包后能找到 CA 根证书。
 datas += collect_data_files("certifi")
