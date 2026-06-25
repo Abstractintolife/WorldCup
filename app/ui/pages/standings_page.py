@@ -23,6 +23,7 @@ from app.ui.widgets.effects import stagger_fade
 from app.ui.widgets.group_card import GroupCard
 from app.ui.widgets.misc import Card
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 log = logging.getLogger(__name__)
 
@@ -189,7 +190,7 @@ class StandingsPage(BasePage):
         a.addWidget(a_lbl)
         a.addStretch(1)
         a_w = QWidget(); a_w.setLayout(a)
-        a_w.setCursor(Qt.CursorShape.PointingHandCursor)
+        a_w.setCursor(pointing_hand_cursor())
         a_w.mousePressEvent = lambda _e, t=tie.team_a_id: self.team_clicked.emit(t)  # type: ignore[assignment]
         layout.addWidget(a_w, 4)
 
@@ -206,7 +207,7 @@ class StandingsPage(BasePage):
         b.addWidget(b_lbl)
         b.addWidget(TeamLogo(tie.team_b_logo, size=42, shape="circle"))
         b_w = QWidget(); b_w.setLayout(b)
-        b_w.setCursor(Qt.CursorShape.PointingHandCursor)
+        b_w.setCursor(pointing_hand_cursor())
         b_w.mousePressEvent = lambda _e, t=tie.team_b_id: self.team_clicked.emit(t)  # type: ignore[assignment]
         layout.addWidget(b_w, 4)
 

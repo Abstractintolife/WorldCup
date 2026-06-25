@@ -20,6 +20,7 @@ from app.ui.widgets.effects import stagger_fade
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.image_loader import RemoteCover
 from app.ui.widgets.misc import Card
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class _StadiumCard(QWidget):
@@ -33,7 +34,7 @@ class _StadiumCard(QWidget):
         super().__init__()
         self._stadium = stadium
         self.setFixedSize(self.CARD_W, self.CARD_H)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self._hover = False
 

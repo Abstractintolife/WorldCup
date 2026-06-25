@@ -29,6 +29,7 @@ from PyQt6.QtWidgets import QWidget
 from app.services.geo_data import land_points
 from app.services.image_service import ImageService
 from app.ui.design.frame_clock import FrameClock
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 def _to_vec(lat: float, lon: float) -> tuple[float, float, float]:
@@ -398,7 +399,7 @@ class GlobeWidget(QWidget):
             idx = self._hit_test(pos)
             if idx != self._hover_idx:
                 self._hover_idx = idx
-                self.setCursor(Qt.CursorShape.PointingHandCursor if idx >= 0
+                self.setCursor(pointing_hand_cursor() if idx >= 0
                                else Qt.CursorShape.OpenHandCursor)
                 self.team_hovered.emit(self._markers[idx].team_id if idx >= 0 else "")
                 self.update()

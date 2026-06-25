@@ -22,6 +22,7 @@ from app.ui.widgets.match_card import MatchCard
 from app.ui.widgets.misc import Card
 from app.ui.widgets.player_avatar import PlayerAvatar
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class FavoritesPage(BasePage):
@@ -136,7 +137,7 @@ class _FavTeamChip(Card):
         super().__init__(padding=10)
         self._tid = team_id
         self.setFixedSize(180, 70)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         h = QHBoxLayout(self)
         h.setContentsMargins(12, 8, 12, 8)
         h.setSpacing(10)
@@ -162,7 +163,7 @@ class _FavPlayerChip(Card):
         self._pid = person_id
         self._name = name
         self.setFixedSize(220, 70)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         h = QHBoxLayout(self)
         h.setContentsMargins(12, 8, 12, 8)
         h.setSpacing(10)

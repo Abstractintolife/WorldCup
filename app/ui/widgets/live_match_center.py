@@ -45,6 +45,7 @@ from PyQt6.QtWidgets import (
 from app.models.match import Match, MatchStatus
 from app.models.lineup import MatchLineup
 from app.ui.design import motion_system
+from app.ui.design.app_cursor import pointing_hand_cursor
 from app.ui.design.frame_clock import FrameClock
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
 from app.ui.widgets.elided_label import ElidedLabel
@@ -397,7 +398,7 @@ class LiveMatchCenter(GlassCard):
         self._formation = None
 
         self._footer_btn = QPushButton("进入比赛中心")
-        self._footer_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._footer_btn.setCursor(pointing_hand_cursor())
         self._footer_btn.setMinimumHeight(36)
         self._footer_btn.setStyleSheet(
             "QPushButton {"
@@ -458,7 +459,7 @@ class LiveMatchCenter(GlassCard):
         p = self._palette
         w = QFrame()
         w.setObjectName("ScoreLine")
-        w.setCursor(Qt.CursorShape.PointingHandCursor)
+        w.setCursor(pointing_hand_cursor())
         w.setStyleSheet(
             f"QFrame#ScoreLine {{ background: {rgba('#FFFFFF', 0.03)};"
             f" border-radius: {Radius.CHIP}px; }}"

@@ -26,6 +26,7 @@ from PyQt6.QtWidgets import (
 
 from app import __app_name__, __version__
 from app.i18n import tr
+from app.ui.design.app_cursor import pointing_hand_cursor
 from app.ui.theme import THEME_META, THEME_ORDER, THEMES
 
 _DIALOG_QSS = """
@@ -82,7 +83,7 @@ class _SkinSwatch(QFrame):
         self._emoji = emoji
         self._desc = desc
         self.setFixedSize(196, 96)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setMouseTracking(True)
 
     def set_selected(self, on: bool) -> None:
@@ -232,7 +233,7 @@ class SettingsDialog(QDialog):
         for fps, label in self._FPS_CHOICES:
             btn = QPushButton(label)
             btn.setCheckable(True)
-            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setCursor(pointing_hand_cursor())
             btn.setMinimumHeight(48)
             btn.setProperty("fpsBtn", True)
             btn.clicked.connect(lambda _c=False, f=fps: self._on_fps_clicked(f))
@@ -260,7 +261,7 @@ class SettingsDialog(QDialog):
         for on, label in ((True, "开启\n炫彩"), (False, "关闭\n性能优先")):
             btn = QPushButton(label)
             btn.setCheckable(True)
-            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setCursor(pointing_hand_cursor())
             btn.setMinimumHeight(48)
             btn.setProperty("fpsBtn", True)
             btn.clicked.connect(lambda _c=False, v=on: self._on_bg_clicked(v))
@@ -292,7 +293,7 @@ class SettingsDialog(QDialog):
         for gpu, label in ((False, "CPU\n稳定"), (True, "GPU\n极致")):
             btn = QPushButton(label)
             btn.setCheckable(True)
-            btn.setCursor(Qt.CursorShape.PointingHandCursor)
+            btn.setCursor(pointing_hand_cursor())
             btn.setMinimumHeight(48)
             btn.setProperty("fpsBtn", True)
             btn.clicked.connect(lambda _c=False, v=gpu: self._on_backend_clicked(v))
@@ -311,7 +312,7 @@ class SettingsDialog(QDialog):
         cache_hint.setWordWrap(True)
         root.addWidget(cache_hint)
         clear_btn = QPushButton(tr("🗑  清空缓存并刷新", "🗑  Clear cache & refresh"))
-        clear_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        clear_btn.setCursor(pointing_hand_cursor())
         clear_btn.clicked.connect(self._on_clear_cache)
         self._clear_btn = clear_btn
         root.addWidget(clear_btn)
@@ -334,7 +335,7 @@ class SettingsDialog(QDialog):
         btn_row.addStretch(1)
         close_btn = QPushButton(tr("完成", "Done"))
         close_btn.setObjectName("primary")
-        close_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        close_btn.setCursor(pointing_hand_cursor())
         close_btn.clicked.connect(self.accept)
         btn_row.addWidget(close_btn)
         root.addLayout(btn_row)

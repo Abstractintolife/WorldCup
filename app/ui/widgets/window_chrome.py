@@ -26,6 +26,8 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from app.ui.design.app_cursor import pointing_hand_cursor
+
 
 # 窗口控制按钮（最小化 / 最大化 / 关闭）—— 圆形玻璃风，与右上角 HUD 按钮一体化。
 # 玻璃底由 QSS 负责（含悬停态），按钮图标改为 QPainter 矢量描线绘制
@@ -54,7 +56,7 @@ class _WinCtrlButton(QPushButton):
     def __init__(self, kind: str, parent: QWidget | None = None) -> None:
         super().__init__(parent)
         self._kind = kind
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setFixedSize(28, 28)
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.setStyleSheet(_CLOSE_QSS if kind == "close" else _BTN_QSS)

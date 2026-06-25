@@ -32,6 +32,12 @@ BG_IMAGE_PATH = ROOT_DIR / "背景图.png"
 CURSOR_IMAGE_PATH = ASSETS_DIR / "cursor.png"
 CURSOR_IMAGE_FALLBACK = ROOT_DIR / "光标.png"
 
+# 「点击 / 可交互」时的手型光标位图（替代系统 PointingHand 白手）。优先用随包的
+# assets/click_cursor.png，缺失时回退到用户放在仓库根目录的「点击光标.png」。
+# 两者都不存在时回退系统 PointingHand 光标（见 app/ui/design/app_cursor.py）。
+CLICK_CURSOR_IMAGE_PATH = ASSETS_DIR / "click_cursor.png"
+CLICK_CURSOR_IMAGE_FALLBACK = ROOT_DIR / "点击光标.png"
+
 CACHE_DIR = Path(user_cache_dir(APP_NAME, APP_VENDOR))
 DATA_DIR = Path(user_data_dir(APP_NAME, APP_VENDOR))
 IMAGE_CACHE_DIR = CACHE_DIR / "images"

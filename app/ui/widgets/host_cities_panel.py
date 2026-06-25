@@ -30,6 +30,7 @@ from PyQt6.QtWidgets import (
 
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
 from app.ui.widgets.glass_card import GlassCard
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -254,7 +255,7 @@ class HostCitiesPanel(GlassCard):
 
         # 底部「查看全部城市」。
         self._footer_btn = QPushButton("查看全部城市")
-        self._footer_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._footer_btn.setCursor(pointing_hand_cursor())
         self._footer_btn.setMinimumHeight(36)
         self._footer_btn.setStyleSheet(
             "QPushButton {"

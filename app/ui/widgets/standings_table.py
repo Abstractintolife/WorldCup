@@ -44,6 +44,7 @@ from app.ui.widgets.fx.standings_fx import (
     rank_delta_glyph,
 )
 from app.ui.widgets.glass_card import GlassCard
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 #: 分组选择器固定标签 A–L（共 12 组，需求 9.2）。
 GROUP_LETTERS: tuple[str, ...] = tuple("ABCDEFGHIJKL")
@@ -207,7 +208,7 @@ class StandingsTable(GlassCard):
 
         # 底部「查看完整积分榜」。
         self._footer_btn = QPushButton("查看完整积分榜")
-        self._footer_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._footer_btn.setCursor(pointing_hand_cursor())
         self._footer_btn.setMinimumHeight(36)
         self._footer_btn.setStyleSheet(
             "QPushButton {"
@@ -258,7 +259,7 @@ class StandingsTable(GlassCard):
         for letter in GROUP_LETTERS:
             b = QPushButton(letter)
             b.setCheckable(True)
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.setCursor(pointing_hand_cursor())
             b.setFixedHeight(28)
             # 字母不省略：12 个标签挤在窄面板时，给一个能容下单字母的最小宽度，
             # 避免被压到比文字还窄而触发 QPushButton 的「…」省略（看起来像乱码）。
@@ -422,7 +423,7 @@ class StandingsTable(GlassCard):
         # 行高随面板拉伸（最小 52），四支球队铺满整张卡，视觉更饱满。
         w.setMinimumHeight(52)
         w.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        w.setCursor(Qt.CursorShape.PointingHandCursor)
+        w.setCursor(pointing_hand_cursor())
         w.setStyleSheet(
             f"QFrame#StandingRow {{ background: {rgba('#FFFFFF', 0.03)};"
             f" border-radius: 9px; border-left: 3px solid {accent}; }}"

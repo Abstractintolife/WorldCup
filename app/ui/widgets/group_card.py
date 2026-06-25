@@ -16,6 +16,7 @@ from app.models.standing import GroupStanding, TeamStanding
 from app.ui.theme import ThemePalette
 from app.ui.widgets.misc import Card
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class _RankRow(QFrame):
@@ -26,7 +27,7 @@ class _RankRow(QFrame):
     def __init__(self, team: TeamStanding, leader_color: QColor) -> None:
         super().__init__()
         self._team_id = team.team_id
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setFixedHeight(46)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)

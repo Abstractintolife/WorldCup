@@ -47,6 +47,7 @@ from app.models.player import PlayerRanking, RankingType
 from app.services.player_profiles import profile_for
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.player_avatar import PlayerAvatar
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 # 金 / 银 / 铜 主色（与名次 1/2/3 对应）
 _MEDALS: tuple[tuple[str, str, str], ...] = (
@@ -133,7 +134,7 @@ class PodiumCard(QFrame):
         self._hover = False
 
         self.setObjectName("PodiumCard")
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         # 冠军卡更高，构成领奖台错落。
@@ -190,7 +191,7 @@ class PodiumCard(QFrame):
         team_row.addWidget(team_lbl)
         team_w = QWidget()
         team_w.setLayout(team_row)
-        team_w.setCursor(Qt.CursorShape.PointingHandCursor)
+        team_w.setCursor(pointing_hand_cursor())
         team_w.mousePressEvent = self._team_click  # type: ignore[assignment]
         col.addWidget(team_w, 0, Qt.AlignmentFlag.AlignHCenter)
 

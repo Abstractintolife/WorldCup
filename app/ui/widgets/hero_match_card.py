@@ -46,6 +46,7 @@ from app.models.match import Match, MatchStatus
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
 from app.ui.widgets.fx.floating_flag import FloatingFlag
 from app.ui.widgets.glass_card import GlassCard
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 # ════════════════════════════════════════════════════════════════════
 #  纯函数：倒计时分解（任务 8.2 / Property 10）
@@ -537,7 +538,7 @@ class HeroMatchCard(GlassCard):
         actions.setSpacing(10)
         self._btn_watch = QPushButton("▶  观看直播")
         self._btn_watch.setProperty("pill", "primary")
-        self._btn_watch.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._btn_watch.setCursor(pointing_hand_cursor())
         self._btn_watch.setMinimumHeight(40)
         self._btn_watch.setStyleSheet(self._primary_btn_style())
         self._btn_watch.clicked.connect(lambda: self.watch_clicked.emit(self._match))
@@ -546,7 +547,7 @@ class HeroMatchCard(GlassCard):
         self._btn_h2h = QPushButton("历史交锋")
         for b, slot in ((self._btn_analysis, self.analysis_clicked),
                         (self._btn_h2h, self.h2h_clicked)):
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.setCursor(pointing_hand_cursor())
             b.setMinimumHeight(40)
             b.setStyleSheet(self._ghost_btn_style())
             b.clicked.connect(lambda _c=False, s=slot: s.emit(self._match))
@@ -583,7 +584,7 @@ class HeroMatchCard(GlassCard):
 
     def _chevron(self, glyph: str) -> QPushButton:
         b = QPushButton(glyph)
-        b.setCursor(Qt.CursorShape.PointingHandCursor)
+        b.setCursor(pointing_hand_cursor())
         b.setFixedSize(34, 34)
         p = self._palette
         b.setStyleSheet(
