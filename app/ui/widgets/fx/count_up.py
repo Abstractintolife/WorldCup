@@ -113,6 +113,22 @@ class CountUpNumber(QLabel):
     def _render(self, value: float) -> None:
         self.setText(self._format(value))
 
+    def _reserve_width_for(self, target: float) -> None:
+        """为「终值」预留固定宽度，避免计数过程中位数增长（0→1→2→3 位）改变
+        标签宽度、把相邻控件（如「↑8%」涨跌幅）来回挤动 —— 即数字「乱动」的根因。
+
+        标签左对齐，终值宽度一次性预留后，中间值在该宽度内左对齐增长，兄弟控件
+        位置恒定。字号经 QSS 设定，``ensurePolished`` 后 ``fontMetrics`` 已反映实际
+        字体；多给 2px 容差以防细微度量误差。
+        """
+        self.ensurePolished()
+        final_text = self._format(float(target))
+        try:
+            w = self.fontMetrics().horizontalAdvance(final_text)
+        except Exception:  # pragma: no cover - 极端无字体环境兜底
+            return
+        self.setMinimumWidth(w + 2)
+
     @property
     def target(self) -> float:
         return self._target
@@ -124,6 +140,7 @@ class CountUpNumber(QLabel):
         ``LOW_PERF`` 省电模式下直接显示终值（过渡瞬时完成）。
         """
         self._target = float(target)
+        self._reserve_width_for(target)
         self._anim.stop()
         if LOW_PERF:
             # 低性能模式：瞬时落定到精确终值。
