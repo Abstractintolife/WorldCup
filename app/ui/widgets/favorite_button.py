@@ -5,6 +5,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import QPushButton
 
 from app.services.favorites import EntityKind, Favorites
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class FavoriteButton(QPushButton):
@@ -26,7 +27,7 @@ class FavoriteButton(QPushButton):
         self._entity_id = entity_id
         self._label_text = label_text
         self.setProperty("ghost", True)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.clicked.connect(self._on_click)
         self._sync()
 

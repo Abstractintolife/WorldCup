@@ -25,6 +25,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtWidgets import QSizePolicy, QWidget
 
 from app.services.team_preview import RatedPlayer
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 def rating_color(rating: float) -> str:
@@ -62,7 +63,7 @@ class FormationPitch(QWidget):
         self.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding
         )
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
 
     # ── 阵型 → 由下到上的行分组 ──────────────────
     def _rows(self) -> list[list[RatedPlayer]]:

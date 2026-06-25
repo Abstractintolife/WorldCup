@@ -20,6 +20,7 @@ from app.ui.widgets.match_card import MatchCard
 from app.ui.widgets.misc import Card
 from app.ui.widgets.player_avatar import PlayerAvatar
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class SearchPage(BasePage):
@@ -188,7 +189,7 @@ class _ClickableChip(QWidget):
 
     def __init__(self, text: str, icon: QWidget) -> None:
         super().__init__()
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         h = QHBoxLayout(self)
         h.setContentsMargins(10, 6, 14, 6)
         h.setSpacing(10)

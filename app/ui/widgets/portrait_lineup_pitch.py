@@ -28,6 +28,7 @@ from PyQt6.QtWidgets import QSizePolicy, QWidget
 from app.models.lineup import LineupPlayer, TeamLineup
 from app.services.image_service import ImageService
 from app.services.player_portraits import best_portrait
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 def short_player_name(name: str) -> str:
@@ -68,7 +69,7 @@ class PortraitLineupPitch(QWidget):
         self._collect_urls()
         self.setMinimumHeight(190)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
 
     # ── 头像 URL 收集 + 异步加载订阅 ──────────────
     def _collect_urls(self) -> None:

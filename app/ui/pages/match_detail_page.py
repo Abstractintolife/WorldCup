@@ -31,6 +31,7 @@ from PyQt6.QtWidgets import (
 from app.models.match import Match, MatchStatus
 from app.models.lineup import MatchLineup, TeamLineup
 from app.models.odds import MatchOdds
+from app.ui.design.app_cursor import pointing_hand_cursor
 from app.models.standing import GroupStanding, TeamStanding
 from app.services.data_service import DataService
 from app.services.favorites import Favorites
@@ -109,7 +110,7 @@ class _MatchHero(QWidget):
         # 包裹一个透明可点击层，让整列点击=进入球队详情
         w = QWidget()
         w.setLayout(col)
-        w.setCursor(Qt.CursorShape.PointingHandCursor)
+        w.setCursor(pointing_hand_cursor())
         w.mousePressEvent = lambda _e, t=team_id: self.team_clicked.emit(t)  # type: ignore[assignment]
         outer = QVBoxLayout()
         outer.setContentsMargins(0, 0, 0, 0)
@@ -233,13 +234,13 @@ class MatchDetailPage(BasePage):
         top_row = QHBoxLayout()
         back = QPushButton("← 返回")
         back.setProperty("ghost", True)
-        back.setCursor(Qt.CursorShape.PointingHandCursor)
+        back.setCursor(pointing_hand_cursor())
         back.setFixedWidth(80)
         back.clicked.connect(self.back_clicked.emit)
         top_row.addWidget(back)
         top_row.addStretch(1)
         self._predict_btn = QPushButton("🔮 完整预测")
-        self._predict_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._predict_btn.setCursor(pointing_hand_cursor())
         self._predict_btn.setStyleSheet(
             "QPushButton{background:rgba(61,139,255,0.16); color:#9CC4FF;"
             "border:1px solid rgba(61,139,255,0.45); border-radius:12px;"
@@ -889,7 +890,7 @@ class MatchDetailPage(BasePage):
             row.addWidget(flag)
         wrap = QWidget()
         wrap.setLayout(row)
-        wrap.setCursor(Qt.CursorShape.PointingHandCursor)
+        wrap.setCursor(pointing_hand_cursor())
         wrap.mousePressEvent = (  # type: ignore[assignment]
             lambda _e, tid=team.team_id: self.team_clicked.emit(tid)
         )
@@ -960,7 +961,7 @@ class MatchDetailPage(BasePage):
             nl.setStyleSheet("color:#FFFFFF; font-size:13px; font-weight:800;")
             nrow.addWidget(nl)
             nrow.addStretch(1)
-            name_w.setCursor(Qt.CursorShape.PointingHandCursor)
+            name_w.setCursor(pointing_hand_cursor())
             name_w.mousePressEvent = (  # type: ignore[assignment]
                 lambda _e, tid=team_id: self.team_clicked.emit(tid)
             )

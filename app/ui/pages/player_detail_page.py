@@ -65,6 +65,7 @@ from app.ui.widgets.misc import Card
 from app.ui.widgets.radar import RadarChart
 from app.ui.widgets.team_logo import TeamLogo
 from app.utils.time_utils import fmt_time
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 log = logging.getLogger(__name__)
 
@@ -116,7 +117,7 @@ class _PlayerHero(QWidget):
         if on_back:
             back = QPushButton("←  返回")
             back.setProperty("ghost", True)
-            back.setCursor(Qt.CursorShape.PointingHandCursor)
+            back.setCursor(pointing_hand_cursor())
             back.clicked.connect(on_back)
             back.setStyleSheet(
                 "QPushButton{background: rgba(0,0,0,0.45); color:#FFFFFF;"
@@ -155,7 +156,7 @@ class _PlayerHero(QWidget):
         flag_row.addWidget(country)
         flag_row.addStretch(1)
         flag_w = QWidget(); flag_w.setLayout(flag_row)
-        flag_w.setCursor(Qt.CursorShape.PointingHandCursor)
+        flag_w.setCursor(pointing_hand_cursor())
         if on_team_click and team_id:
             flag_w.mousePressEvent = (  # type: ignore[assignment]
                 lambda _e, tid=team_id: on_team_click(tid)
@@ -268,7 +269,7 @@ class _SmallMatchRow(QFrame):
         super().__init__()
         self._match = match
         self._hover = False
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setFixedHeight(80)
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
 

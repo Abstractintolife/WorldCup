@@ -22,6 +22,7 @@ from app.ui.pages.base import BasePage
 from app.ui.widgets.effects import stagger_fade
 from app.ui.widgets.image_loader import RemoteImage
 from app.ui.widgets.misc import Card
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class _NewsRow(QFrame):
@@ -32,7 +33,7 @@ class _NewsRow(QFrame):
         self._article = article
         self._on_open = on_open
         self.setObjectName("NewsRow")
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setFixedHeight(96)
         self.setStyleSheet(
             "QFrame#NewsRow{background: rgba(255,255,255,0.04);"

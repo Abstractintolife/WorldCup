@@ -32,6 +32,7 @@ from PyQt6.QtWidgets import (
 
 from app.models.match import Match, MatchStatus
 from app.models.standing import GroupStanding
+from app.ui.design.app_cursor import pointing_hand_cursor
 from app.services.data_service import DataService
 from app.services.external_predictions import (
     ExternalPrediction,
@@ -96,7 +97,7 @@ class _SourceTabs(QWidget):
                 label += "  ·  EN"
             b = QPushButton(label)
             b.setCheckable(True)
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.setCursor(pointing_hand_cursor())
             b.clicked.connect(lambda _checked=False, idx=i: self._select(idx))
             self._btns.append(b)
             flow.addWidget(b)
@@ -262,7 +263,7 @@ class PredictionPage(BasePage):
             "QComboBox{font-size:13.5px; font-weight:700; padding:4px 14px;}"
             "QComboBox QAbstractItemView{font-size:13px; min-width:520px;}"
         )
-        self._combo.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._combo.setCursor(pointing_hand_cursor())
         self._combo.currentIndexChanged.connect(self._on_pick)
         head.addWidget(self._combo)
         outer.addLayout(head)
@@ -461,7 +462,7 @@ class PredictionPage(BasePage):
         n.setWordWrap(True)
         col.addWidget(n)
         wrap = QWidget(); wrap.setLayout(col)
-        wrap.setCursor(Qt.CursorShape.PointingHandCursor)
+        wrap.setCursor(pointing_hand_cursor())
         wrap.mousePressEvent = lambda _e, t=team_id: self.team_clicked.emit(t)  # type: ignore[assignment]
         outer = QVBoxLayout()
         outer.setContentsMargins(0, 0, 0, 0)

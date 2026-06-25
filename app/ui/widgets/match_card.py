@@ -23,6 +23,7 @@ from app.models.match import Match, MatchStatus
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.misc import Card, StatusChip
 from app.utils.time_utils import fmt_short_date, fmt_time
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class MatchCard(Card):
@@ -39,7 +40,7 @@ class MatchCard(Card):
             _glow = "#00BFFF"
         super().__init__(parent, padding=14, glow_color=_glow)
         self._match = match
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setMinimumWidth(330)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
 

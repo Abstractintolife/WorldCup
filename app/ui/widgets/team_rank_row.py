@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import QFrame, QHBoxLayout, QLabel, QSizePolicy, QVBoxLayou
 from app.models.player import TeamRanking
 from app.ui.widgets.ranking_row import _Bar, _RankBadge, _GOLD, _GREEN
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class TeamRankRow(QFrame):
@@ -30,7 +31,7 @@ class TeamRankRow(QFrame):
         self.setObjectName("RankingRow")
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setFixedHeight(72)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
 
         outer = QHBoxLayout(self)

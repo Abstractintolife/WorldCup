@@ -33,6 +33,7 @@ from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgb
 from app.ui.widgets.elided_label import ElidedLabel
 from app.ui.widgets.glass_card import GlassCard
 from app.ui.widgets.player_avatar import PlayerAvatar
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 @dataclass(frozen=True)
@@ -89,7 +90,7 @@ class TopScorersPanel(GlassCard):
         root.addStretch(1)
 
         self._footer_btn = QPushButton("查看完整射手榜")
-        self._footer_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._footer_btn.setCursor(pointing_hand_cursor())
         self._footer_btn.setMinimumHeight(36)
         self._footer_btn.setStyleSheet(
             "QPushButton {"
@@ -234,7 +235,7 @@ class TopScorersPanel(GlassCard):
     def _scorer_row(self, pr: PlayerRanking) -> QWidget:
         w, row = self._row_frame()
         if pr.person_id:
-            w.setCursor(Qt.CursorShape.PointingHandCursor)
+            w.setCursor(pointing_hand_cursor())
             w.mousePressEvent = (  # type: ignore[assignment]
                 lambda _e, p=pr: self.player_clicked.emit(p.person_id, p.person_name)
             )

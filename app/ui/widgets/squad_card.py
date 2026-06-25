@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
 
 from app.models.squad import SquadMember
 from app.ui.widgets.player_avatar import PlayerAvatar
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 # 位置 → 强调色
@@ -50,7 +51,7 @@ class SquadPlayerCard(QFrame):
         self.setObjectName("SquadCard")
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self.setFixedSize(self.CARD_W, self.CARD_H)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setStyleSheet(
             "QFrame#SquadCard {"
             "  background: qlineargradient(x1:0,y1:0,x2:0,y2:1,"

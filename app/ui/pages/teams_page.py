@@ -18,6 +18,7 @@ from app.ui.pages.base import BasePage
 from app.ui.widgets.card_grid import CardGrid
 from app.ui.widgets.misc import Card
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class _TeamCard(Card):
@@ -27,7 +28,7 @@ class _TeamCard(Card):
         super().__init__(padding=14)
         self._team = team
         self.setFixedSize(220, 156)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         layout = QVBoxLayout(self)
         layout.setContentsMargins(16, 12, 16, 12)
         layout.setSpacing(8)

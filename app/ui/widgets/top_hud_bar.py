@@ -25,6 +25,7 @@ from PyQt6.QtWidgets import (
 
 from app.config import TOPBAR_HEIGHT
 from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgba
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 # 中文标题 → 英文副标题（OVERLINE）映射；概览页副标题恒为「OVERVIEW」。
@@ -50,7 +51,7 @@ def _circle_icon_button(
     """圆形玻璃图标按钮（通知铃 / 区域球 等）。"""
     btn = QPushButton(glyph)
     btn.setObjectName("HudIconBtn")
-    btn.setCursor(Qt.CursorShape.PointingHandCursor)
+    btn.setCursor(pointing_hand_cursor())
     btn.setFixedSize(diameter, diameter)
     if tooltip:
         btn.setToolTip(tooltip)
@@ -167,7 +168,7 @@ QLineEdit#HudSearch:focus {{
         # 区域地球：地球图标 + 「CN」标签
         self._region = QPushButton("🌐 CN")
         self._region.setObjectName("HudRegion")
-        self._region.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._region.setCursor(pointing_hand_cursor())
         self._region.setFixedHeight(40)
         self._region.setToolTip("区域 / 语言：中国")
         self._region.setStyleSheet(
@@ -194,7 +195,7 @@ QPushButton#HudRegion:hover {{
         # 圆形「设置」按钮（齿轮图标，点击打开设置对话框）
         self._avatar = QPushButton("⚙")
         self._avatar.setObjectName("HudAvatar")
-        self._avatar.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._avatar.setCursor(pointing_hand_cursor())
         self._avatar.setFixedSize(40, 40)
         self._avatar.setToolTip("设置")
         self._avatar.setStyleSheet(

@@ -28,6 +28,7 @@ from PyQt6.QtWidgets import (
 from app.services.theanalyst import TeamProbability, TheAnalyst
 from app.ui.pages.base import BasePage
 from app.ui.widgets.flag_icon import FlagIcon
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 _GOLD = "#FFD700"
 _CYAN = "#00BFFF"
@@ -82,7 +83,7 @@ class ProbabilityPage(BasePage):
         self._btn_final = QPushButton("进决赛概率")
         for b, mode in ((self._btn_win, "win"), (self._btn_final, "final")):
             b.setCheckable(True)
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.setCursor(pointing_hand_cursor())
             b.clicked.connect(lambda _c=False, m=mode: self._set_mode(m))
             tabs.addWidget(b)
         tabs.addStretch(1)

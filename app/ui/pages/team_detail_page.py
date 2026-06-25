@@ -33,6 +33,7 @@ from app.models.squad import SquadGroup
 from app.models.standing import GroupStanding, TeamStanding
 from app.services.data_service import DataService
 from app.services.favorites import Favorites
+from app.ui.design.app_cursor import pointing_hand_cursor
 from app.services.team_preview import (
     TeamFormation,
     TeamOutlook,
@@ -64,7 +65,7 @@ class _ContributorRow(QWidget):
     def __init__(self, p: PlayerRanking, value: int, kind: str) -> None:
         super().__init__()
         self._p = p
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setFixedHeight(60)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         accent = "#46D2FF" if kind == "goals" else "#FFD700"
@@ -137,7 +138,7 @@ class TeamDetailPage(BasePage):
         top_row = QHBoxLayout()
         back = QPushButton("←  返回")
         back.setProperty("ghost", True)
-        back.setCursor(Qt.CursorShape.PointingHandCursor)
+        back.setCursor(pointing_hand_cursor())
         back.clicked.connect(self.back_clicked.emit)
         back.setFixedWidth(96)
         top_row.addWidget(back)
@@ -491,7 +492,7 @@ class TeamDetailPage(BasePage):
         opp_name = QLabel(outlook.opp_name)
         opp_name.setStyleSheet("color:#FFFFFF; font-size:14px; font-weight:800;")
         opp_inner.addWidget(opp_name)
-        opp_w.setCursor(Qt.CursorShape.PointingHandCursor)
+        opp_w.setCursor(pointing_hand_cursor())
         # 点击对手 → 进入下一场比赛详情
         opp_w.mousePressEvent = (  # type: ignore[assignment]
             lambda _e: self.match_clicked.emit(m)
@@ -732,7 +733,7 @@ class TeamDetailPage(BasePage):
             )
             sr.addWidget(srate)
             star_wrap = star_row
-            star_wrap.setCursor(Qt.CursorShape.PointingHandCursor)
+            star_wrap.setCursor(pointing_hand_cursor())
             star_wrap.mousePressEvent = (  # type: ignore[assignment]
                 lambda _e, pid=star.person_id, nm=star.name: self.player_clicked.emit(pid, nm)
             )
@@ -763,7 +764,7 @@ class TeamDetailPage(BasePage):
             " border:1px solid rgba(255,255,255,0.07);}"
             "QFrame:hover{border:1px solid #2ED883;}"
         )
-        w.setCursor(Qt.CursorShape.PointingHandCursor)
+        w.setCursor(pointing_hand_cursor())
         w.mousePressEvent = (  # type: ignore[assignment]
             lambda _e, pid=rp.person_id, nm=rp.name: self.player_clicked.emit(pid, nm)
         )

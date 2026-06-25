@@ -22,6 +22,7 @@ from app.services.data_service import DataService
 from app.ui.pages.base import BasePage
 from app.ui.widgets.effects import stagger_fade
 from app.ui.widgets.team_rank_row import TeamRankRow
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 log = logging.getLogger(__name__)
 
@@ -85,7 +86,7 @@ class TeamRankingsPage(BasePage):
         for cat, _types in self._grouped:
             b = QPushButton(cat)
             b.setCheckable(True)
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.setCursor(pointing_hand_cursor())
             b.clicked.connect(lambda _c=False, c=cat: self._select_category(c))
             self._cat_btns[cat] = b
             cat_bar.addWidget(b)
@@ -134,7 +135,7 @@ class TeamRankingsPage(BasePage):
         for rt in types:
             b = QPushButton(f"{rt.emoji} {rt.label}")
             b.setCheckable(True)
-            b.setCursor(Qt.CursorShape.PointingHandCursor)
+            b.setCursor(pointing_hand_cursor())
             b.clicked.connect(lambda _c=False, r=rt: self._select_rtype(r))
             self._stat_btns[rt] = b
             self._stat_bar.addWidget(b)

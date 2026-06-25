@@ -20,6 +20,7 @@ from app.ui.theme import DARK
 from app.ui.widgets.globe import GlobeMarker, GlobeWidget
 from app.ui.widgets.misc import Card
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class _TeamRow(QWidget):
@@ -32,7 +33,7 @@ class _TeamRow(QWidget):
         super().__init__()
         self._team = team
         self.setFixedHeight(52)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setProperty("teamRow", True)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
         self._base_qss = (

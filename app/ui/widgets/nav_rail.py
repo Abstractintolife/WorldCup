@@ -41,6 +41,7 @@ from app.ui.design.hud_theme import (
     rgba,
 )
 from app.ui.widgets.glass_card import GlassCard
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -97,7 +98,7 @@ class NavRailItem(QFrame):
         self.setObjectName("NavRailItem")
         self.setProperty("active", False)
         self.setAttribute(Qt.WidgetAttribute.WA_StyledBackground, True)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setFixedHeight(44)
         self.setToolTip(f"{label_zh} · {label_en}")
 

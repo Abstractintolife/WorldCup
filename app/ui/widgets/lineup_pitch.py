@@ -24,6 +24,7 @@ from PyQt6.QtGui import (
 from PyQt6.QtWidgets import QSizePolicy, QWidget
 
 from app.models.lineup import LineupPlayer, TeamLineup
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 class LineupPitch(QWidget):
@@ -51,7 +52,7 @@ class LineupPitch(QWidget):
         self.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding
         )
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
 
     # ── 阵型 → 列分组 ──────────────────────────
     @staticmethod

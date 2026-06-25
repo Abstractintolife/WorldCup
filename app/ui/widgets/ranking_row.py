@@ -44,6 +44,7 @@ from app.services.player_profiles import profile_for
 from app.ui.widgets.flag_icon import FlagIcon
 from app.ui.widgets.player_avatar import PlayerAvatar
 from app.ui.widgets.team_logo import TeamLogo
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 # 冠军组（最高值）金色，其余草绿；黄牌榜用琥珀黄
 _GOLD = "#FFC53D"
@@ -149,7 +150,7 @@ class RankingRow(QFrame):
         self.setObjectName("RankingRow")
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setFixedHeight(80)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setAttribute(Qt.WidgetAttribute.WA_Hover, True)
 
         outer = QHBoxLayout(self)
@@ -185,7 +186,7 @@ class RankingRow(QFrame):
         team_row.addStretch(1)
         team_w = QWidget()
         team_w.setLayout(team_row)
-        team_w.setCursor(Qt.CursorShape.PointingHandCursor)
+        team_w.setCursor(pointing_hand_cursor())
         team_w.mousePressEvent = self._team_click  # type: ignore[assignment]
         info.addWidget(team_w)
 

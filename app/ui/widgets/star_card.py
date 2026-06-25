@@ -23,6 +23,7 @@ from app.services.player_stats import player_stats
 from app.ui.design.frame_clock import FrameClock
 from app.ui.widgets.effects import BreathingGlow
 from app.ui.widgets.player_avatar import PlayerAvatar
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 
@@ -136,7 +137,7 @@ class PlayerStarCard(QWidget):
         self._accent = _TAG_COLOR.get(self._stats.tag_code, "#00BFFF")
         self.setFixedSize(self.CARD_W, self.CARD_H)
         self.setMouseTracking(True)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
 
         # 毛玻璃主体
         self._glass = QFrame(self)

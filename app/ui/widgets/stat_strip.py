@@ -40,6 +40,7 @@ from app.ui.design.hud_theme import NIGHT_STADIUM, HudPalette, Radius, Type, rgb
 from app.ui.widgets.fx.count_up import CountUpNumber
 from app.ui.widgets.fx.standings_fx import MiniSparkline
 from app.ui.widgets.glass_card import GlassCard
+from app.ui.design.app_cursor import pointing_hand_cursor
 
 
 # ════════════════════════════════════════════════════════════════════
@@ -236,7 +237,7 @@ class StatCard(GlassCard):
         # 更紧凑：缩小卡片最小高度，并让纵向尺寸「按内容收缩」（不再向下撑出大片
         # 空白），底部强调条紧贴「已结束 48 场」次级文案。
         self.setMinimumHeight(72)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCursor(pointing_hand_cursor())
         self.setToolTip("点击查看对应榜单")
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         self._build_ui()
