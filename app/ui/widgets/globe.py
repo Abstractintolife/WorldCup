@@ -104,6 +104,15 @@ class GlobeWidget(QWidget):
         self._clock = FrameClock.instance()
         self._subscribed = False
 
+        # 逐帧渲染缓存（运行时性能优化）：
+        # 1) 静态背景（星点 + 大气辉光 + 海洋球体）对固定尺寸/配色完全不变，
+        #    缓存成一张 pixmap，仅在尺寸或配色变化时重建，每帧只做一次 blit。
+        self._bg_cache = None
+        self._bg_key = None
+        # 2) 队标圆形头像按 (logo, 直径) 缓存平滑缩放结果，避免每帧对每个
+        #    marker 重复跑 SmoothTransformation。
+        self._scaled_cache: dict = {}
+
     def showEvent(self, ev) -> None:
         super().showEvent(ev)
         if not self._subscribed:
@@ -205,35 +214,9 @@ class GlobeWidget(QWidget):
         cx, cy = w / 2.0, h / 2.0
         R = min(w, h) * 0.42
 
-        # 背景星点
-        p.setPen(Qt.PenStyle.NoPen)
-        for sx, sy, sb in self._stars:
-            x = sx * w
-            y = sy * h
-            a = int(40 + sb * 120)
-            p.setBrush(QColor(150, 190, 255, a))
-            r = 0.6 + sb * 1.4
-            p.drawEllipse(QPointF(x, y), r, r)
+        # 静态背景层（星点/大气/海洋）一次性缓存，逐帧仅 blit。
+        self._blit_static_bg(p, w, h, cx, cy, R)
 
-        # 大气辉光
-        atmo = QRadialGradient(cx, cy, R * 1.35)
-        gc = QColor(self.glow_color)
-        atmo.setColorAt(0.72, QColor(gc.red(), gc.green(), gc.blue(), 0))
-        atmo.setColorAt(0.88, QColor(gc.red(), gc.green(), gc.blue(), 70))
-        atmo.setColorAt(1.0, QColor(gc.red(), gc.green(), gc.blue(), 0))
-        p.setBrush(QBrush(atmo))
-        p.drawEllipse(QPointF(cx, cy), R * 1.35, R * 1.35)
-
-        # 海洋球体（带高光偏移）
-        ocean = QRadialGradient(cx - R * 0.32, cy - R * 0.34, R * 1.5)
-        ocean.setColorAt(0.0, self.ocean_a)
-        ocean.setColorAt(1.0, self.ocean_b)
-        p.setBrush(QBrush(ocean))
-        p.setPen(QPen(QColor(self.glow_color.red(), self.glow_color.green(),
-                             self.glow_color.blue(), 160), 1.4))
-        p.drawEllipse(QPointF(cx, cy), R, R)
-
-        # 裁剪到球体范围内
         clip = QPainterPath()
         clip.addEllipse(QPointF(cx, cy), R, R)
         p.setClipPath(clip)
@@ -297,6 +280,47 @@ class GlobeWidget(QWidget):
         if hover_marker is not None and hover_marker._front:
             self._draw_label(p, hover_marker)
 
+    def _blit_static_bg(self, p, w, h, cx, cy, R) -> None:
+        """绘制（并缓存）静态背景：星点 + 大气辉光 + 海洋球体。
+
+        这些图元对固定的窗口尺寸与配色完全不变，烘焙到一张 ARGB pixmap，
+        仅当尺寸/配色变化时重建；逐帧只需一次 drawPixmap。
+        """
+        from PyQt6.QtGui import QPixmap
+        key = (w, h, self.glow_color.rgba(), self.ocean_a.rgba(), self.ocean_b.rgba())
+        if self._bg_cache is None or self._bg_key != key:
+            pm = QPixmap(w, h)
+            pm.fill(Qt.GlobalColor.transparent)
+            bp = QPainter(pm)
+            bp.setRenderHint(QPainter.RenderHint.Antialiasing)
+            # 背景星点
+            bp.setPen(Qt.PenStyle.NoPen)
+            for sx, sy, sb in self._stars:
+                a = int(40 + sb * 120)
+                bp.setBrush(QColor(150, 190, 255, a))
+                rr = 0.6 + sb * 1.4
+                bp.drawEllipse(QPointF(sx * w, sy * h), rr, rr)
+            # 大气辉光
+            atmo = QRadialGradient(cx, cy, R * 1.35)
+            gc = QColor(self.glow_color)
+            atmo.setColorAt(0.72, QColor(gc.red(), gc.green(), gc.blue(), 0))
+            atmo.setColorAt(0.88, QColor(gc.red(), gc.green(), gc.blue(), 70))
+            atmo.setColorAt(1.0, QColor(gc.red(), gc.green(), gc.blue(), 0))
+            bp.setBrush(QBrush(atmo))
+            bp.drawEllipse(QPointF(cx, cy), R * 1.35, R * 1.35)
+            # 海洋球体（带高光偏移）
+            ocean = QRadialGradient(cx - R * 0.32, cy - R * 0.34, R * 1.5)
+            ocean.setColorAt(0.0, self.ocean_a)
+            ocean.setColorAt(1.0, self.ocean_b)
+            bp.setBrush(QBrush(ocean))
+            bp.setPen(QPen(QColor(self.glow_color.red(), self.glow_color.green(),
+                                  self.glow_color.blue(), 160), 1.4))
+            bp.drawEllipse(QPointF(cx, cy), R, R)
+            bp.end()
+            self._bg_cache = pm
+            self._bg_key = key
+        p.drawPixmap(0, 0, self._bg_cache)
+
     def _draw_marker(self, p: QPainter, m: GlobeMarker, sx: float, sy: float,
                      z: float, *, selected: bool) -> None:
         # 调大尺寸：基础半径 9~14（旧版 4~7），充分占据屏幕，更易点击 / 看清
@@ -321,9 +345,16 @@ class GlobeWidget(QWidget):
             p.save()
             p.setClipPath(path)
             target = QRectF(sx - rr, sy - rr, rr * 2, rr * 2)
-            scaled = pm.scaled(int(rr * 2), int(rr * 2),
-                               Qt.AspectRatioMode.KeepAspectRatioByExpanding,
-                               Qt.TransformationMode.SmoothTransformation)
+            sz = int(rr * 2)
+            ck = (pm.cacheKey(), sz)  # cacheKey 随 pixmap 内容变化，避免缓存陈旧
+            scaled = self._scaled_cache.get(ck)
+            if scaled is None:
+                scaled = pm.scaled(sz, sz,
+                                   Qt.AspectRatioMode.KeepAspectRatioByExpanding,
+                                   Qt.TransformationMode.SmoothTransformation)
+                if len(self._scaled_cache) > 512:
+                    self._scaled_cache.clear()
+                self._scaled_cache[ck] = scaled
             p.drawPixmap(target, scaled, QRectF(scaled.rect()))
             p.restore()
             p.setBrush(Qt.BrushStyle.NoBrush)
