@@ -13,500 +13,420 @@ THEANALYST_TOURNAMENT = [
         "team_cn": "法国",
         "code": "FRA",
         "group": "Group I",
-        "win_pct": 15.62,
-        "final_pct": 24.69,
-        "points": 6,
-        "played": 2
+        "win_pct": 18.66,
+        "final_pct": 28.37,
+        "points": 9,
+        "played": 3
     },
     {
         "team_en": "Argentina",
         "team_cn": "阿根廷",
         "code": "ARG",
         "group": "Group J",
-        "win_pct": 15.46,
-        "final_pct": 26.61,
-        "points": 6,
-        "played": 2
+        "win_pct": 16.26,
+        "final_pct": 30.04,
+        "points": 9,
+        "played": 3
     },
     {
         "team_en": "Spain",
         "team_cn": "西班牙",
         "code": "ESP",
         "group": "Group H",
-        "win_pct": 12.56,
-        "final_pct": 21.29,
-        "points": 4,
-        "played": 2
+        "win_pct": 13.47,
+        "final_pct": 22.66,
+        "points": 7,
+        "played": 3
     },
     {
         "team_en": "England",
         "team_cn": "英格兰",
         "code": "ENG",
         "group": "Group L",
-        "win_pct": 9.52,
-        "final_pct": 17.3,
-        "points": 4,
-        "played": 2
-    },
-    {
-        "team_en": "Portugal",
-        "team_cn": "葡萄牙",
-        "code": "POR",
-        "group": "Group K",
-        "win_pct": 6.6,
-        "final_pct": 12.92,
-        "points": 4,
-        "played": 2
-    },
-    {
-        "team_en": "Germany",
-        "team_cn": "德国",
-        "code": "GER",
-        "group": "Group E",
-        "win_pct": 6.57,
-        "final_pct": 12.76,
-        "points": 6,
-        "played": 2
-    },
-    {
-        "team_en": "Norway",
-        "team_cn": "挪威",
-        "code": "NOR",
-        "group": "Group I",
-        "win_pct": 5.1,
-        "final_pct": 10.92,
-        "points": 6,
-        "played": 2
+        "win_pct": 9.68,
+        "final_pct": 18.63,
+        "points": 7,
+        "played": 3
     },
     {
         "team_en": "Brazil",
         "team_cn": "巴西",
         "code": "BRA",
         "group": "Group C",
-        "win_pct": 4.78,
-        "final_pct": 9.51,
-        "points": 4,
-        "played": 2
+        "win_pct": 6.47,
+        "final_pct": 13.68,
+        "points": 7,
+        "played": 3
     },
     {
         "team_en": "Netherlands",
         "team_cn": "荷兰",
         "code": "NED",
         "group": "Group F",
-        "win_pct": 4.21,
-        "final_pct": 8.67,
-        "points": 4,
-        "played": 2
+        "win_pct": 5.11,
+        "final_pct": 10.13,
+        "points": 7,
+        "played": 3
     },
     {
-        "team_en": "United States",
-        "team_cn": "美国",
-        "code": "USA",
-        "group": "Group D",
-        "win_pct": 3.89,
-        "final_pct": 9.32,
+        "team_en": "Portugal",
+        "team_cn": "葡萄牙",
+        "code": "POR",
+        "group": "Group K",
+        "win_pct": 4.74,
+        "final_pct": 9.46,
+        "points": 5,
+        "played": 3
+    },
+    {
+        "team_en": "Germany",
+        "team_cn": "德国",
+        "code": "GER",
+        "group": "Group E",
+        "win_pct": 4.36,
+        "final_pct": 8.71,
         "points": 6,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Colombia",
         "team_cn": "哥伦比亚",
         "code": "COL",
         "group": "Group K",
-        "win_pct": 2.8,
-        "final_pct": 6.56,
+        "win_pct": 3.19,
+        "final_pct": 7.99,
+        "points": 7,
+        "played": 3
+    },
+    {
+        "team_en": "Norway",
+        "team_cn": "挪威",
+        "code": "NOR",
+        "group": "Group I",
+        "win_pct": 2.95,
+        "final_pct": 7.21,
         "points": 6,
-        "played": 2
+        "played": 3
     },
     {
-        "team_en": "Morocco",
-        "team_cn": "摩洛哥",
-        "code": "MAR",
-        "group": "Group C",
-        "win_pct": 1.68,
-        "final_pct": 4.2,
-        "points": 4,
-        "played": 2
-    },
-    {
-        "team_en": "Japan",
-        "team_cn": "日本",
-        "code": "JPN",
-        "group": "Group F",
-        "win_pct": 1.62,
-        "final_pct": 3.86,
-        "points": 4,
-        "played": 2
+        "team_en": "United States",
+        "team_cn": "美国",
+        "code": "USA",
+        "group": "Group D",
+        "win_pct": 2.45,
+        "final_pct": 5.68,
+        "points": 6,
+        "played": 3
     },
     {
         "team_en": "Switzerland",
         "team_cn": "瑞士",
         "code": "SUI",
         "group": "Group B",
-        "win_pct": 1.55,
-        "final_pct": 4.28,
-        "points": 4,
-        "played": 2
+        "win_pct": 2.17,
+        "final_pct": 5.84,
+        "points": 7,
+        "played": 3
     },
     {
         "team_en": "Mexico",
         "team_cn": "墨西哥",
         "code": "MEX",
         "group": "Group A",
-        "win_pct": 1.4,
-        "final_pct": 4.16,
+        "win_pct": 1.81,
+        "final_pct": 5.02,
+        "points": 9,
+        "played": 3
+    },
+    {
+        "team_en": "Morocco",
+        "team_cn": "摩洛哥",
+        "code": "MAR",
+        "group": "Group C",
+        "win_pct": 1.63,
+        "final_pct": 3.8,
+        "points": 7,
+        "played": 3
+    },
+    {
+        "team_en": "Belgium",
+        "team_cn": "比利时",
+        "code": "BEL",
+        "group": "Group G",
+        "win_pct": 1.58,
+        "final_pct": 3.96,
+        "points": 5,
+        "played": 3
+    },
+    {
+        "team_en": "Japan",
+        "team_cn": "日本",
+        "code": "JPN",
+        "group": "Group F",
+        "win_pct": 1.02,
+        "final_pct": 2.94,
+        "points": 5,
+        "played": 3
+    },
+    {
+        "team_en": "Ecuador",
+        "team_cn": "厄瓜多尔",
+        "code": "ECU",
+        "group": "Group E",
+        "win_pct": 0.61,
+        "final_pct": 1.93,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Ecuador",
+        "team_cn": "厄瓜多尔",
+        "code": "ECU",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.61,
+        "final_pct": 1.93,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Croatia",
+        "team_cn": "克罗地亚",
+        "code": "CRO",
+        "group": "Group L",
+        "win_pct": 0.58,
+        "final_pct": 1.55,
         "points": 6,
-        "played": 2
-    },
-    {
-        "team_en": "Belgium",
-        "team_cn": "比利时",
-        "code": "BEL",
-        "group": "Group G",
-        "win_pct": 1.4,
-        "final_pct": 3.66,
-        "points": 2,
-        "played": 2
-    },
-    {
-        "team_en": "Belgium",
-        "team_cn": "比利时",
-        "code": "BEL",
-        "group": "3rd Place Ranking",
-        "win_pct": 1.4,
-        "final_pct": 3.66,
-        "points": 2,
-        "played": 2
-    },
-    {
-        "team_en": "Croatia",
-        "team_cn": "克罗地亚",
-        "code": "CRO",
-        "group": "Group L",
-        "win_pct": 0.9,
-        "final_pct": 2.56,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Croatia",
-        "team_cn": "克罗地亚",
-        "code": "CRO",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.9,
-        "final_pct": 2.56,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Canada",
-        "team_cn": "加拿大",
-        "code": "CAN",
-        "group": "Group B",
-        "win_pct": 0.62,
-        "final_pct": 2.33,
-        "points": 4,
-        "played": 2
-    },
-    {
-        "team_en": "Egypt",
-        "team_cn": "埃及",
-        "code": "EGY",
-        "group": "Group G",
-        "win_pct": 0.5,
-        "final_pct": 1.83,
-        "points": 4,
-        "played": 2
-    },
-    {
-        "team_en": "Uruguay",
-        "team_cn": "乌拉圭",
-        "code": "URU",
-        "group": "Group H",
-        "win_pct": 0.36,
-        "final_pct": 1.06,
-        "points": 2,
-        "played": 2
-    },
-    {
-        "team_en": "Austria",
-        "team_cn": "奥地利",
-        "code": "AUT",
-        "group": "Group J",
-        "win_pct": 0.32,
-        "final_pct": 1.25,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Ghana",
-        "team_cn": "加纳",
-        "code": "GHA",
-        "group": "Group L",
-        "win_pct": 0.32,
-        "final_pct": 1.32,
-        "points": 4,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Senegal",
         "team_cn": "塞内加尔",
         "code": "SEN",
         "group": "Group I",
-        "win_pct": 0.29,
-        "final_pct": 1.02,
-        "points": 0,
-        "played": 2
+        "win_pct": 0.54,
+        "final_pct": 1.62,
+        "points": 3,
+        "played": 3
     },
     {
         "team_en": "Senegal",
         "team_cn": "塞内加尔",
         "code": "SEN",
         "group": "3rd Place Ranking",
-        "win_pct": 0.29,
-        "final_pct": 1.02,
-        "points": 0,
-        "played": 2
+        "win_pct": 0.54,
+        "final_pct": 1.62,
+        "points": 3,
+        "played": 3
     },
     {
-        "team_en": "Sweden",
-        "team_cn": "瑞典",
-        "code": "SWE",
-        "group": "Group F",
-        "win_pct": 0.28,
-        "final_pct": 1.12,
-        "points": 3,
-        "played": 2
+        "team_en": "Canada",
+        "team_cn": "加拿大",
+        "code": "CAN",
+        "group": "Group B",
+        "win_pct": 0.47,
+        "final_pct": 1.68,
+        "points": 4,
+        "played": 3
     },
     {
-        "team_en": "Sweden",
-        "team_cn": "瑞典",
-        "code": "SWE",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.28,
-        "final_pct": 1.12,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Korea Republic",
-        "team_cn": "韩国",
-        "code": "KOR",
-        "group": "Group A",
-        "win_pct": 0.27,
-        "final_pct": 0.94,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Paraguay",
-        "team_cn": "巴拉圭",
-        "code": "PAR",
-        "group": "Group D",
-        "win_pct": 0.23,
-        "final_pct": 0.92,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Paraguay",
-        "team_cn": "巴拉圭",
-        "code": "PAR",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.23,
-        "final_pct": 0.92,
-        "points": 3,
-        "played": 2
+        "team_en": "Egypt",
+        "team_cn": "埃及",
+        "code": "EGY",
+        "group": "Group G",
+        "win_pct": 0.44,
+        "final_pct": 1.82,
+        "points": 5,
+        "played": 3
     },
     {
         "team_en": "Australia",
         "team_cn": "澳大利亚",
         "code": "AUS",
         "group": "Group D",
-        "win_pct": 0.2,
-        "final_pct": 1.0,
-        "points": 3,
-        "played": 2
+        "win_pct": 0.34,
+        "final_pct": 1.33,
+        "points": 4,
+        "played": 3
     },
     {
-        "team_en": "Algeria",
-        "team_cn": "阿尔及利亚",
-        "code": "ALG",
-        "group": "Group J",
-        "win_pct": 0.19,
-        "final_pct": 0.7,
-        "points": 3,
-        "played": 2
+        "team_en": "Sweden",
+        "team_cn": "瑞典",
+        "code": "SWE",
+        "group": "Group F",
+        "win_pct": 0.29,
+        "final_pct": 0.86,
+        "points": 4,
+        "played": 3
     },
     {
-        "team_en": "Algeria",
-        "team_cn": "阿尔及利亚",
-        "code": "ALG",
+        "team_en": "Sweden",
+        "team_cn": "瑞典",
+        "code": "SWE",
         "group": "3rd Place Ranking",
-        "win_pct": 0.19,
-        "final_pct": 0.7,
-        "points": 3,
-        "played": 2
+        "win_pct": 0.29,
+        "final_pct": 0.86,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Ghana",
+        "team_cn": "加纳",
+        "code": "GHA",
+        "group": "Group L",
+        "win_pct": 0.28,
+        "final_pct": 1.06,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Ghana",
+        "team_cn": "加纳",
+        "code": "GHA",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.28,
+        "final_pct": 1.06,
+        "points": 4,
+        "played": 3
     },
     {
         "team_en": "Côte d'Ivoire",
         "team_cn": "Côte d'Ivoire",
         "code": "CIV",
         "group": "Group E",
-        "win_pct": 0.17,
-        "final_pct": 0.68,
-        "points": 3,
-        "played": 2
+        "win_pct": 0.24,
+        "final_pct": 1.06,
+        "points": 6,
+        "played": 3
     },
     {
-        "team_en": "Ecuador",
-        "team_cn": "厄瓜多尔",
-        "code": "ECU",
-        "group": "Group E",
-        "win_pct": 0.14,
-        "final_pct": 0.39,
-        "points": 1,
-        "played": 2
+        "team_en": "Algeria",
+        "team_cn": "阿尔及利亚",
+        "code": "ALG",
+        "group": "Group J",
+        "win_pct": 0.21,
+        "final_pct": 0.94,
+        "points": 4,
+        "played": 3
     },
     {
-        "team_en": "Ecuador",
-        "team_cn": "厄瓜多尔",
-        "code": "ECU",
+        "team_en": "Algeria",
+        "team_cn": "阿尔及利亚",
+        "code": "ALG",
         "group": "3rd Place Ranking",
-        "win_pct": 0.14,
-        "final_pct": 0.39,
-        "points": 1,
-        "played": 2
+        "win_pct": 0.21,
+        "final_pct": 0.94,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Paraguay",
+        "team_cn": "巴拉圭",
+        "code": "PAR",
+        "group": "Group D",
+        "win_pct": 0.11,
+        "final_pct": 0.47,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Paraguay",
+        "team_cn": "巴拉圭",
+        "code": "PAR",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.11,
+        "final_pct": 0.47,
+        "points": 4,
+        "played": 3
     },
     {
         "team_en": "Bosnia-Herzegovina",
         "team_cn": "波黑",
         "code": "BIH",
         "group": "Group B",
-        "win_pct": 0.12,
-        "final_pct": 0.51,
-        "points": 1,
-        "played": 2
+        "win_pct": 0.1,
+        "final_pct": 0.4,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Austria",
+        "team_cn": "奥地利",
+        "code": "AUT",
+        "group": "Group J",
+        "win_pct": 0.1,
+        "final_pct": 0.42,
+        "points": 4,
+        "played": 3
     },
     {
         "team_en": "Bosnia-Herzegovina",
         "team_cn": "波黑",
         "code": "BIH",
         "group": "3rd Place Ranking",
-        "win_pct": 0.12,
-        "final_pct": 0.51,
-        "points": 1,
-        "played": 2
-    },
-    {
-        "team_en": "IR Iran",
-        "team_cn": "IR Iran",
-        "code": "IRN",
-        "group": "Group G",
         "win_pct": 0.1,
-        "final_pct": 0.47,
-        "points": 2,
-        "played": 2
-    },
-    {
-        "team_en": "Scotland",
-        "team_cn": "苏格兰",
-        "code": "SCO",
-        "group": "Group C",
-        "win_pct": 0.09,
-        "final_pct": 0.48,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Scotland",
-        "team_cn": "苏格兰",
-        "code": "SCO",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.09,
-        "final_pct": 0.48,
-        "points": 3,
-        "played": 2
-    },
-    {
-        "team_en": "Cabo Verde",
-        "team_cn": "Cabo Verde",
-        "code": "CPV",
-        "group": "Group H",
-        "win_pct": 0.07,
-        "final_pct": 0.29,
-        "points": 2,
-        "played": 2
-    },
-    {
-        "team_en": "Cabo Verde",
-        "team_cn": "Cabo Verde",
-        "code": "CPV",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.07,
-        "final_pct": 0.29,
-        "points": 2,
-        "played": 2
-    },
-    {
-        "team_en": "Czechia",
-        "team_cn": "捷克",
-        "code": "CZE",
-        "group": "Group A",
-        "win_pct": 0.04,
-        "final_pct": 0.15,
-        "points": 1,
-        "played": 2
-    },
-    {
-        "team_en": "Czechia",
-        "team_cn": "捷克",
-        "code": "CZE",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.04,
-        "final_pct": 0.15,
-        "points": 1,
-        "played": 2
-    },
-    {
-        "team_en": "Congo DR",
-        "team_cn": "Congo DR",
-        "code": "COD",
-        "group": "Group K",
-        "win_pct": 0.02,
-        "final_pct": 0.12,
-        "points": 1,
-        "played": 2
-    },
-    {
-        "team_en": "Congo DR",
-        "team_cn": "Congo DR",
-        "code": "COD",
-        "group": "3rd Place Ranking",
-        "win_pct": 0.02,
-        "final_pct": 0.12,
-        "points": 1,
-        "played": 2
+        "final_pct": 0.4,
+        "points": 4,
+        "played": 3
     },
     {
         "team_en": "South Africa",
         "team_cn": "南非",
         "code": "RSA",
         "group": "Group A",
-        "win_pct": 0.01,
-        "final_pct": 0.03,
-        "points": 1,
-        "played": 2
+        "win_pct": 0.05,
+        "final_pct": 0.22,
+        "points": 4,
+        "played": 3
     },
     {
-        "team_en": "Saudi Arabia",
-        "team_cn": "沙特阿拉伯",
-        "code": "KSA",
+        "team_en": "Congo DR",
+        "team_cn": "Congo DR",
+        "code": "COD",
+        "group": "Group K",
+        "win_pct": 0.04,
+        "final_pct": 0.28,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Congo DR",
+        "team_cn": "Congo DR",
+        "code": "COD",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.04,
+        "final_pct": 0.28,
+        "points": 4,
+        "played": 3
+    },
+    {
+        "team_en": "Cabo Verde",
+        "team_cn": "Cabo Verde",
+        "code": "CPV",
         "group": "Group H",
-        "win_pct": 0.01,
-        "final_pct": 0.06,
+        "win_pct": 0.03,
+        "final_pct": 0.22,
+        "points": 3,
+        "played": 3
+    },
+    {
+        "team_en": "Korea Republic",
+        "team_cn": "韩国",
+        "code": "KOR",
+        "group": "Group A",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 3,
+        "played": 3
+    },
+    {
+        "team_en": "Czechia",
+        "team_cn": "捷克",
+        "code": "CZE",
+        "group": "Group A",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
         "points": 1,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Qatar",
@@ -514,9 +434,19 @@ THEANALYST_TOURNAMENT = [
         "code": "QAT",
         "group": "Group B",
         "win_pct": 0.0,
-        "final_pct": 0.01,
+        "final_pct": 0.0,
         "points": 1,
-        "played": 2
+        "played": 3
+    },
+    {
+        "team_en": "Scotland",
+        "team_cn": "苏格兰",
+        "code": "SCO",
+        "group": "Group C",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 3,
+        "played": 3
     },
     {
         "team_en": "Haiti",
@@ -526,7 +456,7 @@ THEANALYST_TOURNAMENT = [
         "win_pct": 0.0,
         "final_pct": 0.0,
         "points": 0,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Türkiye",
@@ -535,8 +465,8 @@ THEANALYST_TOURNAMENT = [
         "group": "Group D",
         "win_pct": 0.0,
         "final_pct": 0.0,
-        "points": 0,
-        "played": 2
+        "points": 3,
+        "played": 3
     },
     {
         "team_en": "Curaçao",
@@ -546,7 +476,7 @@ THEANALYST_TOURNAMENT = [
         "win_pct": 0.0,
         "final_pct": 0.0,
         "points": 1,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Tunisia",
@@ -556,7 +486,17 @@ THEANALYST_TOURNAMENT = [
         "win_pct": 0.0,
         "final_pct": 0.0,
         "points": 0,
-        "played": 2
+        "played": 3
+    },
+    {
+        "team_en": "IR Iran",
+        "team_cn": "IR Iran",
+        "code": "IRN",
+        "group": "Group G",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 3,
+        "played": 3
     },
     {
         "team_en": "New Zealand",
@@ -564,9 +504,29 @@ THEANALYST_TOURNAMENT = [
         "code": "NZL",
         "group": "Group G",
         "win_pct": 0.0,
-        "final_pct": 0.02,
+        "final_pct": 0.0,
         "points": 1,
-        "played": 2
+        "played": 3
+    },
+    {
+        "team_en": "Uruguay",
+        "team_cn": "乌拉圭",
+        "code": "URU",
+        "group": "Group H",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 2,
+        "played": 3
+    },
+    {
+        "team_en": "Saudi Arabia",
+        "team_cn": "沙特阿拉伯",
+        "code": "KSA",
+        "group": "Group H",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 2,
+        "played": 3
     },
     {
         "team_en": "Iraq",
@@ -574,9 +534,9 @@ THEANALYST_TOURNAMENT = [
         "code": "IRQ",
         "group": "Group I",
         "win_pct": 0.0,
-        "final_pct": 0.01,
+        "final_pct": 0.0,
         "points": 0,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Jordan",
@@ -586,7 +546,7 @@ THEANALYST_TOURNAMENT = [
         "win_pct": 0.0,
         "final_pct": 0.0,
         "points": 0,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Uzbekistan",
@@ -594,9 +554,9 @@ THEANALYST_TOURNAMENT = [
         "code": "UZB",
         "group": "Group K",
         "win_pct": 0.0,
-        "final_pct": 0.01,
+        "final_pct": 0.0,
         "points": 0,
-        "played": 2
+        "played": 3
     },
     {
         "team_en": "Panama",
@@ -606,44 +566,480 @@ THEANALYST_TOURNAMENT = [
         "win_pct": 0.0,
         "final_pct": 0.0,
         "points": 0,
-        "played": 2
+        "played": 3
+    },
+    {
+        "team_en": "IR Iran",
+        "team_cn": "IR Iran",
+        "code": "IRN",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 3,
+        "played": 3
+    },
+    {
+        "team_en": "Korea Republic",
+        "team_cn": "韩国",
+        "code": "KOR",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 3,
+        "played": 3
+    },
+    {
+        "team_en": "Scotland",
+        "team_cn": "苏格兰",
+        "code": "SCO",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 3,
+        "played": 3
+    },
+    {
+        "team_en": "Uruguay",
+        "team_cn": "乌拉圭",
+        "code": "URU",
+        "group": "3rd Place Ranking",
+        "win_pct": 0.0,
+        "final_pct": 0.0,
+        "points": 2,
+        "played": 3
     }
 ]
 
 THEANALYST_MATCHES = [
     {
-        "slug": "turkiye-vs-usa-prediction-world-cup-2026-match-preview",
-        "url": "https://theanalyst.com/articles/turkiye-vs-usa-prediction-world-cup-2026-match-preview",
-        "home_en": "Türkiye",
-        "away_en": "USA",
-        "home_cn": "土耳其",
-        "away_cn": "美国",
-        "home_pct": 29.3,
-        "draw_pct": 23.0,
-        "away_pct": 47.7,
+        "slug": "south-africa-vs-canada-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/south-africa-vs-canada-prediction-world-cup-2026-match-preview",
+        "home_en": "South Africa",
+        "away_en": "Canada",
+        "home_cn": "南非",
+        "away_cn": "加拿大",
+        "home_pct": 19.7,
+        "draw_pct": 24.1,
+        "away_pct": 56.2,
         "insights": [
-            "The Opta supercomputer expects the USA to finish their Group D campaign on the front foot, with Mauricio Pochettino’s side winning 47.7% of the pre-match simulations.",
-            "USA have won back-to-back World Cup matches for the first time since the very first pair of games they played in the competition (against Belgium and Paraguay) in 1930. They have never won three in a row at the tournament.",
-            "Türkiye have two losses from two at this World Cup, yet have never lost three games in a row in the competition. They were also kept goalless by both Australia and Paraguay, having only failed to score in one of their previous 10 World Cup matches."
+            "Canada are the narrow favourites, winning 56.2% of the Opta supercomputer’s pre-match simulations compared to South Africa’s 19.7% chance of victory.",
+            "South Africa boss Hugo Broos will be the oldest head coach to take charge of a World Cup knockout match.",
+            "This will be the first knockout-stage appearance at the finals for both teams."
         ],
-        "prediction": "From 25,000 match simulations, Pochettino’s charges are given a healthy win probability of 47.7%. Despite their dismal showing so far, a Türkiye victory isn’t seen as too big of a stretch, with Montella’s side given a 29.3% win rating, just ahead of a draw at exactly 23.0% probability.",
-        "summary_cn": "随着世界杯淘汰赛的到来，土耳其队将在这场比赛后退出舞台，Opta 超级计算机将美国队视为赢得这场 D 组决胜局的热门球队。",
+        "prediction": "The Opta supercomputer swayed towards a Canada win inside 90 minutes: that happened in 56.2% of 25,000 pre-match simulations. South Africa still hold a 19.7% chance of winning in normal time, while the draw – which would mean extra-time and possibly penalties – accounted for 24.1% of scenarios.",
+        "summary_cn": "Opta 超级计算机在 90 分钟内就倾向于加拿大获胜：在 25,000 次赛前模拟中，有 56.2% 发生了这种情况。",
         "analysis_cn": [
             [
                 "关键数据速览",
-                "· Opta 超级计算机预计美国队将在 D 组比赛中取得领先，毛里西奥·波切蒂诺的球队在赛前模拟中获胜率为 47.7%。\n· 自 1930 年首次参加世界杯比赛（对阵比利时和巴拉圭）以来，美国队首次连续赢得世界杯比赛。他们从未在世界杯比赛中取得三连胜。\n· 土耳其队在本届世界杯上取得了两场两负的成绩，但从未在比赛中连续输过三场比赛。他们还被澳大利亚和巴拉圭两队保持无进球，在之前的 10 场世界杯比赛中只有一场没有进球。"
+                "· 加拿大队以微弱优势获胜，在 Opta 超级计算机的赛前模拟中获胜率为 56.2%，而南非队的获胜率为 19.7%。\n· 南非主帅雨果·布罗斯将成为执掌世界杯淘汰赛最年长的主教练。\n· 这将是两支球队首次进入决赛淘汰赛阶段。"
             ],
             [
                 "深度分析",
-                "毛里西奥·波切蒂诺 (Mauricio Pochettino) 率领的美国队正在备战 2026 年世界杯小组赛最后一场比赛，人们对他们抱有很高的期望，而共同主办方在进入 32 强之前已经确定为 D 组冠军。\n相反，美国队面对的是D组垫底的土耳其队，没有机会进入淘汰赛，他们在首场比赛中分别以2-0和1-0的比分输给了澳大利亚和巴拉圭。\n文森佐·蒙特拉的球队在输给澳大利亚队的比赛中每半场中段都有失球，但上次对阵巴拉圭队时几乎从一开始就落后。\n马蒂亚斯·加拉尔萨 (Matías Galarza) 在仅用时 1 分 4 秒为巴拉圭攻入制胜球，这不仅是本届世界杯最快的进球，也是自 2018 年丹麦队对阵克罗地亚队时马蒂亚斯·约根森 (Mathias Jørgensen) 在 55 秒内破门得分以来所有赛事中最快的进球。\n土耳其队在半场结束时米格尔·阿尔米龙的红牌帮助土耳其队重返比赛，但尽管他们总共尝试了 32 次射门，但他们追寻的扳平比分始终未能实现。\n这是本届世界杯上单场比赛中单支球队射门次数最多的球队，而土耳其队在最近 66 次射门组合中都没有进球（2026 年 62 次，2002 年 4 次），这是世界杯历史上第二长的连续射门次数（仅次于阿尔及利亚）。\n在本届世界杯上，凯南·耶尔迪兹在射门次数（12 次）、在对方禁区触球次数（20 次）和成功带球次数（5 次）方面领先土耳其队，但他的 12 次射门中只有 1 次射正，总预期进球数仅为 0.45（每次射门 0.04）。\n土耳其队在对阵巴拉圭队的比赛中毫无成果，控球率高达 78.6%，这是世界杯比赛历史上第六高的控球率，而阿卜杜勒克里姆·巴尔达克奇 (Abdülkerim Bardakci) 的 98 次传球是自 1966 年以来土耳其球员单场比赛中传球次数最多的。\n如果土耳其想要有机会对阵这支美国队，蒙特拉需要伊尔迪兹、巴达克奇、阿尔达·居勒和队长哈坎·恰尔汗奥卢等球员挺身而出，美国队在前两场比赛后势头不断增强。\n美国队是本届世界杯迄今为止表现最出色的球队之一，他们在首场比赛中以 4-1 击败巴拉圭队，随后经过一场艰苦的比赛以 2-0 战胜澳大利亚队，确定了 D 组冠军的位置。\n波切蒂诺的球队在两场比赛中打进了 6 个进球——继 1930 年和 2002 年两次打入 7 个进球之后，这已经是美国队在单届世界杯上的第三高进球数。在 2026 年世界杯的 6 个进球中，有 5 个是在上半场比赛中打进的。\n在福拉林·巴洛贡的梅开二度和乔瓦尼·雷纳的火箭将巴拉圭逼入绝境后，澳大利亚球员卡梅伦·伯吉斯早早将巴洛贡的传中带入自家球门，亚历克斯·弗里曼在半场结束前将东道主的优势扩大了一倍。\n弗里曼是本届世界杯上唯一一位同时进球和助攻的美国球员，成为自2014年约翰·布鲁克斯对阵加纳队以来第一位在世界杯上进球的后卫。\n这个最初被禁止的头球让美国队在比赛和 D 组中都占据了主导地位，从而锁定了 32 强对阵阿尔及利亚、奥地利或 B、E、F 或 I 组中其他第三名球队之一的道路。\n在对阵澳大利亚的比赛中，美国队展现出了深入晋级本届赛事所需的实力和勇气。如果像巴洛贡和康复的克里斯蒂安·普利西奇这样的球员在对阵土耳其的比赛中表现出色，人们对他们能够做到这一点的信心将会进一步增强。"
+                "南非和加拿大将在洛杉矶进行 32 强比赛，开启世界杯淘汰赛阶段。\n周日的比赛对于这对组合来说是未知的领域，因为在 2026 年版之前，两人都从未在 FIFA 旗舰赛事的小组赛中出线。\n这将是自 2002 年锦标赛以来两支球队首次在此类比赛中交锋。土耳其队在那场比赛中以1-0击败了东道主日本队，这对于南非队来说可能是一个积极的预兆，因为南非队将在这里面对共同东道主加拿大队。\n没有多少人预料到巴法纳能够以 A 组亚军的身份晋级，击败韩国和捷克队，落后于墨西哥。事实上，南非队是小组中在对方禁区内触球次数最少的球队（35 次），创造的绝佳机会也是最少的（2 次）。\n但雨果·布鲁斯可能喜欢扮演失败者的角色。南非目前世界排名第 61 位，将成为世界杯淘汰赛阶段排名倒数第三的球队，仅次于尼日利亚（1998 年第 74 位）和俄罗斯（2018 年第 70 位），并与日本（2018 年第 61 位）持平。\n对于 74 岁的布罗斯来说，这也将是一次历史性的出游。这位南非主教练将成为历史上执教世界杯淘汰赛阶段球队最年长的主教练。\n南非队的亚军出线很大程度上要归功于萨佩洛·马塞科，他在 MD3 比赛中以 1-0 战胜韩国队，取得了至关重要的进球。\n尽管在 270 分钟的出场时间中只打了 159 分钟，但他在小组赛阶段的射门次数比任何其他南非球员都多（8 次）。其中只有一项努力达到了目标——他上次的致胜进球。\n布罗斯不会关心谁在这里交付。南非队过去 11 个世界杯进球是由 11 名不同的球员打进的——那么接下来谁会站出来呢？\n杰西·马什可能知道加拿大队的进球威胁来自哪里。迄今为止，内森·萨利巴在代表加拿大参加的两届世界杯中已经贡献了三个进球（1个进球，2次助攻），而在他的前15场国际比赛中只打进了两个进球。\n马什似乎确实提高了他的球队在门前的表现。加拿大队在小组赛阶段共射正 21 次，几乎是他们前两届世界杯参赛次数总和的两倍（1986 年 6 次，2022 年 5 次）。\n这也转化为目标。加拿大队在前四场世界杯比赛中未能进球，但此后在过去五场比赛中每场至少进球一次。然而，他们在本届赛事（6/10）中的 60% 进球都来自于本届 MD2 比赛中 6-0 战胜九人卡塔尔队的比赛。\n加拿大队也以失败告终，进入淘汰赛。事实证明，在MD3 1-2负于瑞士队的比赛中，诺言大卫的进球只是一个安慰，因为东道主队被挤到B组头名位置。\n尽管这场失利，加拿大队仍以 4 分晋级淘汰赛，这是自 1994 年美国队（同为 4 分）以来世界杯小组赛出线最少的国家。\n不过，美国队在该届淘汰赛第一轮就被巴西队淘汰，马什知道加拿大队不能在这场他们以微弱优势晋级的比赛中失利。"
             ],
             [
                 "历史交锋",
-                "这将是土耳其队和美国队在世界杯上的首次交锋，但两国队之间并不陌生，此前五次交锋，双方取得了两胜一平、各进七个球的平衡战绩。\n他们的最后一场比赛是在 2025 年 6 月；在康涅狄格州举行的一场友谊赛中，杰克·麦克格林 (Jack McGlynn) 在 60 秒内为美国队进球，而古勒 (Güler) 和凯雷姆·阿克图科格鲁 (Kerem Aktürkoglu) 在第 24 分钟和第 27 分钟分别进球回应，最终土耳其队以 2-1 获胜。\n尽管本届世界杯开局强劲，美国队在过去 20 场对阵欧足联附属国家的世界杯比赛中只赢了一场，并在 2002 年小组赛中以 3-2 击败了葡萄牙队。"
+                "这只是南非和加拿大之间的第二次会议。\n巴法纳 巴法纳在 2007 年德班的一场友谊赛中以 2-0 获胜。\n令马什担心的是，加拿大在与非洲国家的两场比赛中都输了。\n他们在2001年联合会杯上0-2负于喀麦隆，在2022年卡塔尔世界杯上1-2负于摩洛哥。"
             ],
             [
                 "赛前预测（Opta 超算）",
-                "随着世界杯淘汰赛的到来，土耳其队将在这场比赛后退出舞台，Opta 超级计算机将美国队视为赢得这场 D 组决胜局的热门球队。\n根据 25,000 场比赛模拟，波切蒂诺的球队获胜概率为 47.7%。\n尽管土耳其队到目前为止表现不佳，但人们认为土耳其队的胜利并不算太大，蒙特拉队的获胜率为 29.3%，仅领先于平局的概率为 23.0%。"
+                "Opta 超级计算机在 90 分钟内就倾向于加拿大获胜：在 25,000 次赛前模拟中，有 56.2% 发生了这种情况。\n南非队在正常比赛中仍有 19.7% 的获胜机会，而平局——这意味着加时赛和可能的点球——占了 24.1% 的情况。\n加拿大晋级的机会为 68.3%，这意味着南非晋级的机会为 31.7%。"
+            ]
+        ]
+    },
+    {
+        "slug": "brazil-vs-japan-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/brazil-vs-japan-prediction-world-cup-2026-match-preview",
+        "home_en": "Brazil",
+        "away_en": "Japan",
+        "home_cn": "巴西",
+        "away_cn": "日本",
+        "home_pct": 57.7,
+        "draw_pct": null,
+        "away_pct": 24.3,
+        "insights": [
+            "According to the Opta supercomputer, Brazil have a 57.7% probability of winning within 90 minutes; there is also a 24.3% chance this tie goes to extra-time.",
+            "Japan have a modest 18% chance of victory inside regulation.",
+            "Still seeking their first World Cup knockout win, Japan have only beaten Brazil once across 14 prior meetings (D2 L11), though it was the most recent."
+        ],
+        "prediction": "Brazil are clear favourites to progress, as the Opta supercomputer’s 25,000 pre-match simulations gave them a 57.3% chance of winning within 90 minutes. Japan’s hopes are rated at just 19.7%; the probability of going to extra-time – or potentially penalties – is 23.0%.",
+        "summary_cn": "巴西队显然是晋级的热门球队，Opta 超级计算机的 25,000 次赛前模拟让他们在 90 分钟内获胜的几率为 57.3%。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 根据Opta超级计算机的计算，巴西队在90分钟内获胜的概率为57.7%；这场比赛还有 24.3% 的机会进入加时赛。\n· 日本队在常规赛中获胜的可能性只有 18%。\n· 日本仍在寻求首次世界杯淘汰赛胜利，在之前的 14 场比赛中仅击败过巴西一次（平 2 负 11），尽管这是最近的一次。"
+            ],
+            [
+                "深度分析",
+                "巴西队和日本队将在 16 强赛中对阵挪威队和科特迪瓦队，他们将在休斯敦体育场进行一场高风险的德州对决。\n这支南美球队在 C 组中以 1-1 战平摩洛哥、3-0 战胜海地和苏格兰，以小组头名身份进入本阶段。\n卡洛·安切洛蒂的桑巴明星似乎找到了一些节奏，自从第一比赛日早些时候落后以来，他们已经连续七个进球没有回复。\n值得注意的是，巴西上一次在世界杯上连续较长时间连续参赛还要追溯到 2002 年，当时他们最后一次捧起了足坛最令人垂涎的奖杯。\n甚至还有机会重新引进内马尔，这位受伤的前锋981天以来首次身披黄衫出场，并成为第四位参加四届世界杯的巴西人。\n值得注意的是，自 1982 年以来，桑巴军团在每个小组赛阶段都取得了第一名，但在最近的几次比赛中，深入的表现经常被证明超越了他们。\n巴西队在过去六场世界杯淘汰赛中有四场被淘汰——比之前的 17 场比赛更频繁——并且通常会被欧洲对手淘汰。\n然而，自1990年输给宿敌阿根廷以来，他们还没有在首轮淘汰赛中被淘汰。\n这种关系将把两个具有深厚历史和文化联系的国家结合在一起，而不是激烈的竞争对手：世界上最大的日本侨民居住在巴西境内。\n从前桑巴军团球星济科推广新生的 J 联赛，到他的巴西同胞入籍并代表日本国家队，肯定存在着相互尊重。\n然而，这支南美豪门是五届世界冠军，而这只是日本在世界杯上第五次淘汰赛，他们还没有赢过一场。\n运气不好的日本队又遭遇了一场艰难的抽签：他们之前的四个征服者中的三个最终获得了第三名——2002 年的土耳其、2018 年的比利时、2022 年的克罗地亚。\n在此之前，球队在战平荷兰和瑞典的同时又以 4-0 击败突尼斯，守安肇的球队在 F 组获得第二名。\n对阵瑞典，39岁的长友佑都成为首位五次闯入决赛的亚洲选手；现在，守康将备战他的第八场世界杯比赛，这将创下亚洲教练的新纪录。\n在克服了队长远藤渡和球星三兔薰的伤病困扰后，日本队在 10 场比赛中保持不败，其中包括友谊赛战胜巴西队。\n即使久保建英周一仍无法出战，他们也肯定会构成威胁。七个进球已经是他们在世界杯上进球最多的了。\n在本届世界杯上，日本队总共有 10 名球员进球或助攻，这又是一项全国纪录，而 Livewire 前锋上田绫濑（Ayase Ueda）（3 名）已经成为单届世界杯上进球数最多的日本球员。\n但巴西可以以毒攻毒。\n马修斯·库尼亚 (Matheus Cunha) 仅 4 次射门就打入 3 个进球；维尼修斯·儒尼奥尔打进了四粒进球，这是小组赛阶段进球最多的巴西人，与罗纳尔多（2002年）、内马尔（2014年）和雅伊尔津霍（1970年）并列。\n年仅 19 岁零 325 天的拉扬在对阵苏格兰的比赛中无缝替补受伤的拉芬哈，成为为桑巴军团提供世界杯助攻的最年轻球员（自 1966 年有此记录以来）。"
+            ],
+            [
+                "历史交锋",
+                "巴西只输给过日本一次（11胜2平），其中包括20年前两人在世界杯上的唯一一场比赛中以4-1获胜。\n然而，日本队唯一的成功发生在最近的一场比赛中，即去年 10 月以 3-2 获胜：巴西队在东京以两球领先，上田为东道主队打进致胜球。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "巴西队显然是晋级的热门球队，Opta 超级计算机的 25,000 次赛前模拟让他们在 90 分钟内获胜的几率为 57.3%。\n日本的希望仅为19.7%；进入加时赛或可能受到处罚的概率为 23.0%。"
+            ]
+        ]
+    },
+    {
+        "slug": "jordan-vs-argentina-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/jordan-vs-argentina-prediction-world-cup-2026-match-preview",
+        "home_en": "Jordan",
+        "away_en": "Argentina",
+        "home_cn": "约旦",
+        "away_cn": "阿根廷",
+        "home_pct": 8.7,
+        "draw_pct": null,
+        "away_pct": null,
+        "insights": [
+            "Jordan have just an 8.7% chance of pulling off an upset, according to the Opta supercomputer’s pre-match simulations.",
+            "Along with scoring all of Argentina’s goals at this World Cup (5), Lionel Messi also leads his team for chances created (4), through balls (4), line-breaking passes in the final third (11), completed dribbles (3) and progressive carries (22).",
+            "After two games at this World Cup, Argentina (50%) rank third out of the four teams in Group J for average possession, behind Algeria (61%) and Austria (54.4%)."
+        ],
+        "prediction": "Even if Messi is left out, it is hard to look past Argentina in this match-up. They came out on top in 78.1% of the Opta supercomputer’s 25,000 pre-match simulations. The result was a draw in 13.2% of projections, leaving Jordan with just a 8.7% chance of making history with their first World Cup win.",
+        "summary_cn": "即使梅西被排除在外，这场比赛也很难超越阿根廷队。在 Opta 超级计算机的 25,000 次赛前模拟中，他们以 78.1% 的成绩名列前茅。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 根据 Opta 超级计算机的赛前模拟，乔丹爆冷的几率只有 8.7%。\n· 除了打进阿根廷队在本届世界杯上的所有进球（5 球）外，梅西在创造机会（4 球）、直塞球（4 球）、最后三区的突破传球（11 球）、完成带球（3 球）和进步带球（22 球）方面也领先全队。\n· 本届世界杯两场比赛过后，阿根廷队的平均控球率（50%）在J组四支球队中排名第三，落后于阿尔及利亚（61%）和奥地利（54.4%）。"
+            ],
+            [
+                "深度分析",
+                "阿根廷可能会选择在达拉斯举行的世界杯 J 组最后一场对阵约旦的比赛中让状态良好的梅西休息。\n2-0战胜奥地利，加上阿尔及利亚2-1战胜约旦，阿根廷锁定J组头名。\n这是卫冕冠军在本届赛事中第二场0比0获胜，他们在首场比赛中还以3-0击败了阿尔及利亚队。他们上一次在世界杯上取得三场胜利并且每次都保持不失球是在1998年。\n梅西在北美的表现非常出色，他打进了阿根廷队的全部 5 粒进球，以 18 粒进球超越米洛斯拉夫·克洛泽，成为世界杯历史上进球最多的球员，尽管凯利安·姆巴佩仅落后他 2 个。\n这位阿尔比塞莱斯特队队长承认他在奥地利比赛后感到疲劳，因此他可能会在对阵已经被淘汰的约旦队时得到休息。\n“我们的想法是给大多数球员一个上场的机会。我认为他们应得的，只要比赛允许，我们就会这样做，”主教练莱昂内尔·斯卡罗尼周四告诉记者。\n梅西周三庆祝了自己的 39 岁生日，如果他出场的话，他将成为同年龄段第二位代表阿根廷队参加世界杯的球员，继 1958 年的安赫尔·拉布鲁纳之后。\n对阵乔丹的进球也使他成为第一位连续七场世界杯比赛进球的球员，超过了贾斯特·方丹（Just Fontaine，1958年）和雅伊尔津霍（Jairzinho，1970年）连续六场比赛进球的纪录。\n即使梅西继续坐在替补席上，阿根廷队仍然有信心能够击败约旦队，因为他们目前在同一主教练的带领下，在世界杯上八场比赛保持不败，是全国最好的成绩。\n克服膝伤的尼科·帕斯被认为是梅西的潜在替代者，而朱利安·阿尔瓦雷斯则有望在劳塔罗·马丁内斯之前获得认可。\n克里斯蒂安·罗梅罗在战胜奥地利一小时后右膝伤势加重，因此没有与球队其他球员一起训练，因此很可能缺席。\n阿尔及利亚队阿明·古里最后时刻的进球让约旦队在上次比赛中被淘汰，但他们渴望以优异的成绩结束他们的首次世界杯决赛。\n贾迈勒·塞拉米的球队在本届世界杯上排名第68位，他们的目标是成为世界杯上击败卫冕冠军的排名最低的球队，超越韩国队在2018年小组赛中以2-0击败德国队时取得的成绩（第57位）。\n“现在，对我们来说，面对阿根廷是一个机会。这是我们表现出色并留下与约旦足球相称的伟大印记的机会，”塞拉米说道。\n乔丹在过去的五场比赛中可能没有赢过任何一场，但他们一直面临着强劲的对手，并且在之前的两场小组赛中进球表明他们仍然可以成为进攻威胁。\n塞拉米拥有完整的阵容，而且两支球队都没有停赛的情况。\n不过，无论谁为阿根廷队首发，毫无疑问都会寻求在淘汰赛阶段获得更多的上场时间。"
+            ],
+            [
+                "历史交锋",
+                "这将是约旦和阿根廷在任何比赛中的首次交锋。\n然而，约旦在过去五场对阵南美足联对手的比赛中输掉了四场，最近一次是在 2025 年 10 月对阵玻利维亚的友谊赛中（1-0）。他们对阵南美球队的唯一一场胜利是2004年10月在利比亚举行的友谊赛中以3-0战胜厄瓜多尔。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "即使梅西被排除在外，这场比赛也很难超越阿根廷队。在 Opta 超级计算机的 25,000 次赛前模拟中，他们以 78.1% 的成绩名列前茅。\n结果是 13.2% 的预测结果为平局，这使得约旦队创造历史并首次赢得世界杯的机会只有 8.7%。"
+            ]
+        ]
+    },
+    {
+        "slug": "algeria-vs-austria-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/algeria-vs-austria-prediction-world-cup-2026-match-preview",
+        "home_en": "Algeria",
+        "away_en": "Austria",
+        "home_cn": "阿尔及利亚",
+        "away_cn": "奥地利",
+        "home_pct": null,
+        "draw_pct": null,
+        "away_pct": 42.1,
+        "insights": [
+            "Austria only require a point to progress to the World Cup knockout stages for the first time since 1954, and the Opta supercomputer predicts a draw in this one, with a 42.1% likelihood.",
+            "Algeria are aiming to win back-to-back matches at the finals for the first time.",
+            "However, the Fennecs are without a World Cup win against European opposition in eight attempts (D3 L5)."
+        ],
+        "prediction": "The Opta supercomputer is leaning towards a draw, which occurred in 42.1% of the 25,000 pre-match simulations. It would be a rare draw as far as Austria are concerned. Among nations to play 15 or more games at the finals, only Hungary (9%) have drawn a lower share of their matches than them (13% – 4/31). Meanwhile, they have played the most World Cup matches without any of them ending in a goalless draw (31).",
+        "summary_cn": "Opta 超级计算机倾向于平局，在 25,000 次赛前模拟中，有 42.1% 出现平局。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 奥地利队自 1954 年以来首次晋级世界杯淘汰赛只需要一分，Opta 超级计算机预测本次比赛为平局，可能性为 42.1%。\n· 阿尔及利亚队的目标是首次在决赛中连续两场比赛获胜。\n· 然而，狐狸队在世界杯上八次尝试战胜欧洲对手（D3 L5），但从未取得过胜利。"
+            ],
+            [
+                "深度分析",
+                "阿尔及利亚队将在堪萨斯城体育场与奥地利队直接点球大战，争夺 J 组第二名，并有机会在世界杯 32 强赛中对阵西班牙队。\n到目前为止，两支球队几乎经历了平行的战役——都击败了首次亮相的乔丹，但在对阵梅西启发的阿根廷队时表现不佳，后者在还剩一场比赛的情况下锁定了榜首位置。\n奥地利队目前以净胜球优势占据优势，一场平局就足以进入前两名。 1982年，当两支球队在同一小组中垫底时，他们以颇具争议的方式晋级，那一年也是小组最后一场比赛不同时进行的一年，这绝非巧合。\n当时首次亮相的阿尔及利亚队在第二组中积四分，与奥地利和西德队持平，但在最后一场比赛中，西德队以互惠互利的比分 1-0 战胜了西德队，但因净胜球之差而出局。\n这几乎肯定会成为阿尔及利亚队的心头之念，因为他们正在努力第二次进入淘汰赛阶段，而这距离他们在巴西取得这一壮举已经过去了 12 年。\n在第一轮比赛中梅西的帽子戏法之后，弗拉基米尔·佩特科维奇的球队在圣克拉拉以 2-1 逆转战胜了乔丹。这只是他们在决赛中的第四场胜利，也是在之前 10 次尝试失败（平 3 负 7）后丢掉首个进球后的第一场胜利。\n纳迪尔·本布阿利和阿明·古里的进球为阿尔及利亚队完成了逆转，后者成为历史上第一支在同一场世界杯比赛中通过角球攻入两球的非洲球队。\n35岁零121天的里亚德·马赫雷斯成为阿尔及利亚世界杯上最年长的首发球员，这场比赛从很多方面来说对狐狸队来说都是一场具有里程碑意义的比赛，他们在单场比赛中取得了最好的控球总数（72%）、传球尝试次数（641次）和对方禁区触球次数（30次）。他们还追平了单场比赛中射正次数最多的球员（8 次），巧合的是，他们在 44 年前对阵奥地利时创下了这一纪录。\n尽管阿尔及利亚在对阵约旦的比赛中表现出色，但现在他们将面对世界杯上不失角球次数最多的国家——奥地利（19场）。\n奥地利队自1954年以来首次有机会进入比赛的淘汰赛阶段，当时他们在决赛中获得了铜牌，创下了他们的最好成绩。\n不过，要做到这一点，拉尔夫·朗尼克的球队必须在0-2逆转阿根廷队的比赛中做出积极回应——梅西梅开二度，也罚丢了一个点球，而他们自己只能射中一脚球。\n更光明的一面是，这对马塞尔·萨比策来说是历史性的一天，他成为继马尔科·阿诺托维奇（135 场）、大卫·阿拉巴（116 场）、安迪·赫尔佐格（103 场）和亚历山大·德拉戈维奇（100 场）之后第五位代表国家队出场 100 场的奥地利球员，也是第一位在重大赛事（世界杯和欧洲锦标赛）中首发 12 场比赛的球员。\n自朗尼克2022年4月上任以来，萨比策在奥地利各项赛事中参与进球数最多（26个）、射门最多（112次）、创造机会最多（62次）以及首发次数第三多（34场）。这位有影响力的中场球员的经验对于他的国家队寻求延长世界杯赛程至关重要。"
+            ],
+            [
+                "历史交锋",
+                "这将是两国之间的第二次交锋，另一次交锋也是在 1982 年世界杯小组赛阶段。\n在那场比赛中，奥地利队以2-0获胜。自11场比赛未尝胜绩以来，他们最近一次在决赛中保持不失球。\n在上一场比赛中，阿尔及利亚队以 2-1 击败西德队，取得了他们在世界杯上对阵欧洲对手的唯一一场胜利，而自那以后，耳廓狐队在八次尝试中都未能取得这样的胜利（平 3 负 5）。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "Opta 超级计算机倾向于平局，在 25,000 次赛前模拟中，有 42.1% 出现平局。\n对于奥地利来说，这将是一次罕见的平局。在决赛中打 15 场或以上比赛的国家中，只有匈牙利队 (9%) 的平局比例低于他们 (13% – 4/31)。与此同时，他们参加的世界杯比赛中没有一场以互交白卷告终（31场）。\n奥地利队是两队中稍微更受青睐的球队，他们拿下三分的几率为31.2%。\n阿尔及利亚队从未在世界杯决赛圈连续获胜，而他们在世界杯决赛圈中首次获得连胜的概率为26.7%。"
+            ]
+        ]
+    },
+    {
+        "slug": "colombia-vs-portugal-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/colombia-vs-portugal-prediction-world-cup-2026-match-preview",
+        "home_en": "Colombia",
+        "away_en": "Portugal",
+        "home_cn": "哥伦比亚",
+        "away_cn": "葡萄牙",
+        "home_pct": 26.0,
+        "draw_pct": 25.1,
+        "away_pct": 48.9,
+        "insights": [
+            "Portugal overcame Colombia and topped Group K in a convincing 48.9% of 25,000 pre-match simulations by the Opta supercomputer.",
+            "Colombia could win all three group games at a single World Cup edition for just the second time.",
+            "This will be the first meeting between the pair."
+        ],
+        "prediction": "The Opta supercomputer backed Portugal as the favourites; they won 48.9% of 25,000 pre-match simulations. Colombia boast a 26% chance of victory, though the draw – which would be enough for them to top Group K – accounted for 25.1% of data-led simulations.",
+        "summary_cn": "Opta 超级计算机支持葡萄牙队成为夺冠热门；他们在 25,000 次赛前模拟中获胜了 48.9%。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 在 Opta 超级计算机进行的 25,000 次赛前模拟中，葡萄牙队以 48.9% 的正确率击败了哥伦比亚，夺得 K 组冠军。\n· 哥伦比亚第二次在世界杯上赢得全部三场小组赛胜利。\n· 这将是两人的第一次会面。"
+            ],
+            [
+                "深度分析",
+                "葡萄牙和哥伦比亚将于周日在迈阿密交锋，争夺世界杯 K 组头名的位置。\n哥伦比亚队在多场比赛中都取得了两场胜利——分别战胜了乌兹别克斯坦和刚果民主共和国——只需避免失利即可在小组中名列前茅。葡萄牙必须获胜才能获得第一名，尽管无论如何他们的四分很可能足以让他们进入淘汰赛阶段。\n有明显的动机来避免这成为死橡胶。无论谁获得本组第一名，都将面对最好的第三名之一，而第二名将遇到 L 组亚军，即英格兰、加纳或克罗地亚之一。\n尽管罗伯托·马丁内斯的球队在首场比赛中被刚果民主共和国1-1逼平，但在周三鼓舞士气的5-0战胜乌兹别克斯坦后，他们希望占据榜首位置。\n克里斯蒂亚诺·罗纳尔多 (Cristiano Ronaldo) 在 2026 年世界杯的首场比赛中表现不佳，但在上一场比赛中以两个进球做出了有力回应。他在世界杯上的 10 粒进球是葡萄牙历史上进球最多的球员，同时他也是世界上第一个在六次不同的 FIFA 决赛中进球的球员。\n这位 41 岁的球员现在的目标是自 2018 年俄罗斯世界杯第一和第二比赛日以来首次在世界杯连续比赛中进球。考虑到前两场比赛后只有埃尔林·哈兰德（2.7）和乔纳森·大卫（2.4）的非点球预期进球比罗纳尔多的 2.1 更高，机会应该会再次出现。\n马丁内斯可能很高兴看到他的两名关键球员联手，布鲁诺·费尔南德斯助攻罗纳尔多在 MD2 上攻入第一个进球。前两场比赛后，只有西班牙球员罗德里（9次）的突破防线传球次数比费尔南德斯（7次）多，而只有费利克斯·恩梅查和迈克尔·奥利塞（3次）的突破防线传球次数比他的两人多。\n不出所料，费尔南德斯、若奥·内维斯和维蒂尼亚对于马丁内斯想要如何踢球和控制中场战斗至关重要。在前两个比赛日中，只有西班牙（55 次）在开放比赛中至少 10 次传球的次数多于葡萄牙（49 次）。\n这支中场三人组也有助于推动球队的防守——葡萄牙在前两个比赛日的每次防守动作允许传球率 (PPDA) 最低 (6.8)。这表明马丁内斯在他的球队试图以高强度的压力从前场施压的过程中得到了调整，尽管面对的是乌兹别克斯坦和刚果民主共和国的低质量对手。\n内斯托尔·洛伦佐将坚持要求他的哥伦比亚队以类似的意图进行高位逼抢。他们的 11 次高失误中有 4 次导致射门（36.4%），在前两场比赛中，失误率排名第三，仅次于海地（5/9 - 55.6%）和乔丹（3/8 - 37.5%）。\n葡萄牙还必须留意丹尼尔·穆尼奥斯，他在首场比赛中以3-1战胜乌兹别克斯坦，并在1-0战胜刚果民主共和国的比赛中攻入制胜球。詹姆斯·罗德里格斯是唯一一位在世界杯小组赛三场比赛中都取得进球的哥伦比亚人，12 年前在巴西就曾取得过这样的成绩。\n罗德里格斯继续为国家队做出贡献。这位34岁的球员在上一场比赛中创造了5次机会，这是自1998年卡洛斯·巴尔德拉马（Carlos Valderrama）在对阵英格兰队时创造了5次机会以来，哥伦比亚球员在世界杯比赛中创造的最多机会。\n如果哥伦比亚想要第二次在单一赛事中赢得世界杯小组赛的全部三场比赛，穆尼奥斯、罗德里格斯和路易斯·迪亚斯可能会再次发挥关键作用。此前，他们在 2014 年闯入八强的过程中也曾这样做过。\n但葡萄牙将是一个严峻的考验。他们在世界杯之前的 17 场小组赛中只输了两场（9 胜 6 平）——2014 年 MD1 比赛中 4-0 输给德国队，四年前 MD3 比赛中 2-1 输给韩国队。"
+            ],
+            [
+                "历史交锋",
+                "这将是哥伦比亚和葡萄牙之间的首次交锋。\n哥伦比亚在过去三场世界杯对阵欧足联球队的比赛中保持不败（W2 D1），不包括点球大战。\n然而，葡萄牙队在小组赛对阵南美洲球队的三场比赛中也保持不败（2胜1平）。\n哥伦比亚将是继巴西和乌拉圭之后葡萄牙在世界杯上遇到的第三个不同的南美对手。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "Opta 超级计算机支持葡萄牙队成为夺冠热门；他们在 25,000 次赛前模拟中获胜了 48.9%。\n哥伦比亚拥有 26% 的获胜机会，尽管平局（这足以让他们在 K 组中名列前茅）占数据主导模拟的 25.1%。"
+            ]
+        ]
+    },
+    {
+        "slug": "croatia-vs-ghana-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/croatia-vs-ghana-prediction-world-cup-2026-match-preview",
+        "home_en": "Croatia",
+        "away_en": "Ghana",
+        "home_cn": "克罗地亚",
+        "away_cn": "加纳",
+        "home_pct": 56.3,
+        "draw_pct": 26.2,
+        "away_pct": 17.6,
+        "insights": [
+            "The Opta supercomputer expects Croatia to have a significant impact on the final standings in Group L, with Zlatko Dalic’s side winning an overwhelming 56.3% of the pre-match simulations.",
+            "Croatia have only lost one of their last eight group-stage games at the World Cup – a 4–2 defeat by England in their 2026 opener – keeping five clean sheets during this run.",
+            "After only keeping two clean sheets in 15 World Cup games prior to 2026, Ghana have two from two so far at this year’s finals. In World Cup history, no African nation has ever kept three clean sheets at this stage of a tournament."
+        ],
+        "prediction": "From 25,000 pre-match simulations, Dalić’s side came out on top in 56.3% of the outcomes, implying Croatia are highly likely to finish their group stage campaign on the front foot. Ghana’s win rating stands at just 17.6% by comparison, and with a draw seen as even likelier at 26.2%, victory against the 2018 finalists could prove to be a tall order for Quieroz’s charges.",
+        "summary_cn": "根据 Opta 超级计算机的数据，尽管落后加纳一分，并且为被黑星队成功淘汰的英格兰队打进了四个进球，但克罗地亚仍然是这场比赛的压倒性获胜热门。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· Opta 超级计算机预计克罗地亚将对 L 组的最终排名产生重大影响，Zlatko Dalic 的球队在赛前模拟中以 56.3% 的压倒性优势获胜。\n· 克罗地亚在过去八场世界杯小组赛中只输掉了一场——2026 年揭幕战中以 4-2 负于英格兰——在这轮比赛中保持了 5 场不失球。\n· 加纳在 2026 年之前的 15 场世界杯比赛中只保持了 2 场不失球，而今年的决赛迄今为止，加纳已经取得了两场零失球的成绩。在世界杯历史上，还没有任何非洲国家在本届赛事中保持过三场不失球。"
+            ],
+            [
+                "深度分析",
+                "克罗地亚和加纳在最近几届世界杯上的表现都远远超出了他们的实力，随着 2026 年世界杯的淘汰赛阶段的到来，这场 L 组的决胜局有很多利害关系。\n英格兰队在首场比赛中以 4-2 战胜克罗地亚队，在 L 组中领先，但瓦特雷尼队在上一场对阵巴拿马队的比赛中反弹，凭借安特·布迪米尔第 54 分钟的进球取得了本届赛事的首场胜利。\n在马丁·巴图林纳和佩塔尔·穆萨对阵三狮军团的扳平球被证明是徒劳之后，克罗地亚重回正轨，在L组排名第三，落后于在波士顿0-0战平的英格兰和加纳。\n半场替补出场的布迪米尔以34岁零336天的年纪，成为克罗地亚队历史上年龄最大的世界杯进球者，打破了伊维察·奥利奇在2014年对阵喀麦隆队时创下的纪录。\n克罗地亚队长卢卡·莫德里奇也第 21 次参加世界杯。自 2006 年首次亮相锦标赛以来，只有克里斯蒂亚诺·罗纳尔多（24 岁）和莱昂内尔·梅西（28 岁）比这位 40 岁的球员出场次数更多，后者第 200 次代表国家队出场。\n如果本场比赛首发，莫德里奇和佩里西奇将成为首位在世界杯上首发20场的克罗地亚人；此前只有三个国家曾有多名球员在世界杯上首发超过 20 场比赛——德国（5 名）、阿根廷（3 名）和波兰（2 名）。\n然而，在战胜巴拿马的比赛中，克罗地亚队只射门六次，只有两次射正——这是他们在世界杯比赛中射门次数（总数和射正次数）最少的球队，但他们仍然赢得了胜利。\n这对加纳队来说将是美妙的音乐，他们在上一场0-0战平英格兰队的比赛中处处挫败英格兰队，并在首场比赛1-0击败巴拿马队后连续第二次不失球。\n因此，卡洛斯·基耶罗斯的球队以四分的成绩与英格兰队并列 L 组榜首，如果他们能够在对阵巴拿马的比赛中取得更好的成绩，那么他们将获得小组第一，并在最后 32 场比赛中取得有利的平局。\n马文·塞纳亚 (Marvin Senaya) 在对阵英格兰队的比赛中以 7 次铲球领先，这是加纳球员在单场世界杯比赛中铲断次数最多的球员，而门将本杰明·阿萨雷 (Benjamin Asare) 仅被迫做出了 3 次扑救。\n自2002年小组赛对阵尼日利亚时，英格兰队尝试了25次射门，但没有成功，因此英格兰队在世界杯比赛中射门19次，但没有进球。\n加纳队对阵巴拿马队的进球球员凯莱布·伊伦基 (Caleb Yirenkyi) 尽管早早收到黄牌，但还是踢了 90 分钟，而乔丹·阿尤 (Jordan Ayew) 则施加了 71 次高强度施压，这是本届世界杯单场比赛中第二多的球员。\n在执教葡萄牙、伊朗和现在的加纳期间，奎罗兹在 15 场世界杯比赛中只打进 29 球（进球 15 球，失球 14 球），平均每场进球 1.93 个。这是在赛事中出场 10 场以上的主教练中第二低的比率，仅次于斯文-戈兰·埃里克森（1.85 - 13 场比赛中 24 场）。\n就目前情况而言，克罗地亚队的三分足以确保作为最好的第三名球队之一进入最后32强，尽管达利奇的球队将在下一轮面对K组领头羊哥伦比亚。\n加纳只需要一场平局就能锁定L组第二名，但考虑到他们目前正在为32强对阵葡萄牙的比赛做好准备，黑星队不想让自己的命运听天由命。"
+            ],
+            [
+                "历史交锋",
+                "这将是这两个国家之间的首次交锋，加纳目前在国际足联全球排名中排名第 65 位，成为世界杯上对阵克罗地亚排名第二低的球队，仅次于 2018 年的俄罗斯（第 70 位）。\n克罗地亚队从未在世界杯比赛中输给过排名第40位或更低的球队，并且在世界杯对阵非洲球队的四场比赛中也保持不败——赢了3场，打进8球，只丢1球。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "根据 Opta 超级计算机的数据，尽管落后加纳一分，并且为被黑星队成功淘汰的英格兰队打进了四个进球，但克罗地亚仍然是这场比赛的压倒性获胜热门。\n在 25,000 次赛前模拟中，达利奇的球队在 ​​56.3% 的结果中名列前茅，这意味着克罗地亚很有可能以领先优势结束小组赛阶段的比赛。\n相比之下，加纳队的胜率仅为 17.6%，而平局的可能性甚至高达 26.2%，对奎罗兹的指控来说，战胜 2018 年决赛选手可能是一项艰巨的任务。"
+            ]
+        ]
+    },
+    {
+        "slug": "panama-vs-england-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/panama-vs-england-prediction-world-cup-2026-match-preview",
+        "home_en": "Panama",
+        "away_en": "England",
+        "home_cn": "巴拿马",
+        "away_cn": "英格兰",
+        "home_pct": 84.1,
+        "draw_pct": null,
+        "away_pct": 81.0,
+        "insights": [
+            "England have an 81.0% chance of victory according to the Opta supercomputer, and an 84.1% chance of finishing first in Group L.",
+            "After 25,000 pre-match simulations, Panama emerged with just a 8.9% probability of claiming their first World Cup win.",
+            "England have only lost the third group game in one of their last 14 World Cup appearances (W8 D5) – to Belgium in 2018."
+        ],
+        "prediction": "England are huge favourites to leave New Jersey with maximum points, as the Opta Supercomputer’s 25,000 pre-match simulations suggest they have a 81.0% chance of success.",
+        "summary_cn": "英格兰队是以最高分离开新泽西队的大热门，因为 Opta 超级计算机的 25,000 次赛前模拟表明他们有 81.0% 的成功机会。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 根据 Opta 超级计算机的数据，英格兰队获胜的几率为 81.0%，获得 L 组第一名的几率为 84.1%。\n· 经过 25,000 次赛前模拟，巴拿马队赢得世界杯首场胜利的概率仅为 8.9%。\n· 英格兰队在过去 14 场世界杯比赛中只输过一场小组赛第三场比赛（8 胜 5 平）——2018 年输给了比利时。"
+            ],
+            [
+                "深度分析",
+                "L组领头羊英格兰队的目标是在新泽西迎战已经被淘汰的巴拿马队时夺得头名。\n三狮军团在周二0比0战平加纳的比赛中表现并不令人信服，但仍然是小组冠军的热门球队。\n如果他们获胜并且黑星队没有通过击败克罗地亚来扭转一球的差距，那么托马斯·图赫尔的奖杯猎人将完成他们任务的第一部分。\n然而，如果他们出现失误，英格兰可能会失去通过淘汰赛阶段的一条更友好的路线。\n在 4-2 战胜克罗地亚的下半场比赛中，图赫尔的球队无法将统治地位转化为更多进球，在第二轮比赛中，人们熟悉的沮丧故事上演了。\n直到第 86 分钟，尼科·奥莱利 (Nico O’Reilly) 击中横梁，队长哈里·凯恩 (Harry Kane) 一反常态地抢到了篮板。\n英格兰队的19次射门是24年来世界杯上最多的一次没有进球；与此同时，加纳的两场比赛是三狮军团自 1966 年有此类记录以来所面对的最少的。\n英格兰队的控球率也高达 78.9%，这是世界杯历史上（也是自 1966 年以来）最终未能进球的球队中最高的控球率。\n不过，我们几乎没有时间反思或沉思——一场潜在的马拉松式竞选活动必须继续下去。\n尽管英格兰队在世界杯上唯一输给中北美洲及加勒比海地区对手的那场比赛仍然是臭名昭著的1950年输给美国业余队的比赛，但巴拿马队甚至还没有拿到一分。\n因此，可以公平地说，本周末历史将向中美洲不利。\n洛斯卡纳莱罗斯队第二次参加国际足联顶级赛事；他们在 2018 年小组垫底，三场比赛全部失利，丢了 11 个球，其中对阵英格兰队时丢了 6 个球。\n今年夏天，人们的希望更大了，托马斯·克里斯蒂安森带领他们打进了 2023 年金杯决赛，然后是美洲杯淘汰赛，然后进入了去年的中北美洲及加勒比海国家联赛决胜局。\n然而，在多伦多的连续失利已经终结了任何进步的希望。\n巴拿马队以0比1输给加纳队和克罗地亚队，成为第六个在世界杯前五场比赛中失利的国家。\n尽管接受过巴塞罗那青训学院的训练，克里斯蒂安森还是一位实用主义者——在前两个比赛日中，没有一支球队的比赛射门次数少于（32次）——他的球队将在周六再次形成顽固的低挡。\n巴拿马几乎没有什么武器可以突破英格兰的防线，但阿米尔·穆里略在中北美洲及加勒比海地区预选赛中的助攻数排名第四，并在对阵克罗地亚的比赛中尝试了全队最高的三脚射门。\n到目前为止，他们已经在老将前锋塞西利奥·沃特曼和何塞·法哈多之间切换。对于英格兰队来说，轮换凯恩是一个大胆的举动，凯恩曾在2018年对阵巴拿马队的比赛中上演帽子戏法。\n然而，随着淘汰赛的临近，这可能是最后的可行机会。奥利·沃特金斯和伊万·托尼都是能干的副手。\n图赫尔可能会再次调整，因为他在周二选秀了杰德·斯彭斯和马克·盖伊，但在让定位球专家德克兰·赖斯休息之前，他会三思而后行，后者已经创造了10次机会——是前两场比赛中创造机会最多的人。里斯·詹姆斯在右后卫位置上也存在疑问。"
+            ],
+            [
+                "历史交锋",
+                "两人此前唯一一次交锋是在 2018 年俄罗斯世界杯上，当时英格兰队以 6-1 取得了世界杯迄今为止最大的胜利。\n凯恩不仅上演了帽子戏法，成为继杰夫·赫斯特（1966 年决赛）和加里·莱因克尔（1986 年）之后唯一在世界杯上上演帽子戏法的英国人，而且约翰·斯通斯也帮助自己梅开二度。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "英格兰队是以最高分离开新泽西队的大热门，因为 Opta 超级计算机的 25,000 次赛前模拟表明他们有 81.0% 的成功机会。\n与此同时，巴拿马队最终获得世界杯首胜的机会为 6.9%；首次得分的概率仅为 12.1%。"
+            ]
+        ]
+    },
+    {
+        "slug": "new-zealand-vs-belgium-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/new-zealand-vs-belgium-prediction-world-cup-2026-match-preview",
+        "home_en": "New Zealand",
+        "away_en": "Belgium",
+        "home_cn": "新西兰",
+        "away_cn": "比利时",
+        "home_pct": 6.9,
+        "draw_pct": 12.1,
+        "away_pct": 81.0,
+        "insights": [
+            "The Opta supercomputer expects Belgium to win this one; they came out on top in a convincing 81.0% of 25,000 pre-match simulations.",
+            "Belgian players have had 69 shots at the World Cup since last scoring in 2022.",
+            "New Zealand are yet to win at the finals in eight attempts."
+        ],
+        "prediction": "The Opta supercomputer ran 25,000 pre-match simulations of this clash, and Belgium won a massive 81.0% of them. New Zealand achieved a first World Cup victory in only 6.9% of data-led simulations, while the draw accounted for 12.1% of scenarios.",
+        "summary_cn": "Opta 超级计算机对这场比赛进行了 25,000 次赛前模拟，比利时队赢得了其中 81.0% 的胜利。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· Opta 超级计算机预计比利时将赢得这场比赛；在 25,000 次赛前模拟中，他们以 81.0% 的准确率名列前茅。\n· 自2022年上次进球以来，比利时球员在世界杯上已经射门69次。\n· 新西兰队在八次尝试决赛中尚未获胜。"
+            ],
+            [
+                "深度分析",
+                "比利时队周六在温哥华迎战新西兰队，无法再承受世界杯上的再次失误。\n鲁迪·加西亚的球队在 ​​G 组的多场比赛中只得到两分，使他们排名第三，但晋级权掌握在自己手中。在 BC Place 取得胜利将确保进入前两名。\n尽管连续与埃及和伊朗战平，Opta 的现场锦标赛预测仍然认为他们进入淘汰赛阶段的机会为 92.2%。\n尽管内森·恩戈伊下半场被红牌罚下，但在周日0-0战平伊朗的比赛中，10人的比利时队仍有23次射门不成功。这是自 1994 年对阵沙特阿拉伯队（28 场）以来，他们在世界杯比赛中最多没有进球的一次，而且这种挥霍的趋势已经变得普遍。\n在本届世界杯和四年前的上一届世界杯上，比利时在五场比赛中仅进了两个进球。其中之一是埃及队的穆罕默德·哈尼在首场1-1战平的比赛中打进的乌龙球。\n比利时球员在这两项赛事中总共射门 73 次，其中只有米奇·巴舒亚伊在 2022 年对阵加拿大的比赛中进球。自上次进球以来，他们已经有 69 次射门，其中凯文·德布劳内参与了其中的 40%（16 次射门，创造了 12 次机会）。\n对于加西亚的球队来说，这也不全是坏消息，他们在各项赛事15场比赛中保持不败（9胜6平）。比利时队仅在2016年9月至2018年7月期间连续24场比赛保持不败，之后在俄罗斯世界杯上输给了法国队。\n蒂博·库尔图瓦也可能打破比利时队第 18 次闯入决赛的记录，超越恩佐·西福 (Enzo Scifo) 的 17 次闯入决赛。只有彼得·希尔顿和法比安·巴特兹（各 10 场）比库尔图瓦的 8 场不失球次数还要多。\n新西兰队1-3不敌小组头名埃及队，仅积1分。芬·苏尔曼 (Finn Surman) 的头球破门为达伦·贝兹利 (Darren Bazeley) 的球队带来了良好的开局，但穆罕默德·萨拉赫 (Mohamed Salah) 和穆斯塔法·济科 (Mostafa Zico) 很快就抢尽了风头，让全白队有了一种非常熟悉的感觉。\n他们在八场世界杯比赛中取得了三场领先，但没有一场获胜。 （D2 L1）。新西兰队是第二支在他们领先的前三场世界杯比赛中未能获胜的球队，另外保加利亚队在前六场此类比赛中均未能获胜。\n根据Opta超级计算机的数据，再一次翻盘失利使得新西兰队进入32强的机会只有7.0%，贝泽利迫切需要他的球队在全球舞台上取得第一场胜利。\n他们在世界杯前八场比赛（平4负4）后仍然没有取得胜利，只有洪都拉斯队（9平3平6）在决赛中打了更多场比赛但没有取得胜利，但任何不太可能获胜的希望都可能建立在后防线的改进上。\n新西兰队在 8 场世界杯比赛中，有 5 场至少丢了 2 个球（62.5%），1982 年的全部三场小组赛和 2026 年的两场小组赛都丢了两个球。在参加至少 8 场比赛的国家中，只有科特迪瓦在比赛中丢球数更高（7/11，63.6%）。"
+            ],
+            [
+                "历史交锋",
+                "这将是两人之间的第一次会面。\n然而，新西兰在最近两场世界杯对阵欧洲对手的比赛中保持不败。\n2010年在南非举行的锦标赛上，他们分别1-1战平斯洛伐克和意大利。\n与此同时，比利时可能成为自1998年以来第一支在世界杯小组赛三场比赛中全部打平的欧洲球队。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "Opta 超级计算机对这场比赛进行了 25,000 次赛前模拟，比利时队赢得了其中 81.0% 的胜利。\n在以数据为主导的模拟中，新西兰队取得世界杯首胜的比例仅为 6.9%，而平局则占 12.1%。"
+            ]
+        ]
+    },
+    {
+        "slug": "uruguay-vs-spain-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/uruguay-vs-spain-prediction-world-cup-2026-match-preview",
+        "home_en": "Uruguay",
+        "away_en": "Spain",
+        "home_cn": "乌拉圭",
+        "away_cn": "西班牙",
+        "home_pct": 15.7,
+        "draw_pct": 21.9,
+        "away_pct": 62.4,
+        "insights": [
+            "Spain are heavy favourites to win this one, with the Opta supercomputer giving Luis de la Fuente’s side a dominant 62.4% chance of winning to Uruguay’s 15.7%.",
+            "Saturday’s contest will mark the third World Cup meeting between Uruguay and Spain, and their first since a goalless draw in Udine in the group stages of Italia ‘90.",
+            "La Celeste have won just one of their last nine World Cup matches played in Mexico (D3 L5) – a 1-0 extra-time win over the USSR in the quarter-finals in 1970."
+        ],
+        "prediction": "The Opta supercomputer could not look past a Spain win, with the reigning European champions coming out on top in a whopping 62.4% of the 25,000 pre-match simulations. Uruguay took three points just 15.7% of the time, while the match ended in a draw in 21.9% of the simulations.",
+        "summary_cn": "Opta 超级计算机无法忽视西班牙队的胜利，在 25,000 次赛前模拟中，卫冕欧洲冠军队以 62.4% 的准确率名列前茅。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 西班牙队是这场比赛的最大热门，Opta 超级计算机让路易斯·德拉富恩特的球队获胜的几率为 62.4%，而乌拉圭队的获胜几率为 15.7%。\n· 周六的比赛将是乌拉圭和西班牙之间的第三次世界杯交锋，也是自90年意大利小组赛乌迪内0-0战平之后的第一次交锋。\n· 拉塞莱斯特队过去九场在墨西哥举行的世界杯比赛中只赢了一场（平3负5）——1970年四分之一决赛中加时赛1-0战胜苏联。"
+            ],
+            [
+                "深度分析",
+                "在今年世界杯的第一场比赛之前，很少有人会预料到 H 组的比赛会如此展开，乌拉圭队将于周五在瓜达拉哈拉迎战西班牙队，这是该组的重量级比赛。\n马塞洛·贝尔萨的球队在今年夏天的比赛中被沙特阿拉伯和佛得角逼平，他们本可以赢，而且很有可能赢。\n他们的首场比赛与沙特阿拉伯的平局似乎是一个短暂的短暂事件，但拉塞莱斯特队随后在第二场比赛中被首次亮相的佛得角队令人震惊地逼平，凯文·皮纳的精彩任意球抢尽了头条，随后赫利奥·巴雷拉取消了阿古斯丁·卡诺比奥的进球。\n乌拉圭队将竭力避免再次出现类似的结果，在2002年至2010年的世界杯上，乌拉圭队连续三场战平之前只有一次。\n虽然他们在2022年的小组赛中被淘汰，但他们连续几届世界杯都未能进入淘汰赛，这让贝尔萨的球队还有很多工作要做。\nOpta超级计算机目前给他们晋级下一轮的概率为36.4%，这与已经获得出线资格并获得H组冠军的概率为84.7%的西班牙形成鲜明对比。\n让乌拉圭的处境变得更加艰难的是他们在墨西哥的战绩。他们在过去的九场世界杯比赛中只赢了一场（平3负5）——1970年四分之一决赛中通过加时赛以1-0战胜苏联。\n与此同时，西班牙在 4-0 战胜沙特阿拉伯的比赛中以某种方式消除了锈迹。\n拉明·亚马尔首开纪录，米克尔·奥亚扎瓦尔快速打进两球，随后哈桑·阿尔坦巴克蒂的乌龙球锁定胜局。\n因此，路易斯·德拉富恩特对他的球队在瓜达拉哈拉取得好成绩充满信心，西班牙队在 1986 年至 2014 年间的每届世界杯小组赛最后一场比赛中都取得了胜利。\n然而，西班牙队在过去两届比赛中都未能做到这一点，2018年2-2战平摩洛哥，2022年1-2负于日本。\n西班牙队在过去三场世界杯比赛中均保持零失球，如果他们能够将乌拉圭队排除在外，那么他们可以不失球地进入整个小组赛阶段。\n事实上，他们在 21 世纪的世界杯比赛中有 48% 保持不失球（14/29）。在此期间参加过不止一场比赛的球队中，没有哪支球队的比率更高。\n他们在过去四场世界杯比赛中仅遭遇 21 次射门，其中对阵沙特阿拉伯时射门 3 次，对阵佛得角、摩洛哥和日本时各射门 6 次。\n自 1966 年以来，唯一一支在连续五场世界杯比赛中遭遇 6 次或更少射门的球队是卫冕冠军阿根廷队，他们在赢得 2022 年世界杯的前五场比赛中都做到了这一点。\n这种防守的稳固性可能会让乌拉圭时好时坏的进攻陷入困境。\n在对阵沙特阿拉伯的比赛中，贝尔萨的球队10次射正只有1次进球，而对阵佛得角的比赛中，贝尔萨的球队两次射正均取得进球，他们需要同样的效率才能击败西班牙。\n不过，他们要警惕的最大威胁之一是亚马尔，他在对阵沙特阿拉伯的比赛中攻入一球，以 18 岁零 343 天成为世界杯历史上第八年轻的进球者。\n如果这位巴塞罗那球员在瓜达拉哈拉进球，他将成为 1958 年继贝利之后唯一一位连续参加世界杯进球的青少年球员。"
+            ],
+            [
+                "历史交锋",
+                "乌拉圭和西班牙将于周六在世界杯上第三次相遇，他们上一次在大舞台上相遇已经是三十多年前了。\n他们最近一次交锋是在 1990 年意大利乌迪内世界杯小组赛阶段，双方互交白卷。\n两国之间唯一的另一场比赛是 1950 年世界杯最后一轮，他们在圣保罗以 2-2 战平。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "Opta 超级计算机无法忽视西班牙队的胜利，在 25,000 次赛前模拟中，卫冕欧洲冠军队以 62.4% 的准确率名列前茅。\n乌拉圭获得三分的概率仅为 15.7%，而比赛以平局结束的概率为 21.9%。"
+            ]
+        ]
+    },
+    {
+        "slug": "cape-verde-vs-saudi-arabia-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/cape-verde-vs-saudi-arabia-prediction-world-cup-2026-match-preview",
+        "home_en": "Cape Verde",
+        "away_en": "Saudi Arabia",
+        "home_cn": "佛得角",
+        "away_cn": "沙特阿拉伯",
+        "home_pct": 38.0,
+        "draw_pct": null,
+        "away_pct": 35.8,
+        "insights": [
+            "Cape Verde are considered slight favourites by the Opta supercomputer for this fixture, with a win probability of 38.0% to Saudi Arabia’s 35.8%.",
+            "Cape Verde faced 44 shots across their opening two games at the World Cup, but just nine of those were on target.",
+            "Saudi Arabia have conceded 49 goals in 21 World Cup games."
+        ],
+        "prediction": "",
+        "summary_cn": "由于两支球队仍然有很大的机会进入下一轮，因此根据 Opta 超级计算机的数据，两支球队几乎没有什么区别也就不足为奇了。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· Opta 超级计算机认为佛得角在这场比赛中稍有优势，获胜概率为 38.0%，沙特阿拉伯为 35.8%。\n· 佛得角在世界杯的前两场比赛中遭遇了 44 次射门，但其中只有 9 次射正。\n· 沙特阿拉伯队在 21 场世界杯比赛中丢了 49 个球。"
+            ],
+            [
+                "深度分析",
+                "人口约 53 万的佛得角迄今为止在世界杯上的表现非常出色，首场比赛是与重量级球队西班牙队互交白卷。\n布比斯塔的球队随后以2-2战平乌拉圭，凯文·皮纳(Kevin Pina)为球队取得领先，在马克西米利亚诺·阿劳霍(Maximiliano Araújo)和阿古斯丁·卡诺比奥(Agustín Canobbio)帮助乌拉圭2-1领先后，赫利奥·巴雷拉(Hélio Varela)替补出场扳平比分。\n巴雷拉在替补出场后仅 136 秒就进球了，这是当时世界杯历史上非洲球员替补进球第二快的进球，仅次于 1994 年对阵俄罗斯队的罗杰·米拉（84 秒）。\n佛得角在世界杯的前两场比赛中遭遇了 44 次射门，但其中只有 9 次射正。他们在MD1对阵西班牙的比赛中保持不失球，同时面临7次射门机会，但在MD2对阵乌拉圭的比赛中，他们两次射正都失球。\n蓝鲨队可能成为继喀麦隆（1982年3胜）和塞内加尔（2002年1胜2平）之后第三个首次参加世界杯就在小组赛中保持不败的非洲国家队。\n此外，如果他们与沙特阿拉伯再次陷入僵局，他们可能会加入威尔士（1958年）、喀麦隆（1982年）和爱尔兰共和国（1990年）的行列，成为仅有的前三场比赛均战平的国家。\n沙特阿拉伯也盯上了32强。他们在首场比赛中1-1战平乌拉圭，但在MD2中0-4被复兴的西班牙队击败。\n拉明·亚马尔第 10 分钟的首开纪录奠定了基调，米克尔·奥亚扎瓦尔的梅开二度让西班牙队控制住了局面，随后哈桑·阿尔坦巴克蒂的乌龙球完成了一场悲惨的比赛。\n沙特阿拉伯在 1994 年世界杯前三场比赛中赢得了两场（L1），但在随后的 18 场比赛中只赢了两场（D3 L13）。\n绿猎鹰队在参加的 21 场世界杯比赛中打进了 49 个进球，并且在过去 18 场比赛中未能保持不失球。世界杯历史上仅有的在 22 场或更少的比赛中丢掉 50 个球的球队是墨西哥（21 场）、韩国（22 场）和瑞士（22 场）。\n自 1966 年（Opta 记录开始）以来，沙特阿拉伯在世界杯上的射门次数（221 次）和面对射门次数（423 次）之间的差距最大（-202）。在 2026 年世界杯上，他们的射门次数为 49 次，而回击球只有 10 次。\n塞勒姆·阿尔·道萨里 (Salem Al Dawsari) 有望在这场比赛中第九次参加世界杯，这将是沙特阿拉伯队在本届世界杯上并列第二多的球员，仅次于穆罕默德·阿尔·德亚 (Mohammed Al-Deayea)（10 次）。"
+            ],
+            [
+                "历史交锋",
+                "这场H组比赛实际上标志着佛得角和沙特阿拉伯队首次交锋。\n沙特阿拉伯在此前五场世界杯对阵非洲对手的比赛中只输了一场，两胜两平，其中唯一的一场失利是在2002年0-1不敌喀麦隆的比赛中。\n佛得角将是沙特阿拉伯在世界杯上遇到的第六个非洲足联对手。\n他们此前曾在非洲足联对阵过摩洛哥、南非、喀麦隆、突尼斯和埃及。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "由于两支球队仍然有很大的机会进入下一轮，因此根据 Opta 超级计算机的数据，两支球队几乎没有什么区别也就不足为奇了。\n佛得角以微弱优势获胜，获胜概率为 38.0%。然而，沙特阿拉伯获胜的概率为 35.8%，而平局的概率为 26.1%。\n就整体比赛而言，佛得角实际上仍有小组出线的希望（尽管微乎其微）（2.7%）。人们认为这支小鱼队能够进入淘汰赛阶段的可能性为 63.9%，而赢得锦标赛的可能性微乎其微，只有 0.04%。\n沙特阿拉伯队上次输给西班牙队意味着他们无法小组第一，但他们确实有34.6%的机会进入32强。他们夺冠的希望比佛得角更渺茫，为0.03%。"
+            ]
+        ]
+    },
+    {
+        "slug": "norway-vs-france-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/norway-vs-france-prediction-world-cup-2026-match-preview",
+        "home_en": "Norway",
+        "away_en": "France",
+        "home_cn": "挪威",
+        "away_cn": "法国",
+        "home_pct": null,
+        "draw_pct": null,
+        "away_pct": 59.4,
+        "insights": [
+            "France have a win probability of 59.4% against Norway, making them the Opta supercomputer’s favourites.",
+            "Norway have created 10 big chances at this World Cup, the most of any team in Group I and already one more than they managed in their previous participation (nine in 1998).",
+            "This will be the first men’s World Cup meeting between Norway and France."
+        ],
+        "prediction": "Les Bleus won 59.4% of the 25,000 pre-match simulations, while 20.6% of them ended in a draw – a result that would be enough for France to top the group.",
+        "summary_cn": "由于挪威可能会做出一些改变，因此 Opta 超级计算机选择法国作为最爱也就不足为奇了。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 法国队对挪威队的获胜概率为 59.4%，这使他们成为 Opta 超级计算机的最爱。\n· 挪威队在本届世界杯上创造了 10 次绝佳机会，是第一组中最多的球队，并且比上届世界杯​​（1998 年 9 次）多了 1 次。\n· 这将是挪威和法国之间的首次男子世界杯交锋。"
+            ],
+            [
+                "深度分析",
+                "周五，埃尔林·哈兰德和基利安·姆巴佩将在波士顿进行国际足联世界杯第一组的争夺，挪威队和法国队将展开对决。\n哈兰德和姆巴佩很快就与莱昂内尔·梅西一起成为世界杯历史上最伟大的金靴争夺战之一的中心人物。\n继上届3-2战胜塞内加尔的比赛中，挪威球星哈兰德在对阵伊拉克的比赛中攻入两球后，挪威球星哈兰德可能成为世界杯历史上第三位在前三场比赛中每场都攻入两球或以上的球员。仅有的其他实现这一壮举的球员是 1930 年的阿根廷选手吉列尔莫·斯塔比尔 (Guillermo Stabile) 和 1954 年的匈牙利选手桑多尔·科奇斯 (Sándor Kocsis)。\n姆巴佩还在上一场比赛中梅开二度——3-0战胜伊拉克，其中包括因暴风雨而休息130分钟——在16场世界杯比赛中打进了令人难以置信的16球，追平了米罗斯拉夫·克洛泽在世界杯历史进球榜上的纪录。\n克洛泽在本赛季保持着全胜纪录，但梅西在两场代表阿根廷队出场的比赛中打入 5 粒进球，使他超越了这位前德国前锋，达到了 18 粒进球——这是姆巴佩的新目标。\n这一切都意味着，尽管法国和挪威已经晋级32强，但这场比赛——天气预报显示这场比赛也可能受到暴风雨的影响——还远未结束。\n除了哈兰德和姆巴佩等人的个人奖项之外，各队在进入比赛时都知道胜利者将在32强赛中与第三名球队会面。亚军将获得E组第二名的球队，这支球队很可能是科特迪瓦或厄瓜多尔。\n不过，法国队主教练迪迪埃·德尚将缺席，法国足协确认，在他母亲去世后，他已被允许回国参加葬礼。在他缺席期间，助理教练盖伊·史蒂芬将带领球队。\n如果斯蒂芬能够带领法国队战胜挪威队，这将是法国队在世界杯历史上第二次赢得全部三场小组赛比赛。他们上一次夺冠是在 1998 年，当时他们在家乡捧起了奖杯。\n与此同时，挪威队在本届决赛中获胜的场次已经与他们之前三届决赛的胜场数相同（1938年0胜，1994年1胜，1998年1胜）。\n在使用了所有替补球员后，挪威队在战胜塞内加尔队的最后阶段发现，由于几名球员出现抽筋，挪威队一度只剩下九名球员。\n主教练索尔巴肯因此表示他将在与法国队的比赛中做出一系列改变。\n“会有一些变化。并不是我们不想赢，而是比赛之间的间隔较短以及比赛结束时球员的状态意味着其他一些人将有机会，”索尔巴肯说\n“只能这样了，我们还有两个航班在等，下次你就更难猜到队伍了。”\n在对阵塞内加尔的比赛中，朱利安·瑞尔森在第 13 分钟一瘸一拐地下场，挪威将密切关注他的健康状况，尽管他的替补马库斯·佩德森随后首开纪录。\n马洛·古斯托从脚伤中恢复过来，这是他在对阵伊拉克的比赛中首次亮相，因此他将力争挑战儒勒·孔代的右后卫位置。"
+            ],
+            [
+                "历史交锋",
+                "这将是挪威和法国之间的第 16 次交锋，也是自 2014 年 5 月法国队在巴黎友谊赛以 4-0 获胜以来的首次交锋。\n两队此前10场正式比赛中，挪威队只赢了2场，上一次胜利是在1987年6月于奥斯陆举行的欧洲杯预选赛中以2-0获胜。\n然而，挪威从未在世界杯上击败过欧洲同胞（P5 D2 L3），而法国在过去五场对阵欧洲对手的比赛中全部获胜——其中包括英格兰、克罗地亚和比利时的胜利。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "由于挪威可能会做出一些改变，因此 Opta 超级计算机选择法国作为最爱也就不足为奇了。\n在 25,000 场赛前模拟比赛中，高卢雄鸡队获胜率为 59.4%，而其中 20.6% 以平局告终 — 这一结果足以让法国队以小组头名身份出线。\n挪威队获胜的概率为 20.0%，因此他们有五分之一的机会全取三分。"
+            ]
+        ]
+    },
+    {
+        "slug": "senegal-vs-iraq-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/senegal-vs-iraq-prediction-world-cup-2026-match-preview",
+        "home_en": "Senegal",
+        "away_en": "Iraq",
+        "home_cn": "塞内加尔",
+        "away_cn": "伊拉克",
+        "home_pct": 77.2,
+        "draw_pct": null,
+        "away_pct": 8.6,
+        "insights": [
+            "Senegal are considered big favourites by the Opta supercomputer for this fixture, with a win probability of 77.2% to Iraq’s 8.6%.",
+            "Senegal have only won one of their three Matchday 3 fixtures in the group stages of the World Cup.",
+            "Iraq have lost each of their first five World Cup matches and could become just the second nation from the AFC confederation to fail to win their opening six games across the competition."
+        ],
+        "prediction": "",
+        "summary_cn": "这场比赛的规模对任何一方来说都不会被忽视，但 Opta 超级计算机严重倾向于塞内加尔。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· Opta 超级计算机认为塞内加尔是本场比赛的热门球队，获胜概率为 77.2%，而伊拉克则为 8.6%。\n· 塞内加尔在世界杯小组赛的三场第三轮比赛中只赢了一场。\n· 伊拉克队在世界杯前五场比赛中全部失利，可能成为亚足联第二个在世界杯前六场比赛中未能获胜的国家。"
+            ],
+            [
+                "深度分析",
+                "塞内加尔和伊拉克正处于最后机会，他们将于周五在多伦多体育场进行一场关键的第一组比赛。\n帕普·蒂奥率领的塞内加尔队以 3-1 负于法国队，随后在周一以 3-2 逆转挪威队。\n埃尔林·哈兰德两次射中球门，尽管伊斯梅拉·萨尔也梅开二度，但塞内加尔仍无法挽回局面。\n尽管他们进入前两名的希望已经破灭，但一切并没有失去，因为仍然有机会成为排名最好的八支球队之一，获得第三名。\n但塞内加尔需要扭转一些令人担忧的趋势，才能重振萎靡的赛事并进入 32 强。\n塞内加尔在世界杯首场比赛中两场失利，这是他们在单届世界杯上并列遭遇最多失利的球队，四年前在卡塔尔也曾两度失利。\n此外，塞内加尔队在遭遇连败后，首次面临小组赛三连败的局面。\n他们在这里的两场失利已经与他们在本届锦标赛这一阶段的前九场比赛中所遭受的损失一样多，其中四胜三平。\n塞内加尔此前在世界杯小组赛的三场MD3比赛中只赢了一场，一场平局一场失利。不过，这场胜利是在他们最近一次参加世界杯时取得的，即 2022 年以 2-1 战胜厄瓜多尔。\n萨尔的梅开二度不足以拯救塞内加尔对阵挪威的比赛，但他现在在九场世界杯比赛中打进了三个进球。塞内加尔球员在前 10 场比赛中的进球数是历史上最高的（与帕帕·布巴·迪奥普持平，他也进了 3 个球）。\n伊拉克的情况似乎比塞内加尔更糟糕，因为两场比赛后他们的净胜球为-6，所以即使是爆冷获胜也不能保证晋级。\n伊拉克队在首场比赛中以 1-4 输给挪威队（哈兰德在这场比赛中再次梅开二度），周一在费城以 3-0 不敌法国队。\n基利安·姆巴佩 (Kylian Mbappé) 在上下半场都有进球，随后奥斯曼·登贝莱 (Ousmane Dembélé) 在第 66 分钟取得了胜利，将比赛的比分超出了格雷厄姆·阿诺德 (Graham Arnold) 的球队。\n本届世界杯之前，只有两个国家在小组赛中以三球以上的比分输掉了三场比赛（1930 年的墨西哥和 1982 年的新西兰），而伊拉克在前两场比赛中就已经输掉了这个名单，因此将无法避免进入这个名单。\n这个海湾国家在世界杯前五场比赛中全部失利，并可能成为亚足联联盟中第二个未能赢得前六场比赛的国家，仅次于韩国在1954年至1998年期间输掉了前14场比赛。\n在伊拉克队输给法国队的比赛中，阿卡姆·哈希姆共 71 次传球，完成 86 次触球并完成 68 次。这两个总数都是伊拉克球员在世界杯单场比赛中进球最多的。"
+            ],
+            [
+                "历史交锋",
+                "这场第一组最后一轮的比赛是塞内加尔和伊拉克队的首次交锋。\n塞内加尔在世界杯上两场对阵亚足联球队的比赛中保持不败，2018年2-2战平日本，四年前3-1战胜东道主卡塔尔。\n对于伊拉克队来说，这场比赛是他们在世界杯上首次对阵非洲足联球队。\n亚足联最后三个国家在首场比赛中对阵非洲球队（朝鲜、卡塔尔和约旦）时遭遇失利，此前五支球队保持不败（3胜2平）。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "这场比赛的规模对任何一方来说都不会被忽视，但 Opta 超级计算机严重倾向于塞内加尔。\n特兰加之狮队的获胜几率高达 77.2%，而伊拉克队的获胜几率仅为 8.6%，而平局的几率被认为是 14.2%。\n从比赛整体来看，塞内加尔显然无法再小组第一，但考虑到他们获胜的概率很高，根据Opta的实时排名，他们仍有56.9%的机会进入32强，但他们夺冠的可能性只有0.2%。\n伊拉克的前景要黯淡得多。他们同样无法小组第一，晋级淘汰赛的机会只有0.3%。"
             ]
         ]
     },
@@ -684,26 +1080,98 @@ THEANALYST_MATCHES = [
         ]
     },
     {
+        "slug": "turkiye-vs-usa-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/turkiye-vs-usa-prediction-world-cup-2026-match-preview",
+        "home_en": "Türkiye",
+        "away_en": "USA",
+        "home_cn": "土耳其",
+        "away_cn": "美国",
+        "home_pct": 29.3,
+        "draw_pct": 23.0,
+        "away_pct": 47.7,
+        "insights": [
+            "The Opta supercomputer expects the USA to finish their Group D campaign on the front foot, with Mauricio Pochettino’s side winning 47.7% of the pre-match simulations.",
+            "USA have won back-to-back World Cup matches for the first time since the very first pair of games they played in the competition (against Belgium and Paraguay) in 1930. They have never won three in a row at the tournament.",
+            "Türkiye have two losses from two at this World Cup, yet have never lost three games in a row in the competition. They were also kept goalless by both Australia and Paraguay, having only failed to score in one of their previous 10 World Cup matches."
+        ],
+        "prediction": "From 25,000 match simulations, Pochettino’s charges are given a healthy win probability of 47.7%. Despite their dismal showing so far, a Türkiye victory isn’t seen as too big of a stretch, with Montella’s side given a 29.3% win rating, just ahead of a draw at exactly 23.0% probability.",
+        "summary_cn": "随着世界杯淘汰赛的到来，土耳其队将在这场比赛后退出舞台，Opta 超级计算机将美国队视为赢得这场 D 组决胜局的热门球队。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· Opta 超级计算机预计美国队将在 D 组比赛中取得领先，毛里西奥·波切蒂诺的球队在赛前模拟中获胜率为 47.7%。\n· 自 1930 年首次参加世界杯比赛（对阵比利时和巴拉圭）以来，美国队首次连续赢得世界杯比赛。他们从未在世界杯比赛中取得三连胜。\n· 土耳其队在本届世界杯上取得了两场两负的成绩，但从未在比赛中连续输过三场比赛。他们还被澳大利亚和巴拉圭两队保持无进球，在之前的 10 场世界杯比赛中只有一场没有进球。"
+            ],
+            [
+                "深度分析",
+                "毛里西奥·波切蒂诺 (Mauricio Pochettino) 率领的美国队正在备战 2026 年世界杯小组赛最后一场比赛，人们对他们抱有很高的期望，而共同主办方在进入 32 强之前已经确定为 D 组冠军。\n相反，美国队面对的是D组垫底的土耳其队，没有机会进入淘汰赛，他们在首场比赛中分别以2-0和1-0的比分输给了澳大利亚和巴拉圭。\n文森佐·蒙特拉的球队在输给澳大利亚队的比赛中每半场中段都有失球，但上次对阵巴拉圭队时几乎从一开始就落后。\n马蒂亚斯·加拉尔萨 (Matías Galarza) 在仅用时 1 分 4 秒为巴拉圭攻入制胜球，这不仅是本届世界杯最快的进球，也是自 2018 年丹麦队对阵克罗地亚队时马蒂亚斯·约根森 (Mathias Jørgensen) 在 55 秒内破门得分以来所有赛事中最快的进球。\n土耳其队在半场结束时米格尔·阿尔米龙的红牌帮助土耳其队重返比赛，但尽管他们总共尝试了 32 次射门，但他们追寻的扳平比分始终未能实现。\n这是本届世界杯上单场比赛中单支球队射门次数最多的球队，而土耳其队在最近 66 次射门组合中都没有进球（2026 年 62 次，2002 年 4 次），这是世界杯历史上第二长的连续射门次数（仅次于阿尔及利亚）。\n在本届世界杯上，凯南·耶尔迪兹在射门次数（12 次）、在对方禁区触球次数（20 次）和成功带球次数（5 次）方面领先土耳其队，但他的 12 次射门中只有 1 次射正，总预期进球数仅为 0.45（每次射门 0.04）。\n土耳其队在对阵巴拉圭队的比赛中毫无成果，控球率高达 78.6%，这是世界杯比赛历史上第六高的控球率，而阿卜杜勒克里姆·巴尔达克奇 (Abdülkerim Bardakci) 的 98 次传球是自 1966 年以来土耳其球员单场比赛中传球次数最多的。\n如果土耳其想要有机会对阵这支美国队，蒙特拉需要伊尔迪兹、巴达克奇、阿尔达·居勒和队长哈坎·恰尔汗奥卢等球员挺身而出，美国队在前两场比赛后势头不断增强。\n美国队是本届世界杯迄今为止表现最出色的球队之一，他们在首场比赛中以 4-1 击败巴拉圭队，随后经过一场艰苦的比赛以 2-0 战胜澳大利亚队，确定了 D 组冠军的位置。\n波切蒂诺的球队在两场比赛中打进了 6 个进球——继 1930 年和 2002 年两次打入 7 个进球之后，这已经是美国队在单届世界杯上的第三高进球数。在 2026 年世界杯的 6 个进球中，有 5 个是在上半场比赛中打进的。\n在福拉林·巴洛贡的梅开二度和乔瓦尼·雷纳的火箭将巴拉圭逼入绝境后，澳大利亚球员卡梅伦·伯吉斯早早将巴洛贡的传中带入自家球门，亚历克斯·弗里曼在半场结束前将东道主的优势扩大了一倍。\n弗里曼是本届世界杯上唯一一位同时进球和助攻的美国球员，成为自2014年约翰·布鲁克斯对阵加纳队以来第一位在世界杯上进球的后卫。\n这个最初被禁止的头球让美国队在比赛和 D 组中都占据了主导地位，从而锁定了 32 强对阵阿尔及利亚、奥地利或 B、E、F 或 I 组中其他第三名球队之一的道路。\n在对阵澳大利亚的比赛中，美国队展现出了深入晋级本届赛事所需的实力和勇气。如果像巴洛贡和康复的克里斯蒂安·普利西奇这样的球员在对阵土耳其的比赛中表现出色，人们对他们能够做到这一点的信心将会进一步增强。"
+            ],
+            [
+                "历史交锋",
+                "这将是土耳其队和美国队在世界杯上的首次交锋，但两国队之间并不陌生，此前五次交锋，双方取得了两胜一平、各进七个球的平衡战绩。\n他们的最后一场比赛是在 2025 年 6 月；在康涅狄格州举行的一场友谊赛中，杰克·麦克格林 (Jack McGlynn) 在 60 秒内为美国队进球，而古勒 (Güler) 和凯雷姆·阿克图科格鲁 (Kerem Aktürkoglu) 在第 24 分钟和第 27 分钟分别进球回应，最终土耳其队以 2-1 获胜。\n尽管本届世界杯开局强劲，美国队在过去 20 场对阵欧足联附属国家的世界杯比赛中只赢了一场，并在 2002 年小组赛中以 3-2 击败了葡萄牙队。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "随着世界杯淘汰赛的到来，土耳其队将在这场比赛后退出舞台，Opta 超级计算机将美国队视为赢得这场 D 组决胜局的热门球队。\n根据 25,000 场比赛模拟，波切蒂诺的球队获胜概率为 47.7%。\n尽管土耳其队到目前为止表现不佳，但人们认为土耳其队的胜利并不算太大，蒙特拉队的获胜率为 29.3%，仅领先于平局的概率为 23.0%。"
+            ]
+        ]
+    },
+    {
+        "slug": "japan-vs-sweden-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/japan-vs-sweden-prediction-world-cup-2026-match-preview",
+        "home_en": "Japan",
+        "away_en": "Sweden",
+        "home_cn": "日本",
+        "away_cn": "瑞典",
+        "home_pct": 52.7,
+        "draw_pct": null,
+        "away_pct": 22.2,
+        "insights": [
+            "Japan go into this clash as favourites, according to the Opta supercomputer, winning 52.7% of simulations compared to Sweden ‘s 22.2%.",
+            "Friday’s contest in Dallas will be Japan and Sweden’s first meeting at the World Cup.",
+            "Following a draw with the Netherlands and a win over Tunisia, Japan have a chance to go through the group stage of a World Cup unbeaten for only the second time, after first doing so as co-hosts in 2002."
+        ],
+        "prediction": "The Opta supercomputer gives both Japan and the Netherlands a 100% chance of progressing to the round of 32, while Sweden are assigned a 91.5% probability as Group F’s top three sides look set to advance.",
+        "summary_cn": "Opta 超级计算机支持日本队成为获胜并锁定下一轮席位的热门球队，在 25,000 次赛前模拟中，守康的球队以 52.7% 的胜率获胜。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· 根据 Opta 超级计算机的数据，日本队在这场比赛中是夺冠热门，在模拟比赛中获胜率为 52.7%，而瑞典队的获胜率为 22.2%。\n· 周五在达拉斯举行的比赛将是日本和瑞典在世界杯上的首次交锋。"
+            ],
+            [
+                "深度分析",
+                "当日本队周五在达拉斯体育场迎战瑞典队时，F组前两名的名次就岌岌可危了，获胜者将在世界杯淘汰赛阶段之前获得巨大的提升。\n守安肇的球队在与瑞典的比赛之前目前在小组中排名第二，并且在本届赛事中保持不败，先是与领头羊荷兰队2-2战平，然后在上一场比赛中以4-0击败了已经被淘汰的突尼斯队。\n镰田大地在达拉斯比赛中第 89 分钟扳平比分，为对阵橙衣军团的比赛赢得了宝贵的一分，并在蒙特雷比赛仅四分钟后就进球，开始了日本队对突尼斯的比赛。\n上田绫濑梅开二度，而伊藤纯也也取得进球，让蓝武士在第一轮淘汰赛前处于领先地位。\n尽管他们的立场不同，但日本仍然面临着很多风险。避免输给瑞典意味着他们在2002年作为共同东道主首次在世界杯小组赛中保持不败（2胜1平）。\n守保知道这可以给淘汰赛带来信心，并渴望他的球队能够延续他们在所有比赛中九场不败的记录。\n在世界杯上，日本队在过去的四场比赛中保持不败（W2 D2），并且即将成为继韩国队（1998年至2002年连续六场比赛）之后第二个连续五场比赛不败的亚足联国家。\n阻碍他们的是一支命运多舛的瑞典队。\n格雷厄姆·波特的球队开局就取得了巨大的成功，以 5-1 击败了突尼斯队，随后在第二轮比赛中以 5-1 输给了荷兰队，他们也尝到了自食其果的滋味。\n由此，瑞典队成为世界杯历史上第二支在同一赛事中以至少四球优势获胜和输掉比赛的球队。\n顺便说一句，第一个案例也涉及瑞典，瑞典以 8-0 击败古巴，然后在 1938 年以 5-1 输给匈牙利。\n瑞典对阵荷兰的比赛实际上只面对了10次射门，但其中7次射正，5次射正；这是波特坚持改进的一个领域，尤其是面对日本的动态进攻。\n事实上，Samurai Blue 已经有 8 名不同的球员为进球做出贡献，追平了单届世界杯的最高进球数（2022 年也有 8 名球员）。\n他们中表现最出色的球员之一是上田，他的三粒进球（两粒进球，一次助攻）是日本球员在单届世界杯上并列最多的。他的两个进球也创下了该国联合锦标赛的纪录。\n对于瑞典队来说，亚历山大·伊萨克提供了最多的进攻灵感。这位前锋已经打进一球并送出 3 次助攻，已经超越了瑞典球员此前在世界杯上的进球数纪录（自 1966 年以来）。\nOpta 超级计算机给出日本和荷兰晋级 32 强的概率为 100%，而瑞典则有 91.5% 的概率，因为 F 组前三名球队有望晋级。"
+            ],
+            [
+                "历史交锋",
+                "这将是日本和瑞典在世界杯上的首次交手，尽管两国此前已经交锋过五次。\n他们的第一次交锋可以追溯到 1936 年奥运会上，当时日本队在 0-2 落后的情况下以 3-2 获胜，被称为“柏林奇迹”。自此之后，武士蓝队在所有四场比赛中均未尝胜绩，尽管最近一次是在 2002 年 5 月（以 1-1 结束）。\n自 2022 年世界杯开始以来，日本队在对阵欧洲球队的四场比赛中保持不败（W2 D2），其中包括在本届世界杯早些时候与荷兰队战平。他们在这段时间里的两场胜利相当于他们之前 10 次与欧洲国家交锋中取得的胜利。\n同样，瑞典在世界杯上从未输给过亚洲对手（2胜1平）。他们最近一次战胜亚足联国家队是2018年1-0击败韩国队。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "Opta 超级计算机支持日本队成为获胜并锁定下一轮席位的热门球队，在 25,000 次赛前模拟中，守康的球队以 52.7% 的胜率获胜。\n与此同时，瑞典获胜的概率仅为 22.2%，平局占模拟比赛的剩余 25.1%。"
+            ]
+        ]
+    },
+    {
         "slug": "tunisia-vs-netherlands-prediction-world-cup-2026-match-preview",
         "url": "https://theanalyst.com/articles/tunisia-vs-netherlands-prediction-world-cup-2026-match-preview",
         "home_en": "Tunisia",
         "away_en": "Netherlands",
         "home_cn": "突尼斯",
         "away_cn": "荷兰",
-        "home_pct": 5.2,
-        "draw_pct": 11.8,
-        "away_pct": 83.0,
+        "home_pct": 4.9,
+        "draw_pct": 9.9,
+        "away_pct": 85.3,
         "insights": [
-            "After swatting aside Sweden, the Netherlands have an 83.0% chance of posting consecutive wins according to the Opta Supercomputer.",
-            "Following 25,000 pre-match simulations, Tunisia emerged with just a 5.2% chance of success in Kansas City.",
+            "After swatting aside Sweden, the Netherlands have an 85.3% chance of posting consecutive wins according to the Opta Supercomputer.",
+            "Following 25,000 pre-match simulations, Tunisia emerged with just a 4.9% chance of success in Kansas City.",
             "Outside penalty shootouts, Oranje are unbeaten across 14 World Cup games since losing to Spain in the 2010 final (W9 D5) – that’s the longest streak in the tournament’s history."
         ],
-        "prediction": "The Opta supercomputer’s 25,000 pre-match simulations calculated an 83% chance of success for the Netherlands. Tunisia have a mere 5.2% chance of leaving this World Cup with a win, while the draw is rated at 11.8%.",
-        "summary_cn": "Opta 超级计算机进行了 25,000 次赛前模拟，计算出荷兰队获胜的几率为 83%。",
+        "prediction": "The Opta supercomputer’s 25,000 pre-match simulations calculated an 85.3% chance of success for the Netherlands. Tunisia have a mere 4.9% chance of leaving this World Cup with a win, while the draw is rated at 9.9%.",
+        "summary_cn": "Opta 超级计算机进行了 25,000 次赛前模拟，计算出荷兰队的获胜几率为 85.3%。",
         "analysis_cn": [
             [
                 "关键数据速览",
-                "· 根据 Opta 超级计算机的数据，在击败瑞典之后，荷兰队连续获胜的几率为 83.0%。\n· 自 2010 年决赛输给西班牙（9 胜 5 平）以来，橙衣军团在世界杯的 14 场比赛中保持不败，这是世界杯历史上最长的不败纪录。"
+                "· 根据 Opta 超级计算机的数据，在击败瑞典后，荷兰队连续获胜的几率为 85.3%。\n· 自 2010 年决赛输给西班牙（9 胜 5 平）以来，橙衣军团在世界杯的 14 场比赛中保持不败，这是世界杯历史上最长的不败纪录。"
             ],
             [
                 "深度分析",
@@ -715,79 +1183,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "赛前预测（Opta 超算）",
-                "Opta 超级计算机进行了 25,000 次赛前模拟，计算出荷兰队获胜的几率为 83%。\n突尼斯队在本届世界杯上获胜的概率仅为 5.2%，而平局概率为 11.8%。"
-            ]
-        ]
-    },
-    {
-        "slug": "ecuador-vs-germany-prediction-world-cup-2026-match-preview",
-        "url": "https://theanalyst.com/articles/ecuador-vs-germany-prediction-world-cup-2026-match-preview",
-        "home_en": "Ecuador",
-        "away_en": "Germany",
-        "home_cn": "厄瓜多尔",
-        "away_cn": "德国",
-        "home_pct": 28.2,
-        "draw_pct": null,
-        "away_pct": 48.8,
-        "insights": [
-            "Germany are considered favourites by the Opta supercomputer for this fixture, with a win probability of 48.8% to Ecuador’s 28.2%.",
-            "Deniz Undav is averaging a goal or assist every 11 minutes at this World Cup.",
-            "Ecuador had 16 shots on target without scoring in their opening two games of the tournament."
-        ],
-        "prediction": "",
-        "summary_cn": "Opta 超级计算机认为德国队在小组赛三场比赛中取得三场胜利，被认为是微弱的热门。",
-        "analysis_cn": [
-            [
-                "关键数据速览",
-                "· Opta 超级计算机认为德国是本场比赛的热门球队，获胜概率为 48.8%，厄瓜多尔为 28.2%。\n· Deniz Undav 在本届世界杯上平均每 11 分钟就有一个进球或助攻。\n· 厄瓜多尔队在本届世界杯的前两场比赛中有 16 次射正，但没有进球。"
-            ],
-            [
-                "深度分析",
-                "国家队在开局7-1大胜库拉索队后，又在最后时刻2-1战胜科特迪瓦队，已经锁定小组头名。\n朱利安·纳格尔斯曼的球队在对阵大象队的比赛中远没有令人信服，并且由于弗兰克·凯西在第 30 分钟的首开纪录，半场落后。\n但替补出场的德尼兹·昂达夫证明了自己是英雄，他在第 68 分钟将比分扳平，随后在第 94 分钟冷静地攻入制胜球，确保安全晋级淘汰赛。\n因此，纳格尔斯曼可能会考虑在完成小组任务时让一些主力休息，但他有机会帮助德国队在所有比赛中追平纪录的12连胜。\n他们之前在 1979 年 5 月至 1980 年 6 月期间取得了如此多的胜利，并且正在悄悄积蓄势头，希望赢得第五届世界杯。\n乌达夫在本届世界杯上打进了三个进球，全部是替补德国队出场的。在世界杯上，他平均每 11 分钟就有一个进球或助攻，其中他的 3 个进球和 2 个助攻来自仅仅 56 分钟的出场时间。\n没有球员在前三场世界杯比赛中以替补身份进球，而唯一在前三场比赛中进球的德国球员是 1970 年的盖德·穆勒和 2002 年的米罗斯拉夫·克洛泽。\n在赢得了前两场比赛后，德国队希望第四次赢得世界杯小组赛中的所有比赛，此前曾在 1970 年、1974 年（第二小组赛）和 2006 年实现过这一目标。\n厄瓜多尔晋级32强的希望悬而未决，塞巴斯蒂安·贝卡塞塞的球队在0-1负于科特迪瓦之后又与库拉索队0-0战平。\n这意味着他们需要首次战胜德国队才能进入淘汰赛阶段，但预兆看起来并不是特别好。\n三色旗队在本届世界杯的前两场比赛中有 16 次射门没有进球。从 1966 年到 2022 年的记录来看，单届赛事中单次射门次数最多的球队是 2002 年卫冕冠军法国队 18 次。\n老将前锋恩纳·瓦伦西亚可能会在这场比赛中为他的国家创造历史。如果他参加这场比赛，他将超越爱迪生·门德斯，成为厄瓜多尔世界杯出场纪录保持者。\n2014年他8次射门打进3球，2022年9次射门打进3球，但2026年他有8次射门没有进球。"
-            ],
-            [
-                "历史交锋",
-                "德国队此前两次对阵厄瓜多尔队均取得胜利，其中包括2006年主场世界杯小组赛中以3-0获胜。\n他们的另一场胜利是 2013 年 5 月以 4-2 的友谊赛获胜，这场比赛碰巧也是在美国佛罗里达州博卡拉顿举行。\n此外，德国队在世界杯小组赛对阵南美国家队的 10 场比赛中保持不败（7 胜 3 平），仅丢 5 个球。\n厄瓜多尔队自2013年2月3-2击败葡萄牙队以来，在最近9次与欧洲对手的交锋中未尝胜绩（5平4负）。然而，之前的四场比赛中有三场是平局，其中最近一次是在今年三月，他们1-1战平荷兰。"
-            ],
-            [
-                "赛前预测（Opta 超算）",
-                "Opta 超级计算机认为德国队在小组赛三场比赛中取得三场胜利，被认为是微弱的热门。\n他们的胜率是48.8%，厄瓜多尔获胜的概率是28.2​​%，平局的概率是23.0%。"
-            ]
-        ]
-    },
-    {
-        "slug": "japan-vs-sweden-prediction-world-cup-2026-match-preview",
-        "url": "https://theanalyst.com/articles/japan-vs-sweden-prediction-world-cup-2026-match-preview",
-        "home_en": "Japan",
-        "away_en": "Sweden",
-        "home_cn": "日本",
-        "away_cn": "瑞典",
-        "home_pct": 51.9,
-        "draw_pct": null,
-        "away_pct": 22.2,
-        "insights": [
-            "Japan go into this clash as favourites, according to the Opta supercomputer, winning 51.9% of simulations compared to Sweden ‘s 22.2%.",
-            "Friday’s contest in Dallas will be Japan and Sweden’s first meeting at the World Cup.",
-            "Following a draw with the Netherlands and a win over Tunisia, Japan have a chance to go through the group stage of a World Cup unbeaten for only the second time, after first doing so as co-hosts in 2002."
-        ],
-        "prediction": "The Opta supercomputer gives both Japan and the Netherlands a 100% chance of progressing to the round of 32, while Sweden are assigned a 91.9% probability as Group F’s top three sides look set to advance.",
-        "summary_cn": "Opta 超级计算机支持日本队成为获胜并锁定下一轮席位的热门球队，在 25,000 次赛前模拟中，守康的球队以 51.9% 的胜率获胜。",
-        "analysis_cn": [
-            [
-                "关键数据速览",
-                "· 根据 Opta 超级计算机的数据，日本队在这场比赛中是夺冠热门，在模拟比赛中获胜率为 51.9%，而瑞典队的获胜率为 22.2%。\n· 周五在达拉斯举行的比赛将是日本和瑞典在世界杯上的首次交锋。"
-            ],
-            [
-                "深度分析",
-                "当日本队周五在达拉斯体育场迎战瑞典队时，F组前两名的名次就岌岌可危了，获胜者将在世界杯淘汰赛阶段之前获得巨大的提升。\n守安肇的球队在与瑞典的比赛之前目前在小组中排名第二，并且在本届赛事中保持不败，先是与领头羊荷兰队2-2战平，然后在上一场比赛中以4-0击败了已经被淘汰的突尼斯队。\n镰田大地在达拉斯比赛中第 89 分钟扳平比分，为对阵橙衣军团的比赛赢得了宝贵的一分，并在蒙特雷比赛仅四分钟后就进球，开始了日本队对突尼斯的比赛。\n上田绫濑梅开二度，而伊藤纯也也取得进球，让蓝武士在第一轮淘汰赛前处于领先地位。\n尽管他们的立场不同，但日本仍然面临着很多风险。避免输给瑞典意味着他们在2002年作为共同东道主首次在世界杯小组赛中保持不败（2胜1平）。\n守保知道这可以给淘汰赛带来信心，并渴望他的球队能够延续他们在所有比赛中九场不败的记录。\n在世界杯上，日本队在过去的四场比赛中保持不败（W2 D2），并且即将成为继韩国队（1998年至2002年连续六场比赛）之后第二个连续五场比赛不败的亚足联国家。\n阻碍他们的是一支命运多舛的瑞典队。\n格雷厄姆·波特的球队开局就取得了巨大的成功，以 5-1 击败了突尼斯队，随后在第二轮比赛中以 5-1 输给了荷兰队，他们也尝到了自食其果的滋味。\n由此，瑞典队成为世界杯历史上第二支在同一赛事中以至少四球优势获胜和输掉比赛的球队。\n顺便说一句，第一个案例也涉及瑞典，瑞典以 8-0 击败古巴，然后在 1938 年以 5-1 输给匈牙利。\n瑞典对阵荷兰的比赛实际上只面对了10次射门，但其中7次射正，5次射正；这是波特坚持改进的一个领域，尤其是面对日本的动态进攻。\n事实上，Samurai Blue 已经有 8 名不同的球员为进球做出贡献，追平了单届世界杯的最高进球数（2022 年也有 8 名球员）。\n他们中表现最出色的球员之一是上田，他的三粒进球（两粒进球，一次助攻）是日本球员在单届世界杯上并列最多的。他的两个进球也创下了该国联合锦标赛的纪录。\n对于瑞典队来说，亚历山大·伊萨克提供了最多的进攻灵感。这位前锋已经打进一球并送出 3 次助攻，已经超越了瑞典球员此前在世界杯上的进球数纪录（自 1966 年以来）。\nOpta 超级计算机给出日本和荷兰晋级 32 强的可能性为 100%，而瑞典则有 91.9% 的可能性，因为 F 组前三名球队有望晋级。"
-            ],
-            [
-                "历史交锋",
-                "这将是日本和瑞典在世界杯上的首次交手，尽管两国此前已经交锋过五次。\n他们的第一次交锋可以追溯到 1936 年奥运会上，当时日本队在 0-2 落后的情况下以 3-2 获胜，被称为“柏林奇迹”。自此之后，武士蓝队在所有四场比赛中均未尝胜绩，尽管最近一次是在 2002 年 5 月（以 1-1 结束）。\n自 2022 年世界杯开始以来，日本队在对阵欧洲球队的四场比赛中保持不败（W2 D2），其中包括在本届世界杯早些时候与荷兰队战平。他们在这段时间里的两场胜利相当于他们之前 10 次与欧洲国家交锋中取得的胜利。\n同样，瑞典在世界杯上从未输给过亚洲对手（2胜1平）。他们最近一次战胜亚足联国家队是2018年1-0击败韩国队。"
-            ],
-            [
-                "赛前预测（Opta 超算）",
-                "Opta 超级计算机支持日本队成为获胜并锁定下一轮席位的热门球队，在 25,000 次赛前模拟中，守康的球队以 51.9% 的胜率获胜。\n与此同时，瑞典队的获胜率仅为 22.2%，平局占模拟比赛的剩余 25.9%。"
+                "Opta 超级计算机进行了 25,000 次赛前模拟，计算出荷兰队的获胜几率为 85.3%。\n突尼斯队在本届世界杯上获胜的概率仅为 4.9%，而平局概率为 9.9%。"
             ]
         ]
     },
@@ -798,20 +1194,20 @@ THEANALYST_MATCHES = [
         "away_en": "Ivory Coast",
         "home_cn": "库拉索",
         "away_cn": "科特迪瓦",
-        "home_pct": 7.6,
+        "home_pct": 7.9,
         "draw_pct": 10.1,
-        "away_pct": 82.2,
+        "away_pct": 81.5,
         "insights": [
-            "Ivory Coast overcame Curaçao in a huge 82.2% of 25,000 pre-match simulations by the Opta supercomputer.",
+            "Ivory Coast overcame Curaçao in a huge 81.5% of 25,000 pre-match simulations by the Opta supercomputer.",
             "Curaçao could become the lowest-ranked side in history to reach the knockout stages at the World Cup.",
             "Ivory Coast are hoping to reach the World Cup knockout stages for the first time ever."
         ],
-        "prediction": "The Opta supercomputer struggled to see anything other than a win for Ivory Coast, who came out on top in a massive 82.2% of 25,000 pre-match simulations. Curaçao were afforded just a 7.6% chance of victory, with the draw accounting for 10.1% of the data-led simulations.",
-        "summary_cn": "Opta 超级计算机除了科特迪瓦队的胜利之外很难看到任何其他结果，科特迪瓦队在 25,000 次赛前模拟中以 82.2% 的准确率名列前茅。",
+        "prediction": "The Opta supercomputer struggled to see anything other than a win for Ivory Coast, who came out on top in a massive 81.5% of 25,000 pre-match simulations. Curaçao were afforded just a 7.9% chance of victory, with the draw accounting for 10.1% of the data-led simulations.",
+        "summary_cn": "Opta 超级计算机除了科特迪瓦队的胜利之外很难看到任何其他结果，科特迪瓦队在 25,000 次赛前模拟中以 81.5% 的准确率名列前茅。",
         "analysis_cn": [
             [
                 "关键数据速览",
-                "· Opta 超级计算机在 25,000 次赛前模拟中以 82.2% 的准确率击败了科特迪瓦队。\n· 库拉索岛可能成为历史上进入世界杯淘汰赛阶段排名最低的球队。\n· 科特迪瓦希望有史以来第一次进入世界杯淘汰赛阶段。"
+                "· Opta 超级计算机在 25,000 次赛前模拟中以 81.5% 的准确率击败了科特迪瓦队。\n· 库拉索岛可能成为历史上进入世界杯淘汰赛阶段排名最低的球队。\n· 科特迪瓦希望有史以来第一次进入世界杯淘汰赛阶段。"
             ],
             [
                 "深度分析",
@@ -823,7 +1219,43 @@ THEANALYST_MATCHES = [
             ],
             [
                 "赛前预测（Opta 超算）",
-                "Opta 超级计算机除了科特迪瓦队的胜利之外很难看到任何其他结果，科特迪瓦队在 25,000 次赛前模拟中以 82.2% 的准确率名列前茅。\n库拉索岛获胜的几率仅为 7.6%，在以数据为主导的模拟中，平局占 10.1%。\n事实上，Opta 的现场锦标赛预测显示科特迪瓦进入淘汰赛阶段的可能性为 92.2%，远远高于库拉索岛 17.3% 的可能性。"
+                "Opta 超级计算机除了科特迪瓦队的胜利之外很难看到任何其他结果，科特迪瓦队在 25,000 次赛前模拟中以 81.5% 的准确率名列前茅。\n库拉索岛获胜的几率仅为 7.9%，在以数据为主导的模拟中，平局占 10.1%。\n事实上，Opta 的现场锦标赛预测显示科特迪瓦进入淘汰赛阶段的可能性为 93.3%，远远高于库拉索岛 17.6% 的可能性。"
+            ]
+        ]
+    },
+    {
+        "slug": "ecuador-vs-germany-prediction-world-cup-2026-match-preview",
+        "url": "https://theanalyst.com/articles/ecuador-vs-germany-prediction-world-cup-2026-match-preview",
+        "home_en": "Ecuador",
+        "away_en": "Germany",
+        "home_cn": "厄瓜多尔",
+        "away_cn": "德国",
+        "home_pct": 17.6,
+        "draw_pct": null,
+        "away_pct": 62.7,
+        "insights": [
+            "Germany are considered favourites by the Opta supercomputer for this fixture, with a win probability of 62.7% to Ecuador’s 17.6%.",
+            "Deniz Undav is averaging a goal or assist every 11 minutes at this World Cup.",
+            "Ecuador had 16 shots on target without scoring in their opening two games of the tournament."
+        ],
+        "prediction": "",
+        "summary_cn": "Opta 超级计算机认为德国队是小组赛三胜三负的热门球队。",
+        "analysis_cn": [
+            [
+                "关键数据速览",
+                "· Opta 超级计算机认为德国是本场比赛的热门球队，获胜概率为 62.7%，厄瓜多尔为 17.6%。\n· Deniz Undav 在本届世界杯上平均每 11 分钟就有一个进球或助攻。\n· 厄瓜多尔队在本届世界杯的前两场比赛中有 16 次射正但没有进球。"
+            ],
+            [
+                "深度分析",
+                "国家队在开局7-1大胜库拉索队后，又在最后时刻2-1战胜科特迪瓦队，已经锁定小组头名。\n朱利安·纳格尔斯曼的球队在对阵大象队的比赛中远没有令人信服，并且由于弗兰克·凯西在第 30 分钟的首开纪录，半场落后。\n但替补出场的德尼兹·昂达夫证明了自己是英雄，他在第 68 分钟将比分扳平，随后在第 94 分钟冷静地攻入制胜球，确保安全晋级淘汰赛。\n因此，纳格尔斯曼可能会考虑在完成小组任务时让一些主力休息，但他有机会帮助德国队在所有比赛中追平纪录的12连胜。\n他们之前在 1979 年 5 月至 1980 年 6 月期间取得了如此多的胜利，并且正在悄悄积蓄势头，希望赢得第五届世界杯。\n乌达夫在本届世界杯上打进了三个进球，全部是替补德国队出场的。在世界杯上，他平均每 11 分钟就有一个进球或助攻，其中他的 3 个进球和 2 个助攻来自仅仅 56 分钟的出场时间。\n没有球员在前三场世界杯比赛中以替补身份进球，而唯一在前三场比赛中进球的德国球员是 1970 年的盖德·穆勒和 2002 年的米罗斯拉夫·克洛泽。\n在赢得了前两场比赛后，德国队希望第四次赢得世界杯小组赛中的所有比赛，此前曾在 1970 年、1974 年（第二小组赛）和 2006 年实现过这一目标。\n厄瓜多尔晋级32强的希望悬而未决，塞巴斯蒂安·贝卡塞塞的球队在0-1负于科特迪瓦之后又与库拉索队0-0战平。\n这意味着他们需要首次战胜德国队才能进入淘汰赛阶段，但预兆看起来并不是特别好。\n三色旗队在本届世界杯的前两场比赛中有 16 次射门没有进球。从 1966 年到 2022 年的记录来看，单届赛事中单次射门次数最多的球队是 2002 年卫冕冠军法国队 18 次。\n老将前锋恩纳·瓦伦西亚可能会在这场比赛中为他的国家创造历史。如果他参加这场比赛，他将超越爱迪生·门德斯，成为厄瓜多尔世界杯出场纪录保持者。\n2014年他8次射门打进3球，2022年9次射门打进3球，但2026年他有8次射门没有进球。"
+            ],
+            [
+                "历史交锋",
+                "德国队此前两次对阵厄瓜多尔队均取得胜利，其中包括2006年主场世界杯小组赛中以3-0获胜。\n他们的另一场胜利是 2013 年 5 月以 4-2 的友谊赛获胜，这场比赛碰巧也是在美国佛罗里达州博卡拉顿举行。\n此外，德国队在世界杯小组赛对阵南美国家队的 10 场比赛中保持不败（7 胜 3 平），仅丢 5 个球。\n厄瓜多尔队自2013年2月3-2击败葡萄牙队以来，在最近9次与欧洲对手的交锋中未尝胜绩（5平4负）。然而，之前的四场比赛中有三场是平局，其中最近一次是在今年三月，他们1-1战平荷兰。"
+            ],
+            [
+                "赛前预测（Opta 超算）",
+                "Opta 超级计算机认为德国队是小组赛三胜三负的热门球队。\n他们的胜率是62.7%，厄瓜多尔获胜的概率是17.6%，平局的概率是19.7%。"
             ]
         ]
     },
@@ -915,7 +1347,7 @@ THEANALYST_MATCHES = [
             "Qatar have failed to win any of their eight internationals since a 2-1 victory over the United Arab Emirates in October 2025 (D3 L5)."
         ],
         "prediction": "The Opta supercomputer makes Bosnia heavy favourites for this match after they came out on top in 67.8% of the 25,000 pre-match simulations.",
-        "summary_cn": "Opta 超级计算机使波斯尼亚队成为这场比赛的热门球队，他们在 25,000 次赛前模拟中以 67.8% 的成绩名列前茅。",
+        "summary_cn": "Opta 超级计算机使波斯尼亚队成为本场比赛的热门球队，他们在 25,000 次赛前模拟中以 67.8% 的成绩名列前茅。",
         "analysis_cn": [
             [
                 "关键数据速览",
@@ -931,7 +1363,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "赛前预测（Opta 超算）",
-                "Opta 超级计算机使波斯尼亚队成为这场比赛的热门球队，他们在 25,000 次赛前模拟中以 67.8% 的成绩名列前茅。\n洛佩特吉的球队能否打破困境并以某种方式进入淘汰赛阶段？卡塔尔获胜的可能性只有 14.0%，这似乎不太可能。"
+                "Opta 超级计算机使波斯尼亚队成为本场比赛的热门球队，他们在 25,000 次赛前模拟中以 67.8% 的成绩名列前茅。\n洛佩特吉的球队能否打破困境并以某种方式进入淘汰赛阶段？卡塔尔获胜的可能性只有 14.0%，这似乎不太可能。"
             ]
         ]
     },
@@ -995,7 +1427,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "克罗地亚和巴拿马在世界杯揭幕战中令人失望的失利后，都希望周三在多伦多得到回应。\n兹拉科·达利奇的球队在上周三的 L 组比赛中以 4-2 输给了英格兰队。在两度落后的情况下，马丁·巴图里纳和佩塔尔·穆萨在半场结束前均扳平比分，但托马斯·图赫尔的球队在达拉斯的中场休息后占据了主导地位。\n考虑到克罗地亚在过去六场世界杯比赛中的四场比赛中输掉了首场比赛（W1 D1），达利奇可能不会太担心糟糕的开局。他们在过去两届比赛中至少仍然进入了半决赛。\n克罗地亚现在的任务是应对并避免继2002年输给厄瓜多尔和四年后输给巴西之后第二次连续输掉世界杯比赛。\n达利奇的队员们在对阵英格兰的比赛中出现了一些积极的迹象，他们的职业道德自始至终都无可挑剔。克罗地亚队在对手半场施加了 187 次高压，是本届世界杯首个比赛日中最多的球队。\n克罗地亚也有丰富的经验可供借鉴。卢卡·莫德里奇在揭幕战中首发，成为第二位参加过 10 场不同重大赛事的欧洲球员，另外一位是克里斯蒂亚诺·罗纳尔多（12 场）。\n然而，莫德里奇在比赛开始前就被换下场，他在世界杯或欧洲杯的 34 场首发中出场时间最少（58 分钟）。他希望在他为克罗地亚出场的第 200 场比赛中给人留下更多的印象，而达利奇可能会选择引进马特奥·科瓦契奇作为中场的支持者。\n巴拿马队也以失败告终，在伊伦基最后时刻的进球后，巴拿马队0-1不敌加纳队。比赛结束时，比赛时间为 94 分 04 秒。\n托马斯·克里斯蒂安森的球队在四场世界杯比赛中尚未取得一分（L4），同时他们已经丢了 12 个球，未能保持不失球，并且只进了两球。\n在 MD2 之前，只有萨尔瓦多拥有该赛事历史上最差的 100% 输球记录（六场比赛），但克里斯蒂安森可能会因他们的首场表现而受到鼓舞。\n巴拿马队在对阵加纳队的比赛中取得了 62% 的控球率和 502 次成功传球，此前在本届世界杯的一场比赛中巴拿马队的控球率从未超过 40% 或成功传球 350 次。\n何塞·科尔多巴是这些球上进步的核心人物，他尝试了 101 次传球——这是巴拿马队历史上单场比赛中传球次数最多的球员。他的 MD1 传球总数仅比 2018 年世界杯所有三场小组赛中巴拿马球员记录的传球总数少 15 次（加布里埃尔·戈麦斯传球 116 次）。\n安德烈斯·安德拉德（Andrés Andrade）也给人留下了深刻的印象，他在锦标赛首轮比赛中的断线传球次数在所有球员中排名第四（21 次）。他还与美国后卫蒂姆·雷姆并列从本方半场开始的断线传球次数最多的球员（15 次）。\n但巴拿马也投入了硬码。在 MD1 比赛中，没有哪支球队的铲球次数超过 29 次，而在 2022 年整场比赛中，只有法国队（对阵突尼斯队时有 37 次铲球）超过了铲球次数。\n再往前走，克里斯蒂安森可能会让伊斯梅尔·迪亚兹首发。他在去年的金杯赛上赢得了金靴奖，进球数是其他球员的两倍，可能会成为巴拿马队解决世界舞台上进球不足的问题的办法。"
+                "克罗地亚和巴拿马在世界杯揭幕战中令人失望的失利后，都希望周三在多伦多得到回应。\n兹拉科·达利奇的球队在上周三的 L 组比赛中以 4-2 输给了英格兰队。在两度落后的情况下，马丁·巴图里纳和佩塔尔·穆萨在半场结束前均扳平比分，但托马斯·图赫尔的球队在达拉斯的中场休息后占据了主导地位。\n考虑到克罗地亚在过去六场世界杯比赛中的四场比赛中输掉了首场比赛（W1 D1），达利奇可能不会太担心糟糕的开局。他们在过去两届比赛中至少仍然进入了半决赛。\n克罗地亚现在的任务是应对并避免继2002年输给厄瓜多尔和四年后输给巴西之后第二次连续输掉世界杯比赛。\n达利奇的队员们在对阵英格兰的比赛中出现了一些积极的迹象，他们的职业道德自始至终都无可挑剔。克罗地亚队在对手半场施加了 187 次高压，是本届世界杯首个比赛日中最多的球队。\n克罗地亚也有丰富的经验可供借鉴。卢卡·莫德里奇在揭幕战中首发，成为第二位参加过 10 场不同重大赛事的欧洲球员，另外一位是克里斯蒂亚诺·罗纳尔多（12 场）。\n然而，莫德里奇在比赛开始前就被换下场，他在世界杯或欧洲杯的 34 场首发中出场时间最少（58 分钟）。他希望在他为克罗地亚出场的第 200 场比赛中给人留下更多的印象，而达利奇可能会选择引进马特奥·科瓦契奇作为中场的支持者。\n巴拿马队也以失败告终，在伊伦基最后时刻的进球后，巴拿马队0-1不敌加纳队。比赛结束时，比赛时间为 94 分 04 秒。\n托马斯·克里斯蒂安森的球队在四场世界杯比赛中尚未取得一分（L4），同时他们已经丢了 12 个球，未能保持不失球，并且只进了两球。\n在 MD2 之前，只有萨尔瓦多拥有该赛事历史上最差的 100% 输球记录（六场比赛），但克里斯蒂安森可能会因他们的首场表现而受到鼓舞。\n巴拿马队在对阵加纳队的比赛中取得了 62% 的控球率和 502 次成功传球，此前在本届世界杯的一场比赛中巴拿马队的控球率从未超过 40% 或成功传球 350 次。\n何塞·科尔多巴是这些球上进步的核心人物，他尝试了 101 次传球——这是巴拿马队历史上单场比赛中传球次数最多的球员。他的 MD1 传球总数仅比 2018 年世界杯所有三场小组赛中巴拿马球员记录的传球总数少 15 次（加布里埃尔·戈麦斯传球 116 次）。\n安德烈斯·安德拉德（Andrés Andrade）也给人留下了深刻的印象，他在锦标赛首轮比赛中的断线传球次数在所有球员中排名第四（21 次）。他还与美国后卫蒂姆·雷姆并列从本方半场开始的断线传球次数最多的球员（15 次）。\n但巴拿马也投入了硬码。在 MD1 比赛中，没有哪支球队的铲断次数超过 29 次，而在 2022 年整场比赛中，只有法国队（对阵突尼斯队时有 37 次铲断）比这更多。\n再往前走，克里斯蒂安森可能会让伊斯梅尔·迪亚兹首发。他在去年的金杯赛上赢得了金靴奖，进球数是其他球员的两倍，可能会成为巴拿马队解决世界舞台上进球不足的问题的办法。"
             ],
             [
                 "历史交锋",
@@ -1023,7 +1455,7 @@ THEANALYST_MATCHES = [
             "DR Congo are fresh off earning their first point and scoring their first goal at the World Cup after their 1-1 opening draw with Portugal."
         ],
         "prediction": "The Opta supercomputer could not look past a Colombia win in Guadalajara, with Lorenzo’s side taking three points in 58% of the 25,000 pre-match simulations. Meanwhile, the chances of DR Congo pulling off another upset, and a draw are rated exactly the same at 21%.",
-        "summary_cn": "Opta 超级计算机无法忽略哥伦比亚在瓜达拉哈拉的胜利，在 25,000 次赛前模拟中，洛伦佐的球队在 ​​58% 的情况下拿下三分。",
+        "summary_cn": "Opta 超级计算机无法忽略哥伦比亚在瓜达拉哈拉的胜利，在 25,000 次赛前模拟中，洛伦佐的球队在 ​​58% 的情况下拿下了三分。",
         "analysis_cn": [
             [
                 "关键数据速览",
@@ -1039,7 +1471,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "赛前预测（Opta 超算）",
-                "Opta 超级计算机无法忽略哥伦比亚在瓜达拉哈拉的胜利，在 25,000 次赛前模拟中，洛伦佐的球队在 ​​58% 的情况下拿下三分。\n与此同时，刚果民主共和国再次爆冷和平局的几率完全相同，均为 21%。"
+                "Opta 超级计算机无法忽略哥伦比亚在瓜达拉哈拉的胜利，在 25,000 次赛前模拟中，洛伦佐的球队在 ​​58% 的情况下拿下了三分。\n与此同时，刚果民主共和国再次爆冷和平局的几率完全相同，均为 21%。"
             ]
         ]
     },
@@ -1063,7 +1495,7 @@ THEANALYST_MATCHES = [
         "analysis_cn": [
             [
                 "关键数据速览",
-                "· 在首场比赛以 4-1 战胜伊拉克后，挪威成为本次比赛的热门球队，Opta 超级计算机的获胜概率为 44.7%，而塞内加尔的获胜概率为 30.5%。\n· 周一的比赛将是挪威和塞内加尔在世界杯上的首次交锋。\n· 塞内加尔在前五场世界杯对阵欧洲对手的比赛中仅输掉一场（三胜一平）后，现在在过去三场比赛中全部输掉。"
+                "· 在首场比赛以 4-1 战胜伊拉克后，挪威成为本次比赛的热门球队，Opta 超级计算机的获胜概率为 44.7%，而塞内加尔的获胜概率为 30.5%。\n· 周一的比赛将是挪威和塞内加尔在世界杯上的首次交锋。\n· 塞内加尔在前五场世界杯对阵欧洲对手的比赛中仅输掉一场（3胜1平）后，现在在过去的三场比赛中全部输掉了。"
             ],
             [
                 "深度分析",
@@ -1139,7 +1571,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "周一，阿根廷队在达拉斯体育场与奥地利队在 J 组的一场激动人心的比赛中迎战奥地利队，莱昂内尔·梅西 (Lionel Messi) 有望创造男子 FIFA 世界杯历史。\n梅西在 3-0 战胜阿尔及利亚的比赛中上演职业生涯第 61 次帽子戏法（俱乐部 50 次，阿根廷 11 次），距离超越米罗斯拉夫·克洛泽（16 球）成为赛事历史最佳射手仅差一球。\n如果他能在对阵奥地利的比赛中进球，这位八次金球奖得主也将成为世界杯历史上第三位连续六场比赛进球的球员。\n法国队贾斯特·方丹和巴西队雅伊尔津霍分别在 1958 年和 1970 年的单项赛事中取得了这一成绩，而梅西的成功可以追溯到四年前，阿尔比塞莱斯特队在卡塔尔世界杯上获得期待已久的胜利。\n尽管年事已高，这位 38 岁的球员对阿根廷的影响力丝毫没有动摇的迹象。在对阵阿尔及利亚的比赛中，他直接参与了球队 10 次射门中的 8 次（6 次射门，创造了 2 次机会），并且在对阵奥地利的比赛中也将发挥同样的影响力。\n虽然梅西的进攻表现理所当然地成为了头条新闻，但莱昂内尔·斯卡罗尼的球队成功地阻止了阿尔及利亚队的一脚射门也毫无价值。\n如果击败奥地利、约旦未能战胜阿尔及利亚，他们将确保以小组头名出线，与H组亚军进行较量。\n如果奥地利队赢了这场比赛，他们也有可能以小组第一的身份出线，但在首场3-1战胜约旦的比赛中经过长时间的努力后，他们需要提高水平。\n“我们知道阿根廷有多棒，”年轻的中场球员保罗·万纳说道。 “我们尊重他们，但我们对自己的优势充满信心。如果我们将我们的品质带到球场上，我们将为任何球队带来问题。”\n在看到罗马诺·施密德的首开纪录被阿里·奥尔万取消后，直到第76分钟，奥地利才重新取得领先——而这只有在亚赞·阿尔·阿拉伯攻入自家球门时才发生。\n马尔科·阿诺托维奇最后的点球只是让比分看起来比实际表现更有说服力。\n尽管如此，奥地利在各项赛事中仍取得了四连胜，并且在过去的12场比赛中取得了10场胜利，1平1负。\n如果他们能在对阵阿根廷队的比赛中再次取得胜利，这将是他们自1982年以来首次在世界杯上取得背靠背胜利。\n不过，奥地利对大卫·阿拉巴（David Alaba）、斯特凡·波什（Stefan Posch）和亚历山德罗·舍普夫（Alessandro Schöpf）的可用性表示担忧。波什在对阵约旦的比赛中下巴骨折后制作了一个特殊的面具。这三人一直在与球队其他成员分开训练，并面临一场比赛以恢复健康。\n马塞尔·萨比策有望保住自己在首发阵容中的位置，并第 100 次代表国家队出场，这使他与亚历山大·德拉戈维奇并列奥地利历史出场名单上的第四名。现在只有安德烈亚斯·赫尔佐格（103）、阿拉巴（本场比赛前114）和阿瑙托维奇（本场比赛前134）排在他前面。\n对于阿根廷队，斯卡罗尼预计将做出一些改变，其中可能会看到贡萨洛·蒙蒂尔（Gonzalo Montiel）让位给纳韦尔·莫利纳（Nahuel Molina），后者从轻微的肌肉拉伤中恢复过来。"
+                "周一，阿根廷队在达拉斯体育场与奥地利队进行一场精彩的 J 组比赛，莱昂内尔·梅西 (Lionel Messi) 有望创造男子 FIFA 世界杯历史。\n梅西在 3-0 战胜阿尔及利亚的比赛中上演职业生涯第 61 次帽子戏法（俱乐部 50 次，阿根廷 11 次），距离超越米罗斯拉夫·克洛泽（16 球）成为赛事历史最佳射手仅差一球。\n如果他能在对阵奥地利的比赛中进球，这位八次金球奖得主也将成为世界杯历史上第三位连续六场比赛进球的球员。\n法国队贾斯特·方丹和巴西队雅伊尔津霍分别在 1958 年和 1970 年的单项赛事中取得了这一成绩，而梅西的成功可以追溯到四年前，阿尔比塞莱斯特队在卡塔尔世界杯上获得期待已久的胜利。\n尽管年事已高，这位 38 岁的球员对阿根廷的影响力丝毫没有动摇的迹象。在对阵阿尔及利亚的比赛中，他直接参与了球队 10 次射门中的 8 次（6 次射门，创造了 2 次机会），并且在对阵奥地利的比赛中也将发挥同样的影响力。\n虽然梅西的进攻表现理所当然地成为了头条新闻，但莱昂内尔·斯卡罗尼的球队成功地阻止了阿尔及利亚队的一脚射门也毫无价值。\n如果击败奥地利、约旦未能战胜阿尔及利亚，他们将确保以小组头名出线，与H组亚军进行较量。\n如果奥地利队赢了这场比赛，他们也有可能以小组第一的身份出线，但在首场3-1战胜约旦的比赛中经过长时间的努力后，他们需要提高水平。\n“我们知道阿根廷有多棒，”年轻的中场球员保罗·万纳说道。 “我们尊重他们，但我们对自己的优势充满信心。如果我们将我们的品质带到球场上，我们将为任何球队带来问题。”\n在看到罗马诺·施密德的首开纪录被阿里·奥尔万取消后，直到第76分钟，奥地利才重新取得领先——而这只有在亚赞·阿尔·阿拉伯攻入自家球门时才发生。\n马尔科·阿诺托维奇最后的点球只是让比分看起来比实际表现更有说服力。\n尽管如此，奥地利在各项赛事中仍取得了四连胜，并且在过去的12场比赛中取得了10场胜利，1平1负。\n如果他们能在对阵阿根廷队的比赛中再次取得胜利，这将是他们自1982年以来首次在世界杯上取得背靠背胜利。\n不过，奥地利对大卫·阿拉巴（David Alaba）、斯特凡·波什（Stefan Posch）和亚历山德罗·舍普夫（Alessandro Schöpf）的可用性表示担忧。波什在对阵约旦的比赛中下巴骨折后制作了一个特殊的面具。这三人一直在与球队其他成员分开训练，并面临一场比赛以恢复健康。\n马塞尔·萨比策有望保住自己在首发阵容中的位置，并第 100 次代表国家队出场，这使他与亚历山大·德拉戈维奇并列奥地利历史出场名单上的第四名。现在只有安德烈亚斯·赫尔佐格（103）、阿拉巴（本场比赛前114）和阿瑙托维奇（本场比赛前134）排在他前面。\n对于阿根廷队，斯卡罗尼预计将做出一些改变，其中可能会看到贡萨洛·蒙蒂尔（Gonzalo Montiel）让位给纳韦尔·莫利纳（Nahuel Molina），后者从轻微的肌肉拉伤中恢复过来。"
             ],
             [
                 "历史交锋",
@@ -1247,7 +1679,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "尽管出于不同的原因，乌拉圭和佛得角在开局中取得了令人惊讶的成绩，但在周日的世界杯比赛中，H组的席位仍然悬而未决。\n尽管佛得角在近 100 分钟内面对欧洲冠军球队 27 次射门，但在国际足联顶级赛事的首场比赛中，佛得角还是令人震惊地以互交白卷逼平了西班牙队。巧合的是，乌拉圭队在揭幕战中也尝试了 27 次射门，但周一晚些时候以 1-1 战平沙特阿拉伯队，结果令人沮丧。\n佛得角很可能会在迈阿密对阵马塞洛·贝尔萨的球队时再次陷入困境，鉴于这一蓝图在对阵西班牙队时的效果，他们在第一场比赛中被马克西·阿劳霍第80分钟的扳平比分拯救。\n布比斯塔一定会对他的球队在无球时的纪律性感到高兴。尽管西班牙拥有超过 74% 的控球率，但佛得角只犯规一次，这是自 1966 年以来世界杯比赛中犯规最少的球队。\n四十岁的门将沃齐尼亚也为佛得角队带来了鼓舞人心的表现。他的 7 次扑救是自 2020 年 10 月以来在对阵西班牙的任何一场比赛中保持不失球的门将最多的一次，当时乌克兰的乔治·布什昌 (Georgiy Bushchan) 扑救了 8 次。\n沃齐尼亚在皮科·洛佩斯的带领下，得到了他面前坚韧后防线的帮助。他在 MD1 上解围 11 次，是自 2006 年突尼斯队的卡里姆·哈吉 (Karim Haggui) 对阵沙特阿拉伯队 (13 次) 以来，非洲球队在世界杯上首次亮相的最多解围次数。\n考虑到乌拉圭队在 MD1 的空战中尝试了 34 次传中，是 A 组到 H 组中最多的球队，洛佩斯应该会在这里再次忙碌。这也是他们在世界杯比赛中的最多记录（自 1966 年以来），但只有 9 次成功。\n阿劳霍将再次成为任何创造性探索的核心。除了扳平比分之外，他创造的五次机会——全部来自定位球——是自2010年迭戈·弗兰对阵墨西哥队以来乌拉圭球员在世界杯比赛中创造的最多机会。\n马蒂亚斯·奥利维拉（Matías Olivera）首次以中后卫而非边后卫身份参加本次比赛，他也给人留下了深刻的印象。在 MD1 比赛中，他为乌拉圭队完成了最多的断线传球（11 次）、前卫持球（31 次）以及赢得最多的对决（8 次）。\n然而，贝尔萨可能对费尔南多·穆斯莱拉感到失望，因为门将穆罕默德·坎诺的头球攻门，让阿卜杜拉·阿姆里为沙特阿拉伯首开纪录。\n如果穆斯莱拉在世界杯上再次获得信任而不是塞尔吉奥·罗切特，他将超越埃丁森·卡瓦尼（17 岁），并打破乌拉圭世界杯历史上出场次数最多的记录。\n贝尔萨可能也不会因开局平局而惊慌失措。根据 Opta 超级计算机的数据，乌拉圭仍有 74.7% 的机会晋级 32 强，在该组中仅次于西班牙（96.3%）。\n最近的历史也表明没有理由担心。乌拉圭在国际足联全球舞台上的过去 9 场小组赛中仅输掉一场（6 胜 2 平），在 2022 年卡塔尔世界杯上以 2-0 输给葡萄牙。\n这 9 场比赛总共只进了 15 个进球（11 个进球，4 个进球），平均每场 1.7 个进球，贝尔萨知道他的球队如果想要掌控自己的命运，这一次需要更加冷静的表现。\n但随着所有四支球队都取得一分，佛得角可能会感觉到另一个机会，可以更接近不太可能的进步。他们进入 32 强的机会从 Opta 超级计算机在北美踢球之前给出的 32.9% 跃升至 47.6%。"
+                "尽管出于不同的原因，乌拉圭和佛得角在开局中取得了令人惊讶的成绩，但在周日的世界杯比赛中，H组的席位仍然悬而未决。\n尽管佛得角在近 100 分钟内面对欧洲冠军球队 27 次射门，但在国际足联顶级赛事的首场比赛中，佛得角还是令人震惊地以互交白卷逼平了西班牙队。巧合的是，乌拉圭队在揭幕战中也尝试了 27 次射门，但周一晚些时候以 1-1 战平沙特阿拉伯队，结果令人沮丧。\n佛得角很可能会在迈阿密对阵马塞洛·贝尔萨的球队时再次陷入困境，鉴于这一蓝图在对阵西班牙队时的效果，他们在第一场比赛中被马克西·阿劳霍第80分钟的扳平比分拯救。\n布比斯塔一定会对他的球队在无球时的纪律性感到高兴。尽管西班牙拥有超过 74% 的控球率，但佛得角只犯规一次，这是自 1966 年以来世界杯比赛中犯规最少的球队。\n四十岁的门将沃齐尼亚也为佛得角队带来了鼓舞人心的表现。他的 7 次扑救是自 2020 年 10 月以来在对阵西班牙的任何一场比赛中保持不失球的门将最多的一次，当时乌克兰的乔治·布什昌 (Georgiy Bushchan) 扑救了 8 次。\n沃齐尼亚在皮科·洛佩斯的带领下，得到了他面前坚韧后防线的帮助。他在 MD1 上解围 11 次，是自 2006 年突尼斯队的卡里姆·哈吉 (Karim Haggui) 对阵沙特阿拉伯队 (13 次) 以来，非洲球队在世界杯上首次亮相的最多解围次数。\n考虑到乌拉圭队在 MD1 的空战中尝试了 34 次传中，是 A 组到 H 组中最多的球队，洛佩斯应该会在这里再次忙碌。这也是他们在世界杯比赛中的最多记录（自 1966 年以来），但只有 9 次成功。\n阿劳霍将再次成为任何创造性探索的核心。除了扳平比分之外，他创造的五次机会——全部来自定位球——是自2010年迭戈·弗兰对阵墨西哥队以来乌拉圭球员在世界杯比赛中创造的最多机会。\n马蒂亚斯·奥利维拉（Matías Olivera）首次以中后卫而非边后卫身份参加本次比赛，他也给人留下了深刻的印象。在 MD1 比赛中，他为乌拉圭队完成了最多的断线传球（11 次）、前卫持球（31 次）以及赢得最多的对决（8 次）。\n然而，贝尔萨可能对费尔南多·穆斯莱拉感到失望，因为门将穆罕默德·坎诺的头球攻门，让阿卜杜拉·阿姆里为沙特阿拉伯首开纪录。\n如果穆斯莱拉在世界杯上再次获得信任而不是塞尔吉奥·罗切特，他将超越埃丁森·卡瓦尼（17 岁），并打破乌拉圭世界杯历史上出场次数最多的纪录。\n贝尔萨也可能不会因开局平局而惊慌失措。根据 Opta 超级计算机的数据，乌拉圭仍有 74.7% 的机会晋级 32 强，在该组中仅次于西班牙（96.3%）。\n最近的历史也表明没有理由担心。乌拉圭在过去 9 场国际足联全球舞台上的小组赛中仅输掉一场（6 胜 2 平），在 2022 年卡塔尔世界杯上以 2-0 输给了葡萄牙。\n这 9 场比赛总共只进了 15 个进球（11 个进球，4 个进球），平均每场 1.7 个进球，贝尔萨知道他的球队如果想要掌控自己的命运，这一次需要更加冷静的表现。\n但随着所有四支球队都取得一分，佛得角可能会感觉到另一个机会，可以更接近不太可能的进步。他们进入 32 强的机会从 Opta 超级计算机在北美踢球之前给出的 32.9% 跃升至 47.6%。"
             ],
             [
                 "历史交锋",
@@ -1319,7 +1751,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "西班牙队将在 2026 年世界杯 H 组第二场比赛中对阵沙特阿拉伯队，渴望证明自己的实力。\n许多人都期待路易斯·德拉富恩特的欧洲冠军队将于 7 月 19 日在纽约新泽西体育场举起奖杯。\n但他们的比赛以非常令人失望的方式开始，因为他们被首次参加比赛的佛得角队以0比0逼平，老门将沃齐尼亚和他面前坚忍的防守让西班牙的超级巨星感到沮丧。\n现在人们的注意力转移到周日在亚特兰大体育场举行的比赛，拉罗亚希望在那里打下一个标记，并重新强调他们在赛前热门球队中的地位。\n然而，西班牙队可能会有些担忧，他们在过去的四场世界杯比赛中都没有取得任何胜利（平局、平局）——这是他们在世界杯上最长的连续不胜纪录。\n此外，在过去三届比赛中，他们只赢了九场比赛中的两场，输掉一场，另外六场打平。\n他们最近两场世界杯比赛都以互交白卷告终；西班牙队从未在比赛中三场比赛没有进球。自从2022年小组赛第3轮对阵日本队第11分钟进球以来，他们已经完成了2500次传球和49次射门，但无济于事。\n西班牙队在对阵佛得角的平局中拥有 74.3% 的控球率，这是世界杯比赛中未能进球的球队有记录以来第四高的数字（自 1966 年以来）。另外三场控球率最高的比赛中有一场是在 2022 年对阵摩洛哥的比赛中（76.8%）。\n拉明·亚马尔在对阵佛得角的比赛中被任命为替补，他可能希望在伤后继续恢复健康的过程中扮演更重要的角色。在 MD1 中，尽管他只在第 71 分钟才上场（5 次），但他还是尝试带球次数最多的球员。相比之下，西班牙的首发边锋加维（0）和费兰·托雷斯（3）仅尝试了 3 次。\n队友罗德里在比赛中完成了六次突破防线传球，是 A-H 组中最多的球员。他还完成了五次突破线传球并射门，这是世界杯首轮比赛中与土耳其队的哈坎·恰尔汗奥卢并列最多的球员。\n沙特阿拉伯队在 H 组首场比赛中以 1-1 战平乌拉圭队，拿下重要一分，考虑到佛得角意外战平西班牙，这一分可能尤其重要。\n阿卜杜拉·阿姆里 (Abdulelah Al Amri) 在第 41 分钟为乔治·多尼斯 (Georgios Donis) 的球队取得领先，但马克西·阿劳霍 (Maxi Araújo) 在距离比赛结束仅 10 分钟时为南美球队扳平比分。\n在那场比赛中，沙特阿拉伯让乌拉圭队在禁区内触球41次，这是自1998年法国队触球46次以来，乌拉圭队在世界杯比赛中被触球次数最多的球队。\n他们还面临 47 次传中（包括角球），这是他们在单场比赛中并列最多的传中（1994 年对阵比利时时也有 47 次传中）。\n守门员穆罕默德·阿尔·奥瓦伊斯在球门之间忙碌，全场比赛做出了九次扑救。只有马布鲁克·扎耶德在 2006 年对阵西班牙的比赛中为沙特阿拉伯队在世界杯比赛中进球数最多（11 球）。\n阿尔·奥维斯在他的五场比赛中阻止了三个进球（10.0 xGOT，7 个失球），但尚未保持不失球。\n沙特阿拉伯希望在前两场比赛中首次保持不败，这是他们第七次参赛。"
+                "西班牙队将在 2026 年世界杯 H 组第二场比赛中对阵沙特阿拉伯队，渴望证明自己的实力。\n许多人都期待路易斯·德拉富恩特的欧洲冠军队将于 7 月 19 日在纽约新泽西体育场举起奖杯。\n但他们的比赛以非常令人失望的方式开始，因为他们被首次参加比赛的佛得角队以0比0逼平，老门将沃齐尼亚和他面前坚忍的防守让西班牙的超级巨星感到沮丧。\n现在人们的注意力转移到周日在亚特兰大体育场举行的比赛，拉罗亚希望在那里打下一个标记，并重新强调他们在赛前热门球队中的地位。\n然而，西班牙队可能会有些担忧，他们在过去的四场世界杯比赛中都没有取得任何胜利（平局、平局）——这是他们在世界杯上最长的连续不胜纪录。\n此外，在过去三届比赛中，他们只赢了九场比赛中的两场，输掉一场，另外六场打平。\n他们最近两场世界杯比赛都以互交白卷告终；西班牙队从未在比赛中三场比赛没有进球。自从2022年小组赛第3轮对阵日本队第11分钟进球以来，他们已经完成了2500次传球和49次射门，但无济于事。\n西班牙队在对阵佛得角的平局中拥有 74.3% 的控球率，这是世界杯比赛中未能进球的球队有记录以来第四高的数字（自 1966 年以来）。另外三场控球率最高的比赛中有一场是在 2022 年对阵摩洛哥的比赛中（76.8%）。\n拉明·亚马尔在对阵佛得角的比赛中被任命为替补，他可能希望在伤后继续恢复健康的过程中扮演更重要的角色。在 MD1 中，尽管他只在第 71 分钟才上场（5 次），但他还是尝试带球次数最多的球员。相比之下，西班牙的首发边锋加维（0）和费兰·托雷斯（3）仅尝试了 3 次。\n队友罗德里在比赛中完成了六次突破防线传球，是 A-H 组中最多的球员。他还完成了五次突破线传球并射门，这是世界杯首轮比赛中与土耳其队的哈坎·恰尔汗奥卢并列最多的球员。\n沙特阿拉伯队在 H 组首场比赛中以 1-1 战平乌拉圭队，拿下重要一分，考虑到佛得角意外战平西班牙，这一分可能尤其重要。\n阿卜杜拉·阿姆里 (Abdulelah Al Amri) 在第 41 分钟为乔治·多尼斯 (Georgios Donis) 的球队取得领先，但马克西·阿劳霍 (Maxi Araújo) 在距离比赛结束仅 10 分钟时为南美球队扳平比分。\n在那场比赛中，沙特阿拉伯让乌拉圭队在禁区内触球41次，这是自1998年法国队触球46次以来，乌拉圭队在世界杯比赛中被触球次数最多的球队。\n他们还面临 47 次传中（包括角球），这是他们在单场比赛中并列最多的传中（1994 年对阵比利时时也有 47 次传中）。\n守门员穆罕默德·阿尔·奥瓦伊斯在球门之间忙碌，全场比赛做出了九次扑救。只有马布鲁克·扎耶德在 2006 年对阵西班牙的比赛中为沙特阿拉伯队在世界杯比赛中进球数最多（11 球）。\n阿尔·奥维斯在五场比赛中阻止了三个进球（10.0 xGOT，7 个失球），但尚未保持不失球。\n沙特阿拉伯希望在前两场比赛中首次保持不败，这是他们第七次参赛。"
             ],
             [
                 "历史交锋",
@@ -1391,7 +1823,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "安切洛蒂的球队在首场比赛中1-1战平摩洛哥，在第21分钟落后于伊斯梅尔·萨巴里的首开纪录，随后维尼修斯·儒尼奥尔打进一记精彩的扳平比分。\n不过，桑巴军团知道他们还有更多的工作要做，作为创纪录的五次冠军得主，他们仍然希望有机会深入锦标赛。\n虽然他们可能在第一轮比赛中与摩洛哥战平，但对这支南美豪门来说，好消息是，自从 1978 年阿根廷世界杯上两场比赛战平以来，他们在世界杯前两场比赛中都没有输过。\n当时，世界杯参赛资格只有16支球队，而巴西队在第二轮仅获得B组第二名，无缘决赛。\n然而，巴西最近两场世界杯小组赛均未能获胜，2022年0-1不敌喀麦隆，今年又1-1战平摩洛哥。此前他们只有一次在小组赛三场比赛中未尝一胜，那是在 1974 年和 1978 年（D2 L1）。\n2026 年首次参赛的球队有 48 支，巴西显然仍处于不错的位置，要相信他们不会进入最后 32 强，需要勇敢的赌注。\n尽管如此，人们还是担心在对阵摩洛哥的比赛中，他们面临的射门次数（14 次）比他们自己的射门次数（12 次）要多。这是自2006年四分之一决赛对阵法国队以来，巴西队在世界杯比赛中首次出现这样的情况，结束了连续22场比赛以射门优势的局面。\n如果他们想要第六次赢得世界杯，维尼修斯可能至关重要，而这位皇马王牌现在已经在五场世界杯比赛中参与了四个进球（2个进球，2次助攻），这意味着他每98分钟就会进球或助攻——这是过去两届世界杯上所有巴西球员中进球或助攻最多的。\n与此同时，海地结束了长达 54 年的世界杯参赛资格等待，上一次晋级世界杯还要追溯到 1974 年，当时他们在西德小组赛中未能小组出线。\n你会觉得，他们这次进入淘汰赛的希望取决于在 C 组揭幕战中对阵苏格兰的结果。\n由于约翰·麦克金的制胜球偏出，导致塞巴斯蒂安·米涅的球队以 1-0 失利，这意味着塞巴斯蒂安·米涅的球队确实面临着提前淘汰的危险。\n鉴于海地目前已经输掉了所有世界杯比赛，在这些比赛中只进球两次、失球 15 次，所以预兆也不是特别好。\n此前只有三个国家输掉了前五场世界杯比赛——墨西哥（前九场）、萨尔瓦多（前六场）和加拿大（前六场）。\n海地在 MD1 上的射门次数确实比 C 组其他球队多（15 次），并且在对方禁区内的触球次数与巴西队并列榜首（22 次），但在这场比赛中他们必须付出一些努力才能复制这些数据。\n汉内斯·德尔克鲁瓦是海地队在输给苏格兰队的比赛中表现出色的球员之一，在对阵史蒂夫·克拉克的球队的比赛中，他的 66 次传球没有失误一次。\n他的控球数（6 次）和解围数（6 次）在队友中并列第一。这也是海地人在世界杯比赛中完成传球最多的一次。"
+                "安切洛蒂的球队在首场比赛中1-1战平摩洛哥，在第21分钟落后于伊斯梅尔·萨巴里的首开纪录，随后维尼修斯·儒尼奥尔打进一记精彩的扳平比分。\n不过，桑巴军团知道他们还有更多的工作要做，作为创纪录的五次冠军得主，他们仍然希望有机会深入锦标赛。\n虽然他们可能在第一轮比赛中与摩洛哥战平，但对这支南美豪门来说，好消息是，自从 1978 年阿根廷世界杯上两场比赛战平以来，他们在世界杯前两场比赛中都没有输过。\n当时，世界杯参赛资格只有16支球队，而巴西队在第二轮仅获得B组第二名，无缘决赛。\n然而，巴西最近两场世界杯小组赛均未能获胜，2022年0-1不敌喀麦隆，今年又1-1战平摩洛哥。此前他们只有一次在小组赛三场比赛中未尝一胜，那是在 1974 年和 1978 年（D2 L1）。\n2026 年首次参赛的球队有 48 支，巴西显然仍处于不错的位置，要相信他们不会进入最后 32 强，需要勇敢的赌注。\n尽管如此，人们还是担心在对阵摩洛哥的比赛中，他们面临的射门次数（14 次）比他们自己的射门次数（12 次）还要多。这是自2006年四分之一决赛对阵法国队以来，巴西队在世界杯比赛中首次出现这样的情况，结束了连续22场比赛以射门优势的局面。\n如果他们想要第六次赢得世界杯，维尼修斯可能至关重要，而这位皇马王牌现在已经在五场世界杯比赛中参与了四个进球（2个进球，2次助攻），这意味着他每98分钟就会进球或助攻——这是过去两届世界杯上所有巴西球员中进球或助攻最多的。\n与此同时，海地结束了长达 54 年的世界杯参赛资格等待，上一次晋级世界杯还要追溯到 1974 年，当时他们在西德小组赛中未能小组出线。\n你会觉得，他们这次进入淘汰赛的希望取决于在 C 组揭幕战中对阵苏格兰的结果。\n由于约翰·麦克金的制胜球偏出，导致塞巴斯蒂安·米涅的球队以 1-0 失利，这意味着塞巴斯蒂安·米涅的球队确实面临着提前淘汰的危险。\n鉴于海地目前已经输掉了所有世界杯比赛，在这些比赛中只进球两次、失球 15 次，所以预兆也不是特别好。\n此前只有三个国家输掉了前五场世界杯比赛——墨西哥（前九场）、萨尔瓦多（前六场）和加拿大（前六场）。\n海地在 MD1 上的射门次数确实比 C 组其他球队多（15 次），并且在对方禁区内的触球次数与巴西队并列榜首（22 次），但在这场比赛中他们必须付出一些努力才能复制这些数据。\n汉内斯·德尔克鲁瓦是海地队在输给苏格兰队的比赛中表现出色的球员之一，在对阵史蒂夫·克拉克的球队的比赛中，他的 66 次传球没有失误一次。\n他的控球数（6 次）和解围数（6 次）在队友中并列第一。这也是海地人在世界杯比赛中完成传球最多的一次。"
             ],
             [
                 "历史交锋",
@@ -1643,7 +2075,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "墨西哥和韩国周五在瓜达拉哈拉体育场交锋时，都希望在世界杯 A 组中夺取控制权。\n凭借胡利安·奎尼奥内斯和劳尔·希门尼斯的进球，共同主办国墨西哥队在本届世界杯揭幕战中以 2-0 轻取九人南非队。亚亚·西托勒和特姆巴·兹瓦内因巴法纳·巴法纳双双被罚下场。\n凭借人数优势，墨西哥队在对阵南非队（467/520）的比赛中找到了传球率为 89.8% 的队友。这创下了他们在世界杯比赛中的最高传球成功率记录（自 1966 年以来）。\n不过，哈维尔·阿吉雷的球队的胜利确实付出了代价。队长兼关键中后卫塞萨尔·蒙特斯在下半场补时阶段因拒绝胡利索·穆达的进球机会而受到严厉的处罚，被罚下场。\n在球场的另一端，希门尼斯有望再次发挥作用。这位 35 岁的球员在过去两场对阵韩国的比赛中都取得了进球，尽管这两个进球都来自友谊赛（2020 年 11 月和 2025 年 9 月）。\n希门尼斯和奎尼奥内斯也可能成为第一位在前两届世界杯首发中均取得进球的墨西哥球员。\n更多的历史也等待着《El Tri》。墨西哥队在过去两届世界杯比赛中都取得了胜利（2022年MD3，2026年MD1），但他们从未在世界杯上取得过三连胜。\n然而，阿吉雷的球队此前在瓜达拉哈拉体育场举行的三场比赛中只赢了一场，那就是在 2024 年 10 月的一场友谊赛中以 2-0 战胜美国队。另外两场比赛均是在2010年9月对阵厄瓜多尔，最终以2-1负于厄瓜多尔，并在2025年10月以1-1战平。\n在周五以 2-1 逆转击败捷克队后，韩国队也将充满信心地进入比赛。黄仁范 (Hwang In-Beom) 取消了拉迪斯拉夫·克雷吉 (Ladislav Krejcí) 的首开纪录，随后吴贤奎 (Oh Hyeon-Gyu) 在返回瓜达拉哈拉的同一个体育场内攻入制胜球。\n在吴氏的决定性射门后，黄哲伦成为韩国第三位在世界杯比赛中进球和助攻的球员。他加入了崔顺浩（1986年对阵意大利）和现任韩国主帅洪明甫（1994年对阵西班牙）的行列。\n李康仁在对阵捷克队的比赛中也给人留下了深刻的印象。这位巴黎圣日耳曼前锋成为自1982年德国队对阵奥地利队的皮埃尔·利特巴尔斯基以来第一位在世界杯比赛中完成5次以上带球（5次）、传球成功率100%（38/38）和助攻进球的球员。\n洪的球队现在希望首次赢得世界杯前两场比赛的胜利。然而，自2002年击败葡萄牙和意大利获得第四名以来，他们在这项赛事中就再也没有取得过背靠背的胜利。\n阿吉雷知道他的球队必须留意孙兴慜，他在过去三场对阵墨西哥的比赛中攻入两球，其中包括 2018 年本届世界杯的一球。\n然而，在韩国队的揭幕战中，孙兴慜有六次射门，但没有得分，随后被周五的英雄吴宇森换下。这位前托特纳姆热刺前锋在他的 56 场国际比赛进球数上未能再增加，但距离追平国家队历史进球纪录还差两球。\n埃德森·阿尔瓦雷斯可能会负责应对孙兴慜和韩国队的进攻，蒙特斯在墨西哥首场比赛中因红牌停赛一场。"
+                "墨西哥和韩国周五在瓜达拉哈拉体育场交锋时，都希望在世界杯 A 组中夺取控制权。\n凭借胡利安·奎尼奥内斯和劳尔·希门尼斯的进球，共同主办国墨西哥队在本届世界杯揭幕战中以 2-0 轻取九人南非队。亚亚·西托勒和特姆巴·兹瓦内因巴法纳·巴法纳双双被罚下场。\n凭借人数优势，墨西哥队在对阵南非队（467/520）的比赛中找到了传球成功率为 89.8% 的队友。这创下了他们在世界杯比赛中的最高传球成功率记录（自 1966 年以来）。\n不过，哈维尔·阿吉雷的球队的胜利确实付出了代价。队长兼关键中后卫塞萨尔·蒙特斯在下半场补时阶段因拒绝胡利索·穆达的进球机会而受到严厉的处罚，被罚下场。\n在球场的另一端，希门尼斯有望再次发挥作用。这位 35 岁的球员在过去两场对阵韩国的比赛中都取得了进球，尽管这两个进球都来自友谊赛（2020 年 11 月和 2025 年 9 月）。\n希门尼斯和奎尼奥内斯也可能成为第一位在前两届世界杯首发中均取得进球的墨西哥球员。\n更多的历史也等待着《El Tri》。墨西哥队在过去两届世界杯比赛中都取得了胜利（2022年MD3，2026年MD1），但他们从未在世界杯上取得过三连胜。\n然而，阿吉雷的球队此前在瓜达拉哈拉体育场举行的三场比赛中只赢了一场，那就是在 2024 年 10 月的一场友谊赛中以 2-0 战胜美国队。另外两场比赛均是在2010年9月对阵厄瓜多尔，最终以2-1负于厄瓜多尔，并在2025年10月以1-1战平。\n在周五以 2-1 逆转击败捷克队后，韩国队也将充满信心地进入比赛。黄仁范 (Hwang In-Beom) 取消了拉迪斯拉夫·克雷吉 (Ladislav Krejcí) 的首开纪录，随后吴贤奎 (Oh Hyeon-Gyu) 在返回瓜达拉哈拉的同一个体育场内攻入制胜球。\n在吴氏的决定性射门后，黄哲伦成为韩国第三位在世界杯比赛中进球和助攻的球员。他加入了崔顺浩（1986年对阵意大利）和现任韩国主帅洪明甫（1994年对阵西班牙）的行列。\n李康仁在对阵捷克队的比赛中也给人留下了深刻的印象。这位巴黎圣日耳曼前锋成为自1982年德国队对阵奥地利队的皮埃尔·利特巴尔斯基以来第一位在世界杯比赛中完成5次以上带球（5次）、传球成功率100%（38/38）和助攻进球的球员。\n洪的球队现在希望首次赢得世界杯前两场比赛的胜利。然而，自2002年击败葡萄牙和意大利获得第四名以来，他们在这项赛事中就再也没有取得过背靠背的胜利。\n阿吉雷知道他的球队必须留意孙兴慜，他在过去三场对阵墨西哥的比赛中攻入两球，其中包括 2018 年本届世界杯的一球。\n然而，在韩国队的揭幕战中，孙兴慜有六次射门，但没有得分，随后被周五的英雄吴宇森换下。这位前托特纳姆热刺前锋在他的 56 场国际比赛进球数上未能再增加，但距离追平国家队历史进球纪录还差两球。\n埃德森·阿尔瓦雷斯可能会负责应对孙兴慜和韩国队的进攻，蒙特斯在墨西哥首场比赛中因红牌停赛一场。"
             ],
             [
                 "历史交锋",
@@ -1715,7 +2147,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "深度分析",
-                "瑞士和波斯尼亚和黑塞哥维那在 2026 年世界杯首场比赛中都在领先优势上失利，这使得他们周四在洛杉矶的交锋成为一场不容输掉的比赛。\n瑞士队无疑会感到最不幸，因为卡塔尔队的扳平比分（93:59）是自1966年有此纪录以来，世界杯小组赛第三晚扳平比分的进球。\n被迫以1-1战平，26次射门也是瑞士队在世界杯比赛中射门次数最多的。在出场的 16 名球员中，有 14 人尝试射门或创造机会。唯一没有做到这一点的两人是门将格雷戈尔·科贝尔和替补球员米罗·穆海姆——后者确实打进了一个代价高昂的乌龙球——但让卡塔尔队获得他们在世界杯上的首个积分却在国内引起了严厉的头条新闻。\n穆拉特·亚金（Murat Yakin）的球队在国际足联排名第 19 位，连续第六次出场，原本有望进入淘汰赛阶段，但这似乎已不再确定。\n作为一个实用主义者，亚金不太可能惊慌。 B组四支球队中，瑞士队完成传球次数最多（527次），传球准确率最高（91.5%）。相比之下，波斯尼亚和黑塞哥维那完成的传球最少（172 次），传球准确率最差（63.5%），这表明当两人在加州会面时，可能会出现风格冲突。\n波斯尼亚主帅谢尔盖·巴尔巴雷斯（Sergej Barbarez）毫不羞耻地采取更加垂直的方式，他因带领国家重返大舞台而被誉为英雄，自2014年首次亮相以来一直缺席。\n在约沃·卢基奇（Jovo Lukic）——代替因伤缺阵的历史最佳射手埃丁·哲科（Edin Dzeko）——在第四次出场中攻入他的第一个国际进球之后，他们几乎以战胜加拿大队开始。\n尽管共同东道主随后反击并取得平局，但波黑在过去 12 场比赛中只输掉了一场（5 胜 6 平），而在过去 15 场比赛中输掉了 12 场。\n奇怪的是，他们在所有比赛中的最后六场比赛都取得了平局——其中两场在附加赛中进入了点球大战——并且没有一个欧洲国家连续七场比赛打成平局。\n再次避免失败也将创造新的全国不败记录；自获得独立以来，他们曾两次达到九（2013年6月和2018年11月）。\n因此，尽管排名落后 45 位，但波斯尼亚和黑塞哥维那在首次与另一个欧足联国家队进行世界杯比赛之前完全可以充满信心。\n历史表明，这可能是一场有趣的比赛：瑞士在过去五场世界杯对阵欧洲对手的比赛中打进了 23 个进球，平均每场 4.6 个进球。\n明星前锋布雷尔·恩博洛正在享受他最多产的时期。包括对阵卡塔尔时冷静射入的点球在内，他在过去 13 场比赛中打入的 25 个国家队进球中有 10 个来自。\n即使没有前主力沙奇里，瑞士队最后阵容的平均年龄（30岁86岁）也是所有世界杯比赛中年龄最大的；里卡多·罗德里格斯（Ricardo Rodríguez）和队长格拉尼特·扎卡（Granit Xhaka）这两位代表国家队出场超过 100 场的老将现在是参加七场重大赛事的三名瑞士人中的两人，另外两名是沙奇里。\n与此同时，波斯尼亚和黑塞哥维那的改组阵容将年轻与经验融为一体。四十岁的船长哲科提供了很多后者。克里姆·阿拉伊贝戈维奇 (Kerim Alajbegovic) 年仅 18 岁零 264 天，成为代表球队参加世界杯的最年轻球员，这位边锋现在将寻求升级为首发阵容。"
+                "瑞士和波斯尼亚和黑塞哥维那在 2026 年世界杯首场比赛中都在领先优势上失利，这使得他们周四在洛杉矶的交锋成为一场不容输掉的比赛。\n瑞士队无疑会感到最不幸，因为卡塔尔队的扳平比分（93:59）是自1966年有此纪录以来，世界杯小组赛第三晚扳平比分的进球。\n被迫以1-1战平，26次射门也是瑞士队在世界杯比赛中射门次数最多的。在出场的 16 名球员中，有 14 人尝试射门或创造机会。唯一没有做到这一点的两人是门将格雷戈尔·科贝尔和替补球员米罗·穆海姆——后者确实打进了一个代价高昂的乌龙球——但让卡塔尔队获得他们在世界杯上的首个积分却在国内引起了严厉的头条新闻。\n穆拉特·亚金（Murat Yakin）的球队在国际足联排名第 19 位，连续第六次出场，原本有望进入淘汰赛阶段，但这似乎已不再确定。\n作为一个实用主义者，亚金不太可能惊慌。 B组四支球队中，瑞士队完成传球次数最多（527次），传球准确率最高（91.5%）。相比之下，波斯尼亚和黑塞哥维那完成的传球最少（172 次），传球准确率最差（63.5%），这表明当两人在加州会面时，可能会出现风格冲突。\n波斯尼亚主帅谢尔盖·巴尔巴雷斯（Sergej Barbarez）毫不羞耻地采取更加垂直的方式，他因带领国家重返大舞台而被誉为英雄，自2014年首次亮相以来一直缺席。\n在约沃·卢基奇（Jovo Lukic）——代替因伤缺阵的历史最佳射手埃丁·哲科（Edin Dzeko）——在第四次出场中攻入他的第一个国际进球之后，他们几乎以战胜加拿大队开始。\n尽管共同东道主随后反击并取得平局，但波黑在过去 12 场比赛中只输掉了一场（5 胜 6 平），而在过去 15 场比赛中输掉了 12 场。\n奇怪的是，他们在所有比赛中的最后六场比赛都取得了平局——其中两场在附加赛中进入了点球大战——并且没有一个欧洲国家连续七场比赛打成平局。\n再次避免失败也将创造新的全国不败纪录；自获得独立以来，他们曾两次达到九（2013年6月和2018年11月）。\n因此，尽管排名落后 45 位，但波斯尼亚和黑塞哥维那在首次与另一个欧足联国家队进行世界杯比赛之前完全可以充满信心。\n历史表明，这可能是一场有趣的比赛：瑞士在过去五场世界杯对阵欧洲对手的比赛中打进了 23 个进球，平均每场 4.6 个进球。\n明星前锋布雷尔·恩博洛正在享受他最多产的时期。包括对阵卡塔尔时冷静射入的点球在内，他在过去 13 场比赛中打入的 25 个国家队进球中有 10 个来自。\n即使没有前主力沙奇里，瑞士队最后阵容的平均年龄（30岁86岁）也是所有世界杯比赛中年龄最大的；里卡多·罗德里格斯（Ricardo Rodríguez）和队长格拉尼特·扎卡（Granit Xhaka）这两位代表国家队出场超过 100 场的老将现在是参加七场重大赛事的三名瑞士人中的两人，另外两名是沙奇里。\n与此同时，波斯尼亚和黑塞哥维那的改组阵容将年轻与经验融为一体。四十岁的船长哲科提供了很多后者。克里姆·阿拉伊贝戈维奇 (Kerim Alajbegovic) 年仅 18 岁零 264 天，成为代表球队参加世界杯的最年轻球员，这位边锋现在将寻求升级为首发阵容。"
             ],
             [
                 "历史交锋",
@@ -1819,7 +2251,7 @@ THEANALYST_MATCHES = [
         "analysis_cn": [
             [
                 "关键数据速览",
-                "· Opta 超级计算机是加纳队的最爱，在赛前模拟中获胜率为 45.1%。\n· 在超级计算机 25,000 次赛前模拟中，巴拿马队以 28.1% 的成绩首次赢得世界杯。\n· 73岁的黑星队主帅卡洛斯·奎罗斯将成为第三位执教五届世界杯的主教练。"
+                "· Opta 超级计算机是加纳队的最爱，在赛前模拟中获胜率为 45.1%。\n· 在超级计算机 25,000 次赛前模拟中，巴拿马队以 28.1% 的成绩首次赢得世界杯。\n· 73岁的黑星队主教练卡洛斯·奎罗斯将成为第三位执教五届世界杯的主教练。"
             ],
             [
                 "深度分析",
@@ -2115,7 +2547,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "历史交锋",
-                "这将是两队在世界杯上的第二次交锋，八年前乌拉圭在罗斯托夫以1-0获胜；路易斯·苏亚雷斯在阿尔·奥维斯失误后攻入唯一进球。\n2014 年 10 月，他们还在利雅得法赫德国王体育场打了一场友谊赛，最终以 1-1 告终。"
+                "这将是两队在世界杯上的第二次交锋，八年前乌拉圭在罗斯托夫以 1-0 获胜；路易斯·苏亚雷斯在阿尔·奥维斯失误后攻入唯一进球。\n2014 年 10 月，他们还在利雅得法赫德国王体育场打了一场友谊赛，最终以 1-1 告终。"
             ],
             [
                 "赛前预测（Opta 超算）",
@@ -2215,7 +2647,7 @@ THEANALYST_MATCHES = [
         "analysis_cn": [
             [
                 "关键数据速览",
-                "· Opta 超级计算机在开赛前将格雷厄姆·波特领导的瑞典视为夺冠热门，获胜概率为 51.1%，而突尼斯为 23.2%。\n· 周日的比赛是两支球队在世界杯上的首次交锋，之前的四次交锋都是友谊赛。\n· 瑞典在 12 场世界杯揭幕战中只输掉了 2 场（5 胜 5 场），并且在过去 4 场比赛中均保持不败（1 胜 3 场）。"
+                "· Opta 超级计算机在开球前将格雷厄姆·波特领导的瑞典视为夺冠热门，获胜概率为 51.1%，而突尼斯为 23.2%。\n· 周日的比赛是两支球队在世界杯上的首次交锋，之前的四次交锋都是友谊赛。\n· 瑞典在 12 场世界杯揭幕战中只输掉了 2 场（5 胜 5 场），并且在过去 4 场比赛中均保持不败（1 胜 3 场）。"
             ],
             [
                 "深度分析",
@@ -2475,7 +2907,7 @@ THEANALYST_MATCHES = [
             ],
             [
                 "历史交锋",
-                "这只是两国之间的第三次会议，土耳其在前两次会议中获胜。\n两人于 2004 年 5 月复出，新月星队在悉尼以 3-1 获胜，三天后在墨尔本以 1-0 险胜。\n土耳其队在此前四场世界杯对阵亚足联球队的比赛中全部获胜，打进 14 球，仅丢 2 球。其中包括 7-0 击败韩国队，这是他们在 1954 年决赛中的首场胜利。\n48 年后，在三四名附加赛中，同一支球队在 3-2 战胜他们的比赛中攻入两球。"
+                "这只是两国之间的第三次会议，土耳其在前两次会议中获胜。\n两人于 2004 年 5 月复出，当时新月星队在悉尼以 3-1 获胜，三天后在墨尔本以 1-0 险胜。\n土耳其队在此前四场世界杯对阵亚足联球队的比赛中全部获胜，打进 14 球，仅丢 2 球。其中包括 7-0 击败韩国队，这是他们在 1954 年决赛中的首场胜利。\n48 年后，在三四名附加赛中，同一支球队在 3-2 战胜他们的比赛中攻入两球。"
             ],
             [
                 "赛前预测（Opta 超算）",
@@ -2588,42 +3020,6 @@ THEANALYST_MATCHES = [
             [
                 "赛前预测（Opta 超算）",
                 "两国在 FIFA 世界排名中仅相差 14 位，韩国目前排名第 25 位，捷克排名第 39 位。\n因此，Opta 超级计算机预测一场势均力敌的比赛，韩国队以 42.9% 的获胜概率略胜一筹。\n与此同时，捷克队获胜的几率为 31.1%，而平局的几率为 26%。\n从整体比赛来看，韩国队获得A组第一的概率为21.5%，进入32强的概率为70.3%，但总体获胜的概率仅为0.40%。\n目前，捷克队以 17.4% 的概率获得 A 组冠军，但他们也有很高的机会出线，并有 64.0% 的概率进入淘汰赛阶段。\n这将是 2026 年世界杯 A 组的第二场比赛，当天早些时候将进行墨西哥对阵南非的比赛。"
-            ]
-        ]
-    },
-    {
-        "slug": "mexico-vs-south-africa-prediction-world-cup-2026-match-preview",
-        "url": "https://theanalyst.com/articles/mexico-vs-south-africa-prediction-world-cup-2026-match-preview",
-        "home_en": "Mexico",
-        "away_en": "South Africa",
-        "home_cn": "墨西哥",
-        "away_cn": "南非",
-        "home_pct": 67.1,
-        "draw_pct": 19.4,
-        "away_pct": 13.5,
-        "insights": [
-            "The Opta supercomputer’s pre-match simulations saw co-hosts Mexico secure victory over South Africa in a massive 67.1% of pre-match simulations.",
-            "Mexico are unbeaten in their last seven opening matches at a men’s World Cup.",
-            "None of South Africa’s nine games in the men’s FIFA World Cup have ended goalless."
-        ],
-        "prediction": "The Opta supercomputer could not look past a victory for Mexico, who came out on top in a convincing 67.1% of 10,000 pre-match simulations. South Africa finished as winners across 13.5% of supercomputer simulations, with the draw rated as more likely in 19.4% of the same data-led sims.",
-        "summary_cn": "Opta 超级计算机无法忽视墨西哥队的胜利，在 10,000 次赛前模拟中，墨西哥队以 67.1% 的准确率名列前茅。",
-        "analysis_cn": [
-            [
-                "关键数据速览",
-                "· Opta 超级计算机的赛前模拟显示，墨西哥队在赛前模拟中以 67.1% 的准确率战胜了南非队。\n· 墨西哥在最近七场男足世界杯揭幕战中保持不败。\n· 南非队在男子世界杯的九场比赛中没有一场是零进球。\n· 国家 国家 美利坚合众国 大不列颠及北爱尔兰联合王国 阿富汗 奥兰群岛 阿尔巴尼亚 阿尔及利亚 美属萨摩亚 安道尔 安哥拉 安圭拉 安提瓜和巴布达 阿根廷 亚美尼亚 阿鲁巴 澳大利亚 奥地利 阿塞拜疆 巴哈马 巴林 孟加拉国 巴巴多斯 白俄罗斯 比利时 伯利兹 贝宁 百慕大 不丹 玻利维亚多民族国 波斯尼亚和黑塞哥维那 博茨瓦纳 布维岛 巴西 英属印度洋领地 美利坚合众国离岛 维尔京群岛（英国） 维尔京群岛（美国） 文莱达鲁萨兰国 保加利亚 布基纳法索 布隆迪 柬埔寨 喀麦隆 加拿大 佛得角 开曼群岛 中非共和国 乍得 智利 中国 圣诞岛 科科斯（基林）群岛 哥伦比亚 科摩罗 刚果 刚果（民主共和国） 库克群岛 哥斯达黎加 克罗地亚 古巴 库拉索岛 塞浦路斯 捷克共和国 丹麦 吉布提 多米尼克 多米尼加共和国 厄瓜多尔 埃及 萨尔瓦多赤道几内亚 厄立特里亚 爱沙尼亚 埃塞俄比亚 福克兰群岛（马尔维纳斯群岛） 斐济 芬兰 法国 法属圭亚那 法属波利尼西亚 法属南部领土 加蓬 冈比亚 格鲁吉亚 德国 加纳 直布罗陀 希腊 格陵兰岛 格林纳达 瓜德罗普岛 关岛 危地马拉 根西岛 几内亚比绍 圭亚那 海地 赫德岛和麦克唐纳群岛 罗马教廷 洪都拉斯 香港 匈牙利 冰岛 印度 印度尼西亚 伊朗伊斯兰共和国 伊拉克 爱尔兰 马恩岛 以色列 意大利象牙海岸 牙买加 日本 泽西岛 约旦 哈萨克斯坦 肯尼亚 基里巴斯 科威特 吉尔吉斯斯坦 老挝人民民主共和国 拉脱维亚 黎巴嫩 莱索托 利比里亚 利比亚 列支敦士登 立陶宛 卢森堡 澳门 马其顿(前南斯拉夫共和国) 马达加斯加 马拉维 马来西亚 马尔代夫 马里 马耳他 马绍尔群岛 马提尼克岛 毛里塔尼亚 毛里求斯 马约特岛 墨西哥 密克罗尼西亚联邦 摩尔多瓦共和国摩纳哥 蒙古 黑山 蒙特塞拉特 摩洛哥 莫桑比克 缅甸 纳米比亚 瑙鲁 尼泊尔 荷兰 新喀里多尼亚 新西兰 尼加拉瓜 尼日尔 尼日利亚 纽埃 诺福克岛 朝鲜民主主义人民共和国 北马里亚纳群岛 挪威 阿曼 巴基斯坦 帕劳 巴勒斯坦、巴拿马国 巴布亚新几内亚 巴拉圭 秘鲁 菲律宾 皮特凯恩 波兰 葡萄牙 波多黎各 卡塔尔 科索沃 留尼汪岛 罗马尼亚 俄罗斯 卢旺达 圣巴泰勒米 圣圣基茨和尼维斯 圣卢西亚 圣马丁岛（法属部分） 圣皮埃尔和密克隆群岛 圣文森特和格林纳丁斯 萨摩亚 圣马力诺 圣多美和普林西比 沙特阿拉伯 塞内加尔 塞尔维亚 塞舌尔 塞拉利昂 新加坡 圣马丁岛（荷属部分） 斯洛伐克 斯洛文尼亚 所罗门群岛 索马里 南非 南乔治亚岛和南桑威奇群岛 韩国 南苏丹西班牙 斯里兰卡 苏丹 斯瓦尔巴群岛和扬马延群岛 斯威士兰 瑞典 瑞士 阿拉伯叙利亚共和国 台湾 塔吉克斯坦 坦桑尼亚 泰国联合共和国 东帝汶 多哥 托克劳群岛 汤加 特立尼达和多巴哥 突尼斯 土耳其 土库曼斯坦 特克斯和凯科斯群岛 图瓦卢 乌干达 乌克兰 阿拉伯联合酋长国 大不列颠及北爱尔兰联合王国 美利坚合众国 乌拉圭 乌兹别克斯坦 瓦努阿图 梵蒂冈城 委内瑞拉玻利瓦尔共和国越南 瓦利斯和富图纳群岛 西撒哈拉 也门 赞比亚 津巴布韦"
-            ],
-            [
-                "深度分析",
-                "2026年世界杯终于来了。主办国墨西哥欢迎南非队参加周四国际足联全球锦标赛的第一场比赛。\n墨西哥、美国和加拿大都跳过了漫长的预选赛，参加了这次扩大到 48 支球队的世界杯，这将是首次由三个国家主办的世界杯。\n世界著名的阿兹特克体育场将举办 104 场比赛中的第一场，这是该体育场举办的第 20 场比赛——比历史上任何其他场馆都要多。\n哈维尔·阿吉雷可能希望在墨西哥城有一个强劲的开局。他的球队在世界杯上的七场比赛中保持不败（W5 D2），如果首场胜利可以很快让他们在 A 组中占据领先地位。\n阿吉雷的球队还将在小组赛中对阵韩国队和捷克队，根据 Opta 超级计算机的赛前预测，墨西哥队是小组第一的热门球队。\n积极的开放可能是安抚家庭紧张情绪的关键。自1994年输给挪威队以来，西班牙人队在男子世界杯揭幕战中从未输过，此后七场此类比赛保持不败（5胜2平）。\n本届世界杯将是墨西哥第 18 次参加男子世界杯，这创下了中北美洲及加勒比海地区国家队的纪录，但他们也是参加过最多场比赛但从未举起奖杯的球队（60 场）。墨西哥队两次作为东道主取得了最好的成绩，并在 1970 年和 1986 年进入四分之一决赛，这是一个积极的预兆。\n阿吉雷将于 2024 年第三次担任墨西哥主帅，他将继 2002 年和 2010 年之后第三次带领墨西哥队参加世界杯。在今年的主教练中，只有法国队的迪迪埃·德尚 (Didier Deschamps) 代表同一国家队参加过更多的世界杯。\n67岁的他在这个舞台上也有演奏经验。 1986年，阿吉雷首发了全部五场比赛，并在对阵保加利亚的比赛中助攻曼努埃尔·内格雷特的抽射，但在四分之一决赛输给西德的比赛中被罚下场。\n赛前的大部分焦点都集中在劳尔·希门尼斯将如何带领墨西哥队，这位经验丰富的前锋在周五的最后一场赛前友谊赛中以 5-1 击败塞尔维亚队时射中了球门。\n然而，南非还必须留意定位球威胁塞萨尔·蒙特斯，他在 2025 年中北美洲及加勒比海金杯赛上打进了三个进球（全部来自角球）。只有巴拿马队的伊斯梅尔·迪亚斯（6次）完成了更多的进球，而蒙特斯也创下了第二高的拦截（10次）和空中对抗胜率（75%）。\n但雨果·布鲁斯的球队将会在这里搅局，并有他们自己的进攻力量值得关注。奥斯温·阿波利斯在本届世界杯预选赛中直接参与的进球数是其他南非球员的两倍（6个），进球两次并助攻四次。\n阿波利斯的出色表现帮助南非队在非洲足球协会预选赛中以小组第一的成绩获得小组头名。巴法纳 巴法纳仅在一场预选赛中落后，即 2023 年 11 月客场 2-0 输给卢旺达，不包括因派出不合格球员而 3-0 输给莱索托的比赛。\n一场令人印象深刻的预选赛帮助布鲁斯的球队第四次闯入世界杯，这也是他们自 2002 年以来第一次客场参加世界杯。不过，他们之前从未进入过淘汰赛阶段。\n这也将是南非队继 1998 年 3-0 输给法国队之后第二次在世界杯上对阵东道国，考虑到他们在本届世界杯上的战绩，你会期待攻防两端都有机会。\n南非队在世界杯上打了九场比赛，但没有一场比赛没有进球。他们在比赛中取得了两场胜利，分别是2010年对阵法国队和2002年对阵斯洛文尼亚队，其中后者是他们唯一一次不失球（1-0获胜）。"
-            ],
-            [
-                "历史交锋",
-                "到周四这场比赛的日期正好是 16 年前，南非在 2010 年世界杯揭幕战中主场迎战墨西哥。西菲韦·察巴拉拉 (Siphiwe Tshabalala) 首开纪录，随后拉斐尔·马克斯 (Rafael Marquez) — — 现任国家队助理教练 — — 扳平比分，最终球队 1-1 战平。\n事实上，这将是此前 19 场单场世界杯揭幕战中首次重复揭幕战。\n2010年的那场比赛也是本届赛事最后一次揭幕战以平局告终。\n然而，阿兹特克杯的最后两场揭幕战均以平局告终——1970年墨西哥和苏联互交白卷，1986年保加利亚和意大利1-1战平。"
-            ],
-            [
-                "赛前预测（Opta 超算）",
-                "Opta 超级计算机无法忽视墨西哥队的胜利，在 10,000 次赛前模拟中，墨西哥队以 67.1% 的准确率名列前茅。\n南非在 13.5% 的超级计算机模拟中获胜，在 19.4% 的相同数据主导模拟中，抽签的可能性更大。\nA组第二场比赛将于当天晚些时候进行，韩国队将在瓜达拉哈拉迎战捷克队。"
             ]
         ]
     }
