@@ -11,7 +11,7 @@
 """
 from __future__ import annotations
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QPainter, QPen
 from PyQt6.QtWidgets import (
     QFrame,
@@ -62,13 +62,21 @@ _MARGIN_X = 24
 
 
 class _Cell(QFrame):
-    """一个 R32 对阵队格：上下两行（国旗 + 中文队名）。"""
+    """一个 R32 对阵队格：上下两行（国旗 + 中文队名）。点击发出 ``clicked``。"""
+
+    #: 点击信号 —— 携带 (主队中文名, 客队中文名)，供页面解析为 Match 跳转。
+    clicked = pyqtSignal(str, str)
 
     def __init__(self, top_team: str, bottom_team: str, parent: QWidget) -> None:
         super().__init__(parent)
+        self._home = top_team
+        self._away = bottom_team
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        # 悬停高亮边框 —— 提示「可点击进入比赛详情」。
         self.setStyleSheet(
             f"QFrame{{background:{_CELL_BG}; border:1px solid {_CELL_BORDER};"
             "border-radius:8px;}"
+            f"QFrame:hover{{border:1px solid #00BFFF;}}"
         )
         lay = QVBoxLayout(self)
         lay.setContentsMargins(10, 8, 10, 8)
@@ -85,6 +93,11 @@ class _Cell(QFrame):
             row.addWidget(lbl)
             row.addStretch(1)
             lay.addLayout(row)
+
+    def mousePressEvent(self, ev) -> None:  # noqa: D401
+        if ev.button() == Qt.MouseButton.LeftButton:
+            self.clicked.emit(self._home, self._away)
+        super().mousePressEvent(ev)
 
 
 class _LabelBox(QFrame):
@@ -113,6 +126,9 @@ class _LabelBox(QFrame):
 
 class KnockoutBracket(QWidget):
     """淘汰赛对阵图画布（固定尺寸，放入 QScrollArea 使用）。"""
+
+    #: 点击某个 R32 对阵格 —— 携带 (主队中文名, 客队中文名)。
+    match_clicked = pyqtSignal(str, str)
 
     def __init__(
         self,
@@ -168,7 +184,9 @@ class KnockoutBracket(QWidget):
 
         # —— 左半 ——
         for i, (a, b) in enumerate(self._left):
-            place(_Cell(a, b, self), lx_team, team_cy[i], _TEAM_W, _TEAM_H)
+            c = _Cell(a, b, self)
+            c.clicked.connect(self.match_clicked.emit)
+            place(c, lx_team, team_cy[i], _TEAM_W, _TEAM_H)
         for j, cy in enumerate(l16_cy):
             place(_LabelBox("16强", self), lx_l16, cy, _LBL_W, _LBL_H)
             # 连接两个队格 → 16强
@@ -185,7 +203,9 @@ class KnockoutBracket(QWidget):
 
         # —— 右半 ——
         for i, (a, b) in enumerate(self._right):
-            place(_Cell(a, b, self), rx_team, team_cy[i], _TEAM_W, _TEAM_H)
+            c = _Cell(a, b, self)
+            c.clicked.connect(self.match_clicked.emit)
+            place(c, rx_team, team_cy[i], _TEAM_W, _TEAM_H)
         for j, cy in enumerate(l16_cy):
             place(_LabelBox("16强", self), rx_l16, cy, _LBL_W, _LBL_H)
             segs += self._connect(rx_team,
