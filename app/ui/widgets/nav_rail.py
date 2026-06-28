@@ -55,6 +55,7 @@ NAV_ITEMS: list[tuple[str, str, str, str]] = [
     ("players",    "球员",     "Players",        "👤"),
     ("analysis",   "数据分析", "Data Analysis",  "📈"),
     ("probability", "概率预测", "Predictions",    "🔮"),
+    ("bracket",     "对阵图",   "Bracket",        "🧩"),
     ("standings",  "积分榜",   "Standings",      "🏆"),
     ("scorers",    "射手榜",   "Top Scorers",    "⚽"),
     ("venue",      "场馆地图", "Venue Map",      "🗺"),

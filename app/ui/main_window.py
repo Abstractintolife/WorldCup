@@ -42,6 +42,7 @@ from app.ui.pages.player_detail_page import PlayerDetailPage
 from app.ui.pages.player_rankings_page import PlayerRankingsPage
 from app.ui.pages.prediction_page import PredictionPage
 from app.ui.pages.probability_page import ProbabilityPage
+from app.ui.pages.bracket_page import BracketPage
 from app.ui.pages.schedule_page import SchedulePage
 from app.ui.pages.search_page import SearchPage
 from app.ui.pages.stadiums_page import StadiumsPage
@@ -124,6 +125,7 @@ class MainWindow(QMainWindow):
         self._schedule = SchedulePage(self._service)
         self._prediction = PredictionPage(self._service)
         self._probability = ProbabilityPage(self._service)
+        self._bracket = BracketPage(self._service)
         self._standings = StandingsPage(self._service)
         self._rankings = PlayerRankingsPage(self._service)
         self._teams = TeamRankingsPage(self._service)
@@ -149,6 +151,7 @@ class MainWindow(QMainWindow):
             "prediction": self._prediction,
             "analysis": self._prediction,
             "probability": self._probability,
+            "bracket": self._bracket,
             "standings": self._standings,
             "scorers": self._rankings,
             "players": self._rankings,
