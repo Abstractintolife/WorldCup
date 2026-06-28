@@ -254,6 +254,9 @@ class MainWindow(QMainWindow):
 
         self._probability.team_clicked.connect(self._open_team)
 
+        self._bracket.match_clicked.connect(self._open_match)
+        self._bracket.team_clicked.connect(self._open_team)
+
         self._standings.team_clicked.connect(self._open_team)
 
         self._rankings.player_clicked.connect(
